@@ -1,0 +1,8 @@
+schema: spec-driven
+context: |
+  Play takes place at the commander's eyes. Every building and craft is built
+  to human scale, crewed and explorable. The C engine uses SDL3 and OpenGL.
+  Lua rules and game assets ship as editable files beside the game.
+  Targets are Windows, Linux, macOS, Emscripten Web and WebXR, with automatic
+  mobile touch controls. Unit line coverage must reach at least 95 percent.
+  Automated game scenarios exercise the same actions available to players.

@@ -19,7 +19,12 @@ Graphics, audio, shaders and scripts SHALL ship as individually editable files i
 
 An external Lua pack SHALL be able to add a mission, register a unit or job, subscribe to gameplay events and override a declared content ID using a compatible API version. Enabled packs SHALL load in declared order. Invalid versions, missing required files and undeclared duplicate IDs SHALL identify the offending pack and cause before play.
 
-#### Scenario: Extend the tide deadline
+#### Scenario: Change the opening mission's required hold
+
+- **WHEN** a compatible pack changes the Gate Six hold from 60 to 90 seconds and the commander starts a new mission on native or web
+- **THEN** the briefing shows the new target, 60 unopposed seconds leave the mission active and 90 settle the result with the original executable or Wasm module.
+
+#### Scenario: Extend the tide deadline in the naval mission
 
 - **WHEN** a compatible pack overrides the mission deadline from 720 to 900 seconds and the commander starts a new mission on native or web
 - **THEN** the briefing shows 15:00, time 12:00 passes with an unfinished objective still active and time 15:00 ends it with the original executable or Wasm module.
@@ -27,7 +32,7 @@ An external Lua pack SHALL be able to add a mission, register a unit or job, sub
 #### Scenario: Add a second mission
 
 - **WHEN** a compatible enabled pack registers a new mission ID and a handler for arrival at a berth
-- **THEN** the new mission is selectable alongside Tide Window and its handler receives the arrival during play.
+- **THEN** the new mission is selectable alongside the shipped campaign content and its handler receives the arrival during play.
 
 #### Scenario: Diagnose an invalid pack
 

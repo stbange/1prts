@@ -1,12 +1,13 @@
 # 1stprts
 
-A first-person real-time strategy game about commanding crews from inside the world they operate. Give a pilot a sailing order, walk down to the vehicle deck while the ship is underway, and hear the shore crew report on the job you left behind. Your choice of where to stand changes what you can learn.
+A first-person military RTS set in the Orra Basin in 2041. From a factory gantry you can watch your first tank roll off the line, climb into its crew compartment and order an infantry section forward. The factory keeps building while you ride. You see the whole campaign through the commander's eyes.
 
-The proposed first mission, **Tide Window**, puts two power cores, one ferry and a contested island berth on a twelve-minute tide clock. It is the first step toward a campaign spanning land, sea, air and orbit.
+The Weir Assembly and the Sounding Compact fight over the depth of the basin's waterways. Their crews reclaim steel plate, run powered bases and field different forces. **Gate Six** opens the campaign with a fight for a floodgate. **Tide Window** takes the same commander to sea aboard a 96-metre ferry. Later operations extend to the air and orbit.
 
 ## Read the design
 
-- [Game concept and first mission](docs/concept.md)
+- [Setting, first-person command and campaign](docs/concept.md)
+- [Field guide to factions, units and base buildings](docs/field-guide.md)
 - [OpenSpec proposal](openspec/changes/define-first-command/proposal.md)
 - [Engine, scripting and platform design](openspec/changes/define-first-command/design.md)
 - [Acceptance scenarios](openspec/changes/define-first-command/specs/) and [implementation milestones](openspec/changes/define-first-command/tasks.md)

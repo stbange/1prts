@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Test real-time command under competition for a berth using two crewed vehicles, limited stock and a visible deadline.
+Follow Gate Six with an Assembly supply crossing, a Compact ferry using the public berth schedule and a visible tide deadline.
 
 ## ADDED Requirements
 

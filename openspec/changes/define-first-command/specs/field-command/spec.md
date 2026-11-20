@@ -8,7 +8,12 @@ Let the commander direct several independent crews and learn about the operation
 
 ### Requirement: Command from the commander's eyes
 
-The game SHALL present all playable views from the commander's current body and eye pose. Charts SHALL be physical displays showing schematic symbols. Boarding, ordering and mission outcomes SHALL preserve the first-person perspective.
+The game SHALL present all playable views from the commander's body and eye pose. Charts SHALL be physical displays showing schematic symbols. Construction placement, production, combat orders, boarding, briefings and mission outcomes SHALL preserve the first-person perspective.
+
+#### Scenario: Build and command from inside a tank
+
+- **WHEN** the commander marks a surveyed building pad, queues a unit in a powered hall and orders a section forward while riding a Lintel
+- **THEN** the view stays at the commander's eyes inside the tank, its crew keeps driving and the slate shows the pad, production entry and section acknowledgment.
 
 #### Scenario: Plot a course on a moving bridge
 

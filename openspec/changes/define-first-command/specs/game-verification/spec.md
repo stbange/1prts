@@ -22,7 +22,12 @@ The build verification SHALL require at least 95% executable-line coverage from 
 
 ### Requirement: Replay gameplay through ordinary actions
 
-Automated game tests SHALL drive the same action and order paths available to players, using a fixed mission seed and a recorded sequence of actions at simulation ticks. They SHALL exercise both winning routes, a berth hold and a deadline loss, and compare results independently of display cadence.
+Automated game tests SHALL drive ordinary player actions at recorded simulation ticks. Gate Six replays SHALL exercise both build openings, power recovery, an interrupted claim and a rival victory. Tide Window replays SHALL exercise both winning routes, a berth hold and a deadline loss. Each mission SHALL reproduce its outcome from the same seed and actions independently of display cadence.
+
+#### Scenario: Verify the opening land battle
+
+- **WHEN** a recorded Gate Six operation builds a mill, produces forces and captures the gate at two presentation rates
+- **THEN** both runs agree on deposits, facility queues, spawned crews, claim resets, faction outcome and result tick.
 
 #### Scenario: Repeat a delivery at two render rates
 
@@ -35,5 +40,5 @@ The playable milestone SHALL include automated rendered checks on Windows, Linux
 
 #### Scenario: A command breaks between input and simulation
 
-- **WHEN** a platform accepts the physical confirm input but the destination order never appears on the slate or reaches the pilot
+- **WHEN** a platform accepts the physical confirm input but the destination order never appears on the slate or reaches the selected crew
 - **THEN** that target's game test fails with the input history and rendered state even if the headless mission replay passes.

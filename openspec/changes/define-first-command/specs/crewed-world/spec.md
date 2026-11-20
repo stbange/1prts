@@ -21,6 +21,11 @@ Every building, ground vehicle, ship, aircraft, spacecraft and space station int
 - **WHEN** the 22 m crawler boards the 96 m ferry and the commander walks to the upper deck
 - **THEN** the crawler clears the ramp and deck opening and is visible in the vehicle bay below at its original scale.
 
+#### Scenario: Board the unit that left the factory
+
+- **WHEN** the commander watches a Lintel or Wake leave a Motor Hall and boards that vehicle through its normal entrance
+- **THEN** the commander can walk between its operating station and radio or troop compartment, meet the assigned crew and observe the terrain from aboard the same moving hull.
+
 ### Requirement: Carry occupants through motion and frame changes
 
 A moving craft SHALL carry the commander, crew and embarked vehicles. Movement through a connected portal SHALL preserve a continuous first-person pose at the crossing, including when passing between nested moving interiors.
@@ -57,3 +62,8 @@ Playable scenes SHALL combine traversable 3D geometry with sprites, a limited co
 
 - **WHEN** the commander approaches the ferry through spray sprites and steps through its 3D bow opening
 - **THEN** the open ramp admits the commander and its ready signal is recognizable by shape or label as well as color, with voxel effects disabled.
+
+#### Scenario: Identify approaching armor at eye level
+
+- **WHEN** the commander watches a Lintel and a Wake from the gate gallery in grayscale
+- **THEN** the Lintel's high square cupola and the Wake's low bow and offset deckhouse distinguish the two silhouettes with faction markings visible on approach.

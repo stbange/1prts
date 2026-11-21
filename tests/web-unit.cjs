@@ -28,7 +28,7 @@ test('load individual files under a prefix and report failed assets', async () =
 test("stream sector meshes once and retry a failed crossing",async()=>{
   const seen=[], replies=[];
   runtime.FS={mkdirTree(){},writeFile(){},analyzePath:p=>({exists:p.endsWith("previous.sav")}),
-    readFile:()=>new TextEncoder().encode("ORRA1 00000000\\ntide-window - ")};
+    readFile:()=>new TextEncoder().encode("ORRA1 00000000\ntide-window - ")};
   runtime._orra_sector_ready=(ticket,ok)=>replies.push([ticket,ok]);
   runtime.addRunDependency=()=>{};runtime.removeRunDependency=()=>{};
   let fail=true;
@@ -36,7 +36,7 @@ test("stream sector meshes once and retry a failed crossing",async()=>{
     const path=url.pathname.split("/game/")[1];seen.push(path);
     return {ok:!(path.endsWith("station.mesh")&&fail),status:503,
       json:async()=>({files:["assets/sectors.txt",...["tank","port","station"].map(x=>"assets/models/"+x+".mesh")]}),
-      text:async()=>"gate-six tank\\ntide-window port\\nhigh-water station",
+      text:async()=>"gate-six tank\ntide-window port\nhigh-water station",
       arrayBuffer:async()=>new ArrayBuffer(4)};
   };
   runtime.preRun[0]();await flush();

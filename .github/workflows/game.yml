@@ -54,6 +54,14 @@ jobs:
         run: |
           python3 tools/coverage.py build
           npx --yes --package @fission-ai/openspec@2.1.1 openspec validate --all --strict
+      - name: Package and replay the Linux release executables
+        if: runner.os == 'Linux'
+        run: |
+          cmake -S . -B build -DORRA_COVERAGE=OFF
+          cmake --build build --config Release --target 1stprts orra-sim --parallel 4
+          nm build/bin/1stprts build/bin/orra-sim > build/release-symbols.txt
+          if grep -Eq '__gcov_(init|exit)$' build/release-symbols.txt; then exit 1; fi
+          ctest --test-dir build -C Release -R '^(gate_six|high-water)_replay$' --output-on-failure
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

@@ -20,6 +20,8 @@ typedef struct {
     double accumulator;
     char message[120];
     int message_ticks;
+    unsigned audio_cues;
+    void (*observe_order)(int tick, int index, bool accepted);
 } App;
 bool app_open(App *, const char *, bool);
 void app_close(App *);

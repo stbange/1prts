@@ -72,11 +72,16 @@ void app_close(App *a) {
         SDL_DestroyWindow(a->window);
     SDL_Quit();
 }
+static void play_cue(App *a, int tone) {
+    if (a->audio && a->tone[tone] &&
+        SDL_PutAudioStreamData(a->audio, a->tone[tone], (int)a->tone_size[tone]))
+        a->audio_cues++;
+}
 void app_action(App *a, int index) {
     bool accepted = sim_command(&a->sim, index);
-    int tone = accepted ? 0 : 1;
-    if (a->audio && a->tone[tone])
-        SDL_PutAudioStreamData(a->audio, a->tone[tone], (int)a->tone_size[tone]);
+    play_cue(a, accepted ? 0 : 1);
+    if (a->observe_order)
+        a->observe_order(a->sim.tick, index, accepted);
     a->message_ticks = 0;
 }
 void app_key(App *a, SDL_Scancode k) {

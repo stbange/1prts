@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import shlex
 import subprocess
 import tempfile
 
@@ -15,7 +16,14 @@ def run(command, **kwargs):
 
 def native_coverage(build, temp):
     counts = {}
-    for notes in build.rglob("*.gcno"):
+    notes_files = set()
+    for item in json.loads((build / "compile_commands.json").read_text()):
+        if Path(item["file"]).resolve().parent != ROOT / "src":
+            continue
+        argv = item.get("arguments") or shlex.split(item["command"])
+        obj = item.get("output") or argv[argv.index("-o") + 1]
+        notes_files.add((Path(item["directory"]) / obj).with_suffix(".gcno"))
+    for notes in notes_files:
         dest = temp / notes.relative_to(notes.anchor)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(notes, dest)
@@ -36,9 +44,10 @@ def native_coverage(build, temp):
 def lua_coverage(luac, hitfile):
     hits = set(hitfile.read_text().splitlines())
     result = {}
-    for script in (ROOT / "scripts").rglob("*.lua"):
+    for script in [*(ROOT / "scripts").rglob("*.lua"), *(ROOT / "mods").rglob("*.lua")]:
+        key = script.relative_to(ROOT / "scripts" if script.is_relative_to(ROOT / "scripts") else ROOT).as_posix()
         code = run([luac, "-p", "-l", str(script)], text=True, capture_output=True).stdout
-        result[script] = {int(n): f"{script.relative_to(ROOT / 'scripts').as_posix()} {n}" in hits
+        result[script] = {int(n): f"{key} {n}" in hits
                           for n in re.findall(r"^\s*\d+\s+\[(\d+)\]", code, re.MULTILINE)}
     return result
 
@@ -49,7 +58,9 @@ def threshold(label, inventory):
     if not total or hit * 100 < total * 95:
         for src,lines in inventory.items():
             print(src.name, "missed", [n for n,b in lines.items() if not b])
-        raise SystemExit(f"{label} is below 95%")
+        print(f"{label} is below 95%")
+        return False
+    return True
 
 if __name__ == "__main__":
     parser=argparse.ArgumentParser()
@@ -60,7 +71,9 @@ if __name__ == "__main__":
         temp=Path(folder)
         env=dict(os.environ,GCOV_PREFIX=str(temp),GCOV_PREFIX_STRIP="0",ORRA_LUA_HITS=str(temp/"lua.hits"))
         run(["ctest","--test-dir",str(args.build.resolve()),"-R","^(cli|engine|lua|headless)_units$","--output-on-failure"],env=env)
-        threshold("First-party C (compiled native configuration)",native_coverage(args.build.resolve(),temp))
-        threshold("Shipped Lua",lua_coverage(args.luac,temp/"lua.hits"))
-    run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",
+        native_ok = threshold("First-party C (compiled native configuration)",native_coverage(args.build.resolve(),temp))
+        lua_ok = threshold("Shipped Lua",lua_coverage(args.luac,temp/"lua.hits"))
+    browser = subprocess.run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",
          "--test-coverage-lines=95","tests/web-unit.cjs"],cwd=ROOT)
+    if not (native_ok and lua_ok and browser.returncode == 0):
+        raise SystemExit(1)

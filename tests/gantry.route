@@ -15,3 +15,14 @@ hold W 89
 expect height 5.8
 look 200 62
 shot 00-survey-gantry
+# Descend the stairs and take the same body to the produced tank.
+look -200 -62
+hold S 89
+hold D 139
+hold W 57
+key E
+expect aboard 1
+key 8
+key 7
+wait 4100
+expect result victory

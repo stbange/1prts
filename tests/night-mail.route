@@ -6,10 +6,11 @@ key 4
 key 3
 wait 363
 key 6
-wait 720
-look 315 -47
+hold W 190
+wait 535
+look 650 65
 shot 14-night-flight
-look -315 47
+look -650 -65
 key 1
 wait 1050
 key 5

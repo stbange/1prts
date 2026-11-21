@@ -15,7 +15,7 @@ Both sides employ mechanics, infantry, drivers and boat crews. Their starting re
 
 ## Forces
 
-The dimensions below are proposed hull lengths. Each vehicle includes a crewed operating station and a second accessible work area. Troops embark and disembark as people.
+The dimensions below are the roster’s overall vehicle lengths. Each vehicle includes a crewed operating station and a second accessible work area. Troops embark and disembark as people.
 
 | Unit | Faction and role | What the commander can do or see |
 | --- | --- | --- |

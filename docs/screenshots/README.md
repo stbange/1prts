@@ -1,13 +1,15 @@
-# Gate Six screenshots
+# Orra Basin screenshots
 
-These frames come from the native SDL3/OpenGL build at 1280 × 720. The recorded keyboard and mouse routes use the same commander and command controls as interactive play. The PNGs are lossless conversions of the game's framebuffer.
+These 1280 × 720 PNGs are lossless captures of the native OpenGL framebuffer. Each view uses the commander's body, the normal walk and look controls, and the mission's real crew and vehicle positions.
 
-| View | Capture |
+| Operation | Captures |
 | --- | --- |
-| Looking down from the walkable Survey Hall gantry | [Survey gantry](survey-gantry.png) |
-| Issuing orders on the command slate | [Command slate](command-slate.png) |
-| The produced Lintel in the yard | [Assembly vehicles](armor-yard.png) |
-| Giving orders while riding in the moving Lintel | [Aboard the Lintel](aboard-lintel.png) |
-| The staffed dispatch desk inside the Survey Hall | [Dispatch room](dispatch-room.png) |
+| Gate Six | [Survey gantry](survey-gantry.png) · [Command slate](command-slate.png) · [Vehicle yard](armor-yard.png) · [Riding a Lintel](aboard-lintel.png) · [Staffed dispatch room](dispatch-room.png) |
+| Tide Window | [Boarding apron](estuary-berth.png) · [Loaded crawler seen from upper deck](ferry-bridge.png) · [Inside the crawler at sea](crawler-at-sea.png) |
+| Gate Six / Compact | [Wake and Slip Shed at the mooring](compact-mooring.png) |
+| Westbound | [Winter shunting yard](west-exchange.png) |
+| White Mile | [Survey camp](white-mile.png) |
+| Night Mail | [View from the airborne tiltrotor](night-flight.png) |
+| High Water | [Arrival inside Crown Station](crown-station.png) |
 
-Art and captures by the 1stprts contributors, CC BY 4.0.
+Set the environment variable ORRA_CAPTURE_DIR to an existing folder, then run the rendered CTest replays. The route files specify the capture ticks and camera inputs. [Recorded routes](../../tests) · [Art and attribution](../../assets/CREDITS.md)

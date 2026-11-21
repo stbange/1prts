@@ -1,16 +1,16 @@
 # Campaign inventory
 
-The field guide reads the same [Lua catalog](../scripts/catalog.lua) used by the unit tests. Counts refer to distinct types. The first build lets the commander inspect every entry with F1.
+The field guide and campaign scenes share one catalog. The unit suite checks every unit and structure against actual mission placements. [Lua catalog](../scripts/catalog.lua)
 
-| Inventory | Campaign | Gate Six playable now |
+| Inventory | Campaign | Gate Six theater |
 | --- | ---: | --- |
-| Unit types | 39 | 6 types represented across both sides, including the fitting crew and hauler |
-| Building and objective types | 30 | 6 types including the neutral floodgate |
-| Factions | 6 | 2 present, Assembly player and Compact rival |
-| Named missions | 6 | Gate Six |
-| Mission upgrades | 6 | Scheduled for later operations |
+| Unit types | 39 | 18 across the two armies and support yards |
+| Building and objective types | 30 | 18 including the floodgate |
+| Factions | 6 | Assembly command and Compact opposition |
+| Named missions | 6 | Gate Six, plus a playable Compact alternate operation |
+| Mission upgrades | 6 | The first two become available in Tide Window |
 
-The Gate Six theater design reserves **18 unit types and 18 structure types** for its full force list. Its first encounter fields the Mole, fitting crew, Gate Section, Channel Section, Lintel and Wake. Its six structures are the Survey Hall, Dynamo House, Plate Mill, Watch House, Motor Hall and Gate Six station.
+Gate Six opens with a staffed Survey Hall, Dynamo House and Mole. The mill, barracks and motor pool appear on their surveyed pads as their fitting orders finish. The eastern and western yards contain the support roster. The other operations place the rail, air, maritime and orbital detachments in their own sectors.
 
 ## Units by faction
 

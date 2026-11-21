@@ -109,7 +109,8 @@ static void read_side(lua_State *L, const char *name, Side *a) {
 static V3 vector(lua_State *L, const char *name) {
     lua_getfield(L, -1, name);
     V3 p = {0};
-    if (lua_istable(L, -1)) p = (V3){float_at(L, 1), float_at(L, 2), float_at(L, 3)};
+    if (lua_istable(L, -1))
+        p = (V3){float_at(L, 1), float_at(L, 2), float_at(L, 3)};
     lua_pop(L, 1);
     return p;
 }
@@ -126,31 +127,68 @@ static void moving_frames(Sim *g) {
                 p->current = (V3){float_at(L, 1), float_at(L, 2), float_at(L, 3)};
                 p->facing = float_at(L, 4);
                 int parent = (int)float_at(L, 5);
-                p->linked = parent >= 0 && parent <= g->places && parent != i+1 ? parent : 0;
+                p->linked = parent >= 0 && parent <= g->places && parent != i + 1 ? parent : 0;
             }
             lua_pop(L, 1);
         }
     }
     lua_pop(L, 1);
 }
-int sim_crew_status(const Sim *g,const char *key,int *age) {
-    lua_State *L=g->L;
-    lua_rawgeti(L,LUA_REGISTRYINDEX,g->state);
-    const char *fields[]={"service","roster","reports"};
-    int status=0;*age=0;
-    for(int i=0;i<3;i++){
-        lua_getfield(L,-1,fields[i]);
-        if(lua_istable(L,-1)){
-            lua_getfield(L,-1,key);
-            if(!lua_isnil(L,-1)){
-                if(i==2)*age=g->tick-(int)lua_tointeger(L,-1);
-                else status=i+1;
-            }
-            lua_pop(L,1);
+void sim_crew_report(const Sim *g, const char *key, char *out, size_t size) {
+    lua_State *L = g->L;
+    out[0] = 0;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, g->state);
+    lua_getfield(L, -1, "contacts");
+    if (lua_istable(L, -1)) {
+        lua_getfield(L, -1, key);
+        if (lua_istable(L, -1)) {
+            char target[40];
+            string_field(L, -1, "target", target, sizeof target);
+            snprintf(out, size, "%s / %d E %d N / %dS AGO", target, number(L, -1, "x"),
+                     -number(L, -1, "z"), (g->tick - number(L, -1, "tick")) / 30);
         }
-        lua_pop(L,1);
+        lua_pop(L, 1);
     }
-    lua_pop(L,1);return status;
+    lua_pop(L, 2);
+}
+void sim_log(const Sim *g, int offset, char *out, size_t size) {
+    lua_State *L = g->L;
+    out[0] = 0;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, g->state);
+    lua_getfield(L, -1, "log");
+    if (lua_istable(L, -1)) {
+        lua_geti(L, -1, (int)lua_rawlen(L, -1) - offset);
+        if (lua_istable(L, -1)) {
+            char report[156];
+            string_field(L, -1, "text", report, sizeof report);
+            snprintf(out, size, "%ds / %s", (g->tick - number(L, -1, "tick")) / 30, report);
+        }
+        lua_pop(L, 1);
+    }
+    lua_pop(L, 2);
+}
+int sim_crew_status(const Sim *g, const char *key, int *age) {
+    lua_State *L = g->L;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, g->state);
+    const char *fields[] = {"service", "roster", "reports"};
+    int status = 0;
+    *age = 0;
+    for (int i = 0; i < 3; i++) {
+        lua_getfield(L, -1, fields[i]);
+        if (lua_istable(L, -1)) {
+            lua_getfield(L, -1, key);
+            if (!lua_isnil(L, -1)) {
+                if (i == 2)
+                    *age = g->tick - (int)lua_tointeger(L, -1);
+                else if (!status)
+                    status = i + 1;
+            }
+            lua_pop(L, 1);
+        }
+        lua_pop(L, 1);
+    }
+    lua_pop(L, 1);
+    return status;
 }
 bool sim_snapshot(Sim *g) {
     lua_State *L = g->L;
@@ -165,6 +203,7 @@ bool sim_snapshot(Sim *g) {
     g->report_at = number(L, -1, "report_at");
     string_field(L, -1, "objective", g->objective, sizeof g->objective);
     string_field(L, -1, "stage", g->stage, sizeof g->stage);
+    string_field(L, -1, "advice", g->advice, sizeof g->advice);
     moving_frames(g);
     read_side(L, "blue", &g->blue);
     read_side(L, "red", &g->red);
@@ -172,7 +211,8 @@ bool sim_snapshot(Sim *g) {
     return true;
 }
 bool sim_reset(Sim *g) {
-    for (int i = 0; i < g->places; i++) g->place[i].moved = false;
+    for (int i = 0; i < g->places; i++)
+        g->place[i].moved = false;
     method(g, "new");
     if (!call(g, 0, 1))
         return false;
@@ -245,31 +285,50 @@ bool sim_open_mission(Sim *g, const char *root, const char *mission) {
     copy(g->title, sizeof g->title, "Gate Six");
     copy(g->faction, sizeof g->faction, "WEIR ASSEMBLY");
     copy(g->terrain, sizeof g->terrain, "terrain");
-    g->spawn=(V3){3,0,22}; g->spawn_yaw=-.052f;
+    g->spawn = (V3){3, 0, 22};
+    g->spawn_yaw = -.052f;
     char filename[1280];
     snprintf(filename, sizeof filename, "%s/content.json", root);
-    FILE *manifest=fopen(filename,"rb");
+    FILE *manifest = fopen(filename, "rb");
     if (manifest) {
         fclose(manifest);
-        snprintf(filename,sizeof filename,"%s/scripts/runtime.lua",root);
-        if (luaL_loadfile(L,filename)!=LUA_OK) return fail(g,lua_tostring(L,-1));
-        lua_pushstring(L,root);lua_pushstring(L,mission);
-        if (!call(g,2,1)) return false;
-        string_field(L,-1,"title",g->title,sizeof g->title);
-        string_field(L,-1,"faction",g->faction,sizeof g->faction);
-        string_field(L,-1,"terrain",g->terrain,sizeof g->terrain);
-        g->spawn=vector(L,"spawn");
-        lua_getfield(L,-1,"spawn");g->spawn_yaw=float_at(L,4);lua_pop(L,1);
-        lua_getfield(L,-1,"operations");
-        g->operation_count=(int)lua_rawlen(L,-1);
-        if(g->operation_count<1 || g->operation_count>MAX_CATALOG) return fail(g,"Operation list size");
-        for(int i=0;i<g->operation_count;i++) {
-            lua_geti(L,-1,i+1);Entry *e=&g->operations[i];
-            string_field(L,-1,"id",e->id,sizeof e->id);string_field(L,-1,"name",e->name,sizeof e->name);
-            string_field(L,-1,"role",e->role,sizeof e->role);lua_pop(L,1);
+        snprintf(filename, sizeof filename, "%s/scripts/runtime.lua", root);
+        if (luaL_loadfile(L, filename) != LUA_OK)
+            return fail(g, lua_tostring(L, -1));
+        lua_pushstring(L, root);
+        lua_pushstring(L, mission);
+        if (!call(g, 2, 1))
+            return false;
+        string_field(L, -1, "title", g->title, sizeof g->title);
+        string_field(L, -1, "faction", g->faction, sizeof g->faction);
+        string_field(L, -1, "terrain", g->terrain, sizeof g->terrain);
+        const char *voices[] = {"ack.wav",     "blocked.wav", "weir.wav",    "sounding.wav",
+                                "terrace.wav", "salt.wav",    "lantern.wav", "meridian.wav"};
+        lua_getfield(L, -1, "media");
+        if (lua_istable(L, -1))
+            for (int i = 0; i < 8; i++)
+                string_field(L, -1, voices[i], g->sounds[i], sizeof g->sounds[i]);
+        lua_pop(L, 1);
+        g->spawn = vector(L, "spawn");
+        lua_getfield(L, -1, "spawn");
+        g->spawn_yaw = float_at(L, 4);
+        lua_pop(L, 1);
+        lua_getfield(L, -1, "operations");
+        g->operation_count = (int)lua_rawlen(L, -1);
+        if (g->operation_count < 1 || g->operation_count > MAX_CATALOG)
+            return fail(g, "Operation list size");
+        for (int i = 0; i < g->operation_count; i++) {
+            lua_geti(L, -1, i + 1);
+            Entry *e = &g->operations[i];
+            string_field(L, -1, "id", e->id, sizeof e->id);
+            string_field(L, -1, "name", e->name, sizeof e->name);
+            string_field(L, -1, "role", e->role, sizeof e->role);
+            lua_pop(L, 1);
         }
-        lua_pop(L,1);g->bundle=luaL_ref(L,LUA_REGISTRYINDEX);
-    } else if(strcmp(mission,"gate-six")) return fail(g,"Mission requires content.json");
+        lua_pop(L, 1);
+        g->bundle = luaL_ref(L, LUA_REGISTRYINDEX);
+    } else if (strcmp(mission, "gate-six"))
+        return fail(g, "Mission requires content.json");
     if (!load_table(g, "catalog") || !read_catalog(g) || !load_table(g, "site"))
         return false;
     g->places = (int)lua_rawlen(L, -1);
@@ -284,14 +343,17 @@ bool sim_open_mission(Sim *g, const char *root, const char *mission) {
         p->pos = (V3){float_at(L, 2), float_at(L, 3), float_at(L, 4)};
         p->yaw = float_at(L, 5);
         string_at(L, 6, p->condition, sizeof p->condition);
-        string_field(L,-1,"key",p->key,sizeof p->key);
-        string_field(L,-1,"name",p->name,sizeof p->name);
-        string_field(L,-1,"family",p->family,sizeof p->family);
-        string_field(L,-1,"role",p->role,sizeof p->role);
-        string_field(L,-1,"asset",p->asset,sizeof p->asset);
-        p->size=vector(L,"size"); p->parent=number(L,-1,"parent");
-        if(p->parent<0 || p->parent>i) return fail(g,"Invalid scene parent");
-        p->hull=flag(L,-1,"hull");p->station=flag(L,-1,"station");
+        string_field(L, -1, "key", p->key, sizeof p->key);
+        string_field(L, -1, "name", p->name, sizeof p->name);
+        string_field(L, -1, "family", p->family, sizeof p->family);
+        string_field(L, -1, "role", p->role, sizeof p->role);
+        string_field(L, -1, "asset", p->asset, sizeof p->asset);
+        p->size = vector(L, "size");
+        p->parent = number(L, -1, "parent");
+        if (p->parent < 0 || p->parent > i)
+            return fail(g, "Invalid scene parent");
+        p->hull = flag(L, -1, "hull");
+        p->station = flag(L, -1, "station");
         lua_pop(L, 1);
     }
     lua_pop(L, 1);
@@ -299,7 +361,7 @@ bool sim_open_mission(Sim *g, const char *root, const char *mission) {
         return false;
     g->hold_ticks = number(L, -1, "hold_ticks");
     lua_getfield(L, -1, "actions");
-    g->order_count=(int)lua_rawlen(L,-1);
+    g->order_count = (int)lua_rawlen(L, -1);
     if (g->order_count < 1 || g->order_count > MAX_ORDERS || g->hold_ticks <= 0)
         return fail(g, "Invalid mission rules");
     for (int i = 0; i < g->order_count; i++) {
@@ -308,6 +370,7 @@ bool sim_open_mission(Sim *g, const char *root, const char *mission) {
             return fail(g, "Invalid mission order");
         string_at(L, 1, g->orders[i].id, sizeof g->orders[i].id);
         string_at(L, 2, g->orders[i].label, sizeof g->orders[i].label);
+        string_at(L, 3, g->orders[i].actor, sizeof g->orders[i].actor);
         lua_pop(L, 1);
     }
     lua_pop(L, 1);
@@ -317,7 +380,7 @@ bool sim_open_mission(Sim *g, const char *root, const char *mission) {
 bool sim_command(Sim *g, int index) {
     if (index < 0 || index >= g->order_count)
         return false;
-    return sim_order(g,g->orders[index].id);
+    return sim_order(g, g->orders[index].id);
 }
 bool sim_order(Sim *g, const char *id) {
     method(g, "command");

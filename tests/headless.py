@@ -3,10 +3,24 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import struct
 import sys
 import tempfile
 
 binary = Path(sys.argv[1]).resolve()
+def hull_profile(name):
+    data=(binary.parent/"assets/models"/(name+".mesh")).read_bytes()
+    points=list(struct.iter_unpack("<6f4B",data[8:]))
+    lo=min(v[2] for v in points);length=max(v[2] for v in points)-lo
+    profile=[0.0]*20
+    for vertex in points:
+        column=min(19,int((vertex[2]-lo)*20/length))
+        profile[column]=max(profile[column],vertex[1]/length)
+    return length,profile
+
+lintel_length,lintel=hull_profile("lintel");wake_length,wake=hull_profile("wake")
+assert 11.8<lintel_length<12.2 and 14.8<wake_length<15.2
+assert sum(abs(a-b)>.04 for a,b in zip(lintel,wake))>=7, "Armor silhouette depends on color"
 with tempfile.TemporaryDirectory() as folder:
     temp = Path(folder)
     def call(*args, route=None, ok=True):

@@ -10,10 +10,12 @@ typedef struct {
     char name[24];
     unsigned buffer, array;
     int count;
+    float radius;
 } Mesh;
 typedef struct {
     unsigned scene, sky, panel, empty, ui_buffer, ui_array;
-    int vp, pose, eye, shadow, livery, inverse, sky_eye, orbit, extent;
+    int vp, pose, eye, shadow, livery, inverse, sky_eye, orbit, night_light, extent, tracked,
+        wrist_projection;
     Mesh meshes[MAX_SITE];
     int mesh_count;
     char portrait[18][20];
@@ -29,5 +31,6 @@ void render_view(Renderer *, const Sim *, const Camera *, Mat, V3, int, int, int
 void render_rect(Renderer *, float, float, float, float, uint32_t);
 void render_text(Renderer *, float, float, float, const char *, uint32_t);
 void render_overlay(Renderer *, int, int);
+void render_slate(Renderer *, int, int, const Mat *);
 bool render_capture(Renderer *, const char *);
 #endif

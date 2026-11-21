@@ -12,11 +12,16 @@ static void key_event(App *a, SDL_Scancode sc, bool down) {
     app_event(a, &e);
 }
 static bool expect(const App *a, const char *key, const char *value) {
-    if(!strcmp(key,"mission"))return !strcmp(a->sim.mission,value);
-    if(!strcmp(key,"stage"))return !strcmp(a->sim.stage,value);
-    if(!strcmp(key,"vessel"))return a->camera.aboard>=0 && !strcmp(a->sim.place[a->camera.aboard].key,value);
-    if(!strcmp(key,"tick"))return a->sim.tick==atoi(value);
-    if(!strcmp(key,"hold-target"))return a->sim.hold_ticks==atoi(value);
+    if (!strcmp(key, "mission"))
+        return !strcmp(a->sim.mission, value);
+    if (!strcmp(key, "stage"))
+        return !strcmp(a->sim.stage, value);
+    if (!strcmp(key, "vessel"))
+        return a->camera.aboard >= 0 && !strcmp(a->sim.place[a->camera.aboard].key, value);
+    if (!strcmp(key, "tick"))
+        return a->sim.tick == atoi(value);
+    if (!strcmp(key, "hold-target"))
+        return a->sim.hold_ticks == atoi(value);
     if (!strcmp(key, "result"))
         return !strcmp(a->sim.result, value);
     if (!strcmp(key, "panel"))
@@ -33,6 +38,37 @@ static bool expect(const App *a, const char *key, const char *value) {
         return a->sim.blue.alloy == atoi(value);
     return false;
 }
+static void interval(App *a, int ticks, int rate, bool present) {
+    if (rate == 0) {
+        for (int i = 0; i < ticks; i++)
+            app_tick(a);
+        return;
+    }
+    for (int i = 0; i < ticks * (rate / 30); i++) {
+        if (present)
+            app_frame(a, 1.0 / rate);
+        else
+            app_advance(a, 1.0 / rate);
+    }
+}
+static void checkpoint(const App *a, const char *name) {
+    const Sim *s = &a->sim;
+    uint32_t hash = 2166136261u;
+    const unsigned char *sides[] = {(const unsigned char *)&s->blue, (const unsigned char *)&s->red};
+    for (int j = 0; j < 2; j++)
+        for (size_t i = 0; i < sizeof(Side); i++)
+            hash = (hash ^ sides[j][i]) * 16777619u;
+    for (int i = 0; i < s->places; i++) {
+        V3 p = {0};
+        bool active = world_object(s, i, &p);
+        const int fields[] = {active, (int)lroundf(p.x * 1000), (int)lroundf(p.y * 1000),
+                              (int)lroundf(p.z * 1000), s->place[i].linked};
+        for (int j = 0; j < 5; j++)
+            hash = (hash ^ (uint32_t)fields[j]) * 16777619u;
+    }
+    printf("checkpoint %s %d %s %s %d %d %u\n", name, s->tick, s->result, s->stage, s->progress,
+           s->reserved, hash);
+}
 bool app_route(App *a, const char *path) {
     FILE *file = fopen(path, "r");
     if (!file) {
@@ -40,7 +76,8 @@ bool app_route(App *a, const char *path) {
         return false;
     }
     char line[384];
-    int n = 0, rate=30;
+    int n = 0, rate = 0;
+    bool present = SDL_getenv("ORRA_RENDER_EVERY_FRAME") != NULL;
     bool ok = true;
     while (ok && fgets(line, sizeof line, file)) {
         char cmd[20] = {0}, arg[120] = {0}, extra[120] = {0};
@@ -53,16 +90,18 @@ bool app_route(App *a, const char *path) {
             ok = sc != SDL_SCANCODE_UNKNOWN;
             key_event(a, sc, true);
             if (!strcmp(cmd, "hold"))
-                for (int i = 0; i < atoi(extra); i++)
-                    app_tick(a);
+                interval(a, atoi(extra), rate, present);
             key_event(a, sc, false);
-        } else if (!strcmp(cmd,"rate")) {
-            rate=atoi(arg);ok=rate>=15 && rate<=240;
-        } else if (!strcmp(cmd,"frames")) {
-            for(int i=0;i<atoi(arg);i++)app_frame(a,1.0/rate);
-        } else if (!strcmp(cmd, "wait")) {
+        } else if (!strcmp(cmd, "rate")) {
+            rate = atoi(arg);
+            ok = rate == 30 || rate == 60 || rate == 90 || rate == 120;
+        } else if (!strcmp(cmd, "frames")) {
             for (int i = 0; i < atoi(arg); i++)
-                app_tick(a);
+                app_frame(a, 1.0 / (rate ? rate : 30));
+        } else if (!strcmp(cmd, "checkpoint"))
+            checkpoint(a, arg);
+        else if (!strcmp(cmd, "wait")) {
+            interval(a, atoi(arg), rate, present);
         } else if (!strcmp(cmd, "look")) {
             SDL_Event click = {0};
             click.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
@@ -87,15 +126,25 @@ bool app_route(App *a, const char *path) {
             ok = false;
     }
     fclose(file);
-    if(!ok){
-        const char *dir=SDL_getenv("ORRA_FAILURE_DIR");
-        if(dir && *dir){
-            char filename[1300];app_draw(a);
-            snprintf(filename,sizeof filename,"%s/%s-failure.ppm",dir,a->sim.mission);
-            render_capture(&a->renderer,filename);
-            snprintf(filename,sizeof filename,"%s/%s-state.txt",dir,a->sim.mission);
-            FILE *state=fopen(filename,"w");
-            if(state){fprintf(state,"%s line %d\n%s\n%s\n",path,n,orra_status(),a->sim.report);fclose(state);}
+    if (!ok) {
+        const char *dir = SDL_getenv("ORRA_FAILURE_DIR");
+        if (dir && *dir) {
+            char filename[1300];
+            app_draw(a);
+            snprintf(filename, sizeof filename, "%s/%s-failure.ppm", dir, a->sim.mission);
+            render_capture(&a->renderer, filename);
+            snprintf(filename, sizeof filename, "%s/%s-state.txt", dir, a->sim.mission);
+            FILE *state = fopen(filename, "w");
+            if (state) {
+                fprintf(state, "%s line %d\n%s\n%s\n", path, n, orra_status(), a->sim.report);
+                FILE *actions = fopen(path, "r");
+                if (actions) {
+                    for (int row = 0; row < n && fgets(line, sizeof line, actions); row++)
+                        fputs(line, state);
+                    fclose(actions);
+                }
+                fclose(state);
+            }
         }
     }
     fprintf(stderr, "%s %s at line %d, tick %d, %s, alloy %d, body %.1f %.1f\n", path,

@@ -19,7 +19,8 @@ Object.defineProperty(navigator, 'xr', {value: {
   isSessionSupported:async()=>true,
   requestSession:async()=>{
     const s=window.testSession=new EventTarget();
-    s.inputSources=[];s.updateRenderState=()=>{};
+    s.inputSources=[{handedness:"left",gamepad:{axes:[0,0],buttons:[]}},
+                    {handedness:"right",gamepad:{axes:[0,0],buttons:[]}}];s.updateRenderState=()=>{};
     s.requestReferenceSpace=async()=>({});
     s.requestAnimationFrame=callback=>requestAnimationFrame(t=>{if(!s.ended)callback(t,{
       getViewerPose:()=>({views:[-.032,.032].map(x=>({
@@ -50,7 +51,7 @@ def exercise(browser, url, layout, pack=False):
     context=browser.new_context(viewport={"width":900,"height":540},has_touch=layout=="touch",is_mobile=layout=="touch")
     if layout=="xr": context.add_init_script(XR_DEVICE)
     page=context.new_page()
-    errors,requests=[],[]
+    errors,requests,history=[],[],[]
     page.on("pageerror",lambda error: errors.append(str(error)))
     page.on("response",lambda response: requests.append(response.url))
     if pack:
@@ -61,16 +62,21 @@ def exercise(browser, url, layout, pack=False):
             route.fulfill(response=source,json=manifest)
         page.route("**/content.json",enable)
     def status(): return page.evaluate(STATUS)
-    def advance(ticks): page.evaluate("n=>Module._orra_clock(n)",ticks)
+    def advance(ticks):
+        page.evaluate("n=>Module._orra_clock(n)",ticks)
+        history.append(["advance",ticks,status()])
     def xr_event(kind, hand):
+        history.append(["controller",kind,hand])
         page.evaluate("""([kind,hand])=>{const e=new Event(kind);e.inputSource={handedness:hand};testSession.dispatchEvent(e)}""",[kind,hand])
-    def touch(x,y): page.touchscreen.tap(x,y)
+    def touch(x,y):
+        history.append(["tap",x,y]);page.touchscreen.tap(x,y)
     def toggle():
         if layout=="touch": touch(752,492)
         elif layout=="xr": xr_event("selectstart","left")
         else: page.keyboard.press("Tab")
         advance(0)
     def order(index):
+        history.append(["order",index])
         if layout=="touch": touch(715,134+24*(index-1))
         elif layout=="xr":
             for _ in range((index-1-int(status()[6])) % 14): xr_event("squeezestart","left")
@@ -96,11 +102,15 @@ def exercise(browser, url, layout, pack=False):
             fingers("touchCancel",[])
             advance(1)
             assert status()[13:15]==["0","0"],status()
+            touch(204,43);advance(0);touch(715,134);advance(0)
+            draft=status();assert draft[1]=="assignment",draft
             page.set_viewport_size({"width":540,"height":900})
             page.wait_for_function("()=>document.querySelector('canvas').height>document.querySelector('canvas').width")
-            assert status()[5]=="1"
+            assert status()[5]=="1" and status()[16:18]==draft[16:18] and status()[1]=="assignment"
             page.set_viewport_size({"width":900,"height":540})
             page.wait_for_function("()=>document.querySelector('canvas').width>document.querySelector('canvas').height")
+            touch(204,43);advance(0);touch(204,43);advance(0)
+            assert status()[1]=="field"
         if layout=="xr":
             page.locator("#vr").click()
             page.wait_for_function("()=>window.xrEyes>=4 && xrDepthRegions.size===2")
@@ -117,6 +127,15 @@ def exercise(browser, url, layout, pack=False):
             page.keyboard.press("e");advance(0)
             assert int(status()[8])>=0,status()
             frame=page.locator("canvas").screenshot()
+        if layout=="xr":
+            def stick(x,y,ticks):
+                eyes=page.evaluate("window.xrEyes")
+                page.evaluate("xy=>testSession.inputSources[0].gamepad.axes=xy",[x,-y])
+                page.wait_for_function("old=>window.xrEyes>old+2",arg=eyes)
+                advance(ticks)
+            stick(1,0,28);stick(0,1,57);stick(0,0,0)
+            xr_event("squeezestart","right");advance(0)
+            assert int(status()[8])>=0,status()
         toggle()
         order(8);order(7);advance(2450)
         if pack:
@@ -135,6 +154,7 @@ def exercise(browser, url, layout, pack=False):
     except Exception:
         out=Path(os.getenv("ORRA_FAILURE_DIR","browser-failures"))
         out.mkdir(exist_ok=True,parents=True)
+        (out/(layout+"-input.json")).write_text(json.dumps(history,indent=2))
         page.screenshot(path=out/(layout+"-failure.png"),timeout=10000)
         (out/(layout+"-state.txt")).write_text(str(page.evaluate("()=>typeof Module._orra_status==='function' ? Module.UTF8ToString(Module._orra_status()) : document.body.innerText"))+"\n"+str(errors))
         raise

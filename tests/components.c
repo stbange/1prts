@@ -153,15 +153,31 @@ void component_tests(App *a, const char *root) {
     app_draw(a);
     app_key(a, SDL_SCANCODE_E);
     put("parser.route",
-        "# miniature parser case\n\nkey 1\nhold W 1\nlook 4 3\nwait 1\nexpect result active\nexpect "
+        "# miniature parser case\n\nrate 90\nframes 3\ncheckpoint start\nkey 1\nhold W 1\nlook 4 "
+        "3\nwait 1\nexpect result active\nexpect "
         "aboard 0\nexpect armor 0\nexpect section 0\nexpect alloy 8\nshot component\n");
     sim_reset(&a->sim);
     CHECK(app_route(a, "orra-unit-files/parser.route"));
+    put("parser.route", "expect mission gate-six\nexpect hold-target 1800\nexpect tick 3\nrate "
+                        "30\nframes 1\nexpect tick 4\n");
+    CHECK(app_route(a, "orra-unit-files/parser.route"));
+    SDL_Environment *environment = SDL_GetEnvironment();
+    const char *before = SDL_GetEnvironmentVariable(environment, "ORRA_FAILURE_DIR");
+    char *previous = before ? SDL_strdup(before) : NULL;
+    SDL_SetEnvironmentVariable(environment, "ORRA_FAILURE_DIR", fixture, true);
     put("parser.route", "expect no-such-value 0");
     CHECK(!app_route(a, "orra-unit-files/parser.route"));
     put("parser.route", "bogus");
     CHECK(!app_route(a, "orra-unit-files/parser.route"));
     CHECK(!app_route(a, "no-such-route.orra"));
+    SDL_PathInfo info;
+    CHECK(SDL_GetPathInfo("orra-unit-files/gate-six-failure.ppm", &info) && info.size > 1000);
+    CHECK(SDL_GetPathInfo("orra-unit-files/gate-six-state.txt", &info) && info.size > 30);
+    if (previous) {
+        SDL_SetEnvironmentVariable(environment, "ORRA_FAILURE_DIR", previous, true);
+        SDL_free(previous);
+    } else
+        SDL_UnsetEnvironmentVariable(environment, "ORRA_FAILURE_DIR");
     app_draw(a);
     CHECK(render_capture(&a->renderer, "orra-unit-files/colour.ppm"));
     a->sim.blue.hold = a->sim.hold_ticks;
@@ -185,8 +201,17 @@ void host_tests(const char *root) {
     put("parser.route", "expect alloy 8");
     char *route[] = {"orra", "--data", (char *)root, "--replay", "orra-unit-files/parser.route", NULL};
     CHECK(orra_run(5, route) == 0);
-    char *campaign[]={"orra","--data",(char *)root,"--mission","white-mile","--replay","orra-unit-files/parser.route",NULL};
-    CHECK(orra_run(7,campaign)==0);campaign[4]="missing";CHECK(orra_run(7,campaign)==1);
+    char *campaign[] = {"orra",
+                        "--data",
+                        (char *)root,
+                        "--mission",
+                        "white-mile",
+                        "--replay",
+                        "orra-unit-files/parser.route",
+                        NULL};
+    CHECK(orra_run(7, campaign) == 0);
+    campaign[4] = "missing";
+    CHECK(orra_run(7, campaign) == 1);
     char *normal[] = {"orra", "--data", (char *)root, NULL};
     SDL_Thread *thread = SDL_CreateThread(quit_later, "quit", NULL);
     CHECK(thread);

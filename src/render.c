@@ -121,10 +121,12 @@ static Mesh *find(Renderer *r, const char *id) {
     return NULL;
 }
 static bool load_mesh(Renderer *r, const char *root, const Place *place) {
-    const char *name=place->model;
+    const char *name = place->model;
     char path[1400];
-    if(place->asset[0]) snprintf(path,sizeof path,"%s/%s",root,place->asset);
-    else snprintf(path, sizeof path, "%s/assets/models/%s.mesh", root, name);
+    if (place->asset[0])
+        snprintf(path, sizeof path, "%s/%s", root, place->asset);
+    else
+        snprintf(path, sizeof path, "%s/assets/models/%s.mesh", root, name);
     size_t size = 0;
     unsigned char *bytes = SDL_LoadFile(path, &size);
     if (!bytes)
@@ -141,6 +143,13 @@ static bool load_mesh(Renderer *r, const char *root, const Place *place) {
     Mesh *m = &r->meshes[r->mesh_count++];
     snprintf(m->name, sizeof m->name, "%s", name);
     m->count = (int)count;
+    float squared = 0;
+    for (uint32_t i = 0; i < count; i++) {
+        float xyz[3];
+        memcpy(xyz, bytes + 8 + (size_t)i * 28, sizeof xyz);
+        squared = fmaxf(squared, xyz[0] * xyz[0] + xyz[1] * xyz[1] + xyz[2] * xyz[2]);
+    }
+    m->radius = sqrtf(squared);
     attributes(&m->array, &m->buffer);
     fBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(size - 8), bytes + 8, GL_STATIC_DRAW);
     SDL_free(bytes);
@@ -200,9 +209,12 @@ bool render_open(Renderer *r, const Sim *g) {
     r->shadow = fGetUniformLocation(r->scene, "shadowPass");
     r->eye = fGetUniformLocation(r->scene, "eye");
     r->inverse = fGetUniformLocation(r->sky, "sceneVP");
-    r->orbit = fGetUniformLocation(r->sky,"nightSky");
+    r->night_light = fGetUniformLocation(r->scene, "nightLight");
+    r->orbit = fGetUniformLocation(r->sky, "nightSky");
     r->sky_eye = fGetUniformLocation(r->sky, "eye");
     r->extent = fGetUniformLocation(r->panel, "extent");
+    r->tracked = fGetUniformLocation(r->panel, "tracked");
+    r->wrist_projection = fGetUniformLocation(r->panel, "wristProjection");
     fGenVertexArrays(1, &r->empty);
     for (int i = 0; i < g->places; i++)
         if (!find(r, g->place[i].model) && !load_mesh(r, g->root, &g->place[i]))
@@ -222,10 +234,11 @@ static void draw(Renderer *r, Mesh *m, V3 p, float angle) {
     fDrawArrays(GL_TRIANGLES, 0, m->count);
 }
 /* Test world-space bounds against the six homogeneous clip planes, including projected shadows. */
-static bool visible(const float planes[6][4],V3 center,float radius) {
-    for(int i=0;i<6;i++){
-        const float *p=planes[i];
-        if(p[0]*center.x+p[1]*center.y+p[2]*center.z+p[3] < -radius)return false;
+static bool visible(float planes[6][4], V3 center, float radius) {
+    for (int i = 0; i < 6; i++) {
+        const float *p = planes[i];
+        if (p[0] * center.x + p[1] * center.y + p[2] * center.z + p[3] < -radius)
+            return false;
     }
     return true;
 }
@@ -236,13 +249,6 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     r->height = h;
     fViewport(x, y, w, h);
     fDisable(GL_BLEND);
-    fDisable(GL_DEPTH_TEST);
-    fUseProgram(r->sky);
-    fBindVertexArray(r->empty);
-    fUniformMatrix4fv(r->inverse, 1, GL_FALSE, vp.v);
-    fUniform3f(r->sky_eye, eye.x, eye.y, eye.z);
-    fUniform1i(r->orbit, !strcmp(g->terrain,"orbit") ? 2 : !strcmp(g->terrain,"airfield"));
-    fDrawArrays(GL_TRIANGLES, 0, 3);
     fEnable(GL_DEPTH_TEST);
     /* A stereo compositor may use both eyes' depth after this frame. */
     fEnable(GL_SCISSOR_TEST);
@@ -252,15 +258,19 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fUseProgram(r->scene);
     fUniformMatrix4fv(r->vp, 1, GL_FALSE, vp.v);
     fUniform3f(r->eye, eye.x, eye.y, eye.z);
+    fUniform1i(r->night_light, !strcmp(g->terrain, "orbit") ? 2 : !strcmp(g->terrain, "airfield"));
     fUniform1i(r->shadow, 0);
     fUniform1i(r->livery, 0);
     draw(r, find(r, g->terrain), (V3){0, 0, 0}, 0);
     float planes[6][4];
-    for(int i=0;i<6;i++){
-        float *plane=planes[i];
-        for(int j=0;j<4;j++)plane[j]=vp.v[j*4+3]+(i%2?-1:1)*vp.v[j*4+i/2];
-        float norm=sqrtf(plane[0]*plane[0]+plane[1]*plane[1]+plane[2]*plane[2]);
-        if(norm>0)for(int j=0;j<4;j++)plane[j]/=norm;
+    for (int i = 0; i < 6; i++) {
+        float *plane = planes[i];
+        for (int j = 0; j < 4; j++)
+            plane[j] = vp.v[j * 4 + 3] + (i % 2 ? -1 : 1) * vp.v[j * 4 + i / 2];
+        float norm = sqrtf(plane[0] * plane[0] + plane[1] * plane[1] + plane[2] * plane[2]);
+        if (norm > 0)
+            for (int j = 0; j < 4; j++)
+                plane[j] /= norm;
     }
     for (int pass = 1; pass >= 0; pass--) {
         fUniform1i(r->shadow, pass);
@@ -271,14 +281,16 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
             if (!world_object(g, i, &p))
                 continue;
             Place const *o = &g->place[i];
-            Shape bounds=world_asset_shape(g,i);
-            float radius= fmaxf(4.f,bounds.d*.62f+bounds.w*1.85f+bounds.h+2);
-            if(!visible(planes,p,radius+(pass?fabsf(p.y)*2:0)))continue;
-            fUniform1i(r->livery, !strncmp(o->condition, "red", 3));
             Mesh *m = find(r, o->model);
+            float radius = m->radius + 2.3f;
+            V3 center = pass ? (V3){p.x + .62f * p.y, .073f, p.z - .32f * p.y} : p;
+            if (!visible(planes, center, radius * (pass ? 1.28f : 1.f)))
+                continue;
+            fUniform1i(r->livery, !strncmp(o->condition, "red", 3));
             bool squad = strstr(o->model, "section") != NULL;
-            bool sprite = squad || !strcmp(o->model, "worker") || !strcmp(o->family,"people");
-            float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : world_angle(g,i);
+            bool sprite = squad || !strcmp(o->model, "worker") || !strcmp(o->family, "people") ||
+                          !strcmp(o->family, "sprite");
+            float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : world_angle(g, i);
             if (!squad)
                 draw(r, m, p, a);
             else
@@ -288,6 +300,13 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
                 }
         }
     }
+    /* The depth buffer rejects sky fragments hidden by the terrain or an occupied compartment. */
+    fUseProgram(r->sky);
+    fBindVertexArray(r->empty);
+    fUniformMatrix4fv(r->inverse, 1, GL_FALSE, vp.v);
+    fUniform3f(r->sky_eye, eye.x, eye.y, eye.z);
+    fUniform1i(r->orbit, !strcmp(g->terrain, "orbit") ? 2 : !strcmp(g->terrain, "airfield"));
+    fDrawArrays(GL_TRIANGLES, 0, 3);
 }
 void render_rect(Renderer *r, float x, float y, float w, float h, uint32_t col) {
     if (r->ui_count + 6 > r->ui_cap) {
@@ -327,11 +346,18 @@ void render_text(Renderer *r, float x, float y, float s, const char *t, uint32_t
         }
     }
 }
-void render_overlay(Renderer *r, int w, int h) {
-    fDisable(GL_DEPTH_TEST);
+void render_overlay(Renderer *r, int w, int h) { render_slate(r, w, h, NULL); }
+void render_slate(Renderer *r, int w, int h, const Mat *wrist) {
+    if (wrist)
+        fEnable(GL_DEPTH_TEST);
+    else
+        fDisable(GL_DEPTH_TEST);
     fEnable(GL_BLEND);
     fBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     fUseProgram(r->panel);
+    fUniform1i(r->tracked, wrist != NULL);
+    if (wrist)
+        fUniformMatrix4fv(r->wrist_projection, 1, GL_FALSE, wrist->v);
     fUniform2f(r->extent, (float)w, (float)h);
     fBindVertexArray(r->ui_array);
     fBindBuffer(GL_ARRAY_BUFFER, r->ui_buffer);

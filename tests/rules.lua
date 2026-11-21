@@ -3,7 +3,7 @@ local covered = {}
 local root = assert(data_root)
 local function hook(_,line)
     local info=debug.getinfo(2,"S")
-    local path=info.source:match("/scripts/(.+%.lua)$")
+    local path=info.source:match("/scripts/(.+%.lua)$") or info.source:match("/(mods/.+%.lua)$")
     if path then covered[path]=covered[path] or {}; covered[path][line]=true end
 end
 debug.sethook(hook,"l")

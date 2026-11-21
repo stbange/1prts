@@ -1,7 +1,7 @@
 #ifndef ORRA_APP_H
 #define ORRA_APP_H
 #include "render.h"
-typedef enum { FIELD, SLATE, GUIDE, OPERATIONS, CREWS } Panel;
+typedef enum { FIELD, SLATE, GUIDE, OPERATIONS, CREWS, CREW_JOB, RADIO } Panel;
 typedef struct {
     Sim sim;
     Camera camera;
@@ -17,7 +17,9 @@ typedef struct {
     bool left_down, right_down;
     SDL_FingerID left_id, right_id;
     float left_x, left_y, stick_x, stick_y, stride_x, stride_y;
-    int listing, roster[MAX_SITE], crew_count;
+    int listing, member, destination, roster[MAX_SITE], crew_count;
+    bool wrist_valid;
+    Mat wrist;
     double accumulator;
     char message[120];
     int message_ticks;
@@ -27,8 +29,10 @@ typedef struct {
     void (*observe_order)(int tick, int index, bool accepted);
 } App;
 bool app_open(App *, const char *, bool);
-bool app_mission(App *,const char *);
+bool app_mission(App *, const char *);
 void app_choose(App *);
+const Order *app_crew_order(const App *, int);
+void app_target(App *, int);
 int app_list_count(const App *);
 void app_close(App *);
 void app_key(App *, SDL_Scancode);
@@ -42,6 +46,10 @@ void app_action(App *, int);
 void app_touch(App *, float, float);
 void ui_size(const App *, int *, int *);
 void ui_draw(App *, int, int);
+void ui_wrist(App *);
+void orra_xr_wrist(const float *);
+int orra_xr_pick(float, float);
+int orra_xr_mark(float, float, float, float, float, float);
 void ui_relief_notice(Renderer *, const Sim *, bool);
 void ui_tap(App *, float, float);
 bool app_route(App *, const char *);

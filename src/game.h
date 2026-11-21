@@ -25,7 +25,7 @@ typedef struct {
     int count;
 } Catalog;
 typedef struct {
-    char id[24], label[44];
+    char id[24], label[44], actor[32];
 } Order;
 typedef struct {
     char model[24], condition[24], key[32], name[50], family[20], role[24], asset[180];
@@ -49,7 +49,8 @@ typedef struct {
     Order orders[MAX_ORDERS];
     Place place[MAX_SITE];
     int places, order_count, operation_count, clock, progress, reserved, report_at;
-    char mission[32], title[48], faction[48], terrain[24], objective[104], stage[32];
+    char sounds[8][180];
+    char mission[32], title[48], faction[48], terrain[24], objective[104], stage[32], advice[24];
     V3 spawn;
     float spawn_yaw;
     Entry operations[MAX_CATALOG];
@@ -68,7 +69,9 @@ enum { UNITS, BUILDINGS, FACTIONS, MISSIONS, UPGRADES };
 bool sim_open(Sim *, const char *);
 bool sim_open_mission(Sim *, const char *, const char *);
 bool sim_order(Sim *, const char *);
-int sim_crew_status(const Sim *,const char *,int *);
+void sim_crew_report(const Sim *, const char *, char *, size_t);
+void sim_log(const Sim *, int, char *, size_t);
+int sim_crew_status(const Sim *, const char *, int *);
 float world_angle(const Sim *, int);
 Shape world_asset_shape(const Sim *, int);
 void sim_close(Sim *);

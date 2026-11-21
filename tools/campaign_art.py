@@ -62,6 +62,10 @@ def craft(name,f,w,h,d,col):
             box(side*(half+.014),1.28,d*.34-mark*.49,.09,.15+.13*mark,.2,"paint")
     if f=="ferry":
         for side in (-1,1):
+            box(side*3.2,.6,d*.49,.25,3.1,.25,"dark")
+            box(side*3.2,3.59,d*.49,.8,.44,.29,"lamp")
+        plaque(3.8,3.27,d*.49,2.5,"OPEN")
+        for side in (-1,1):
             x=side*w*.39
             box(x,1.1,-d*.26,w*.18,5.7,d*.24,col)
             box(x,6.8,-d*.26,w*.21,.29,d*.25,"edge")
@@ -99,6 +103,19 @@ def craft(name,f,w,h,d,col):
             for z in (-d*.4,d*.4):
                 beam((-half,1.5,z),(-half,10,z),.13,"edge")
         else:
+            for section,label in enumerate(("COLLAR CONTROL","PRESSURE LOCK","CREW QUARTERS","TRANSFER HALL","WATCH OFFICE")):
+                center=d*(.42-section*.21)
+                box(0,5.8,center,w*.80,.42,39,"light")
+                for side in (-1,1):
+                    x=side*w*.39
+                    box(x,.84,center,.38,1.14,38,col)
+                    box(x,4.48,center,.36,1.36,38,col)
+                    for pane in range(4):box(x,1.98,center-14+pane*9,.35,2.5,.4,"edge")
+                    box(side*w*.26,.84,center+18.9,w*.28,4.96,.35,col)
+                    box(side*w*.26,3.52,center+19.12,w*.18,.28,.06,"lamp")
+                    console(side*w*.30,.84,center+4)
+                plaque(-w*.23,3.94,center+19.12,5.9,label)
+                box(0,5.45,center,2,.10,34,"lamp")
             for j in range(25):
                 z=-d*.48+j*d*.96/24
                 for side in (-1,1):
@@ -133,6 +150,10 @@ def landscape(name):
                 box(0,-.02,z,10,.08,.5,"copper")
             else:box(0,.02,z,.37,.04,2.8,"white")
     if water:
+        for lane in (0,55):
+            box(lane+6,-.37,-216,29,.37,90,"road")
+            for step in range(7):
+                box(lane-6,.01,-176-step*12,1,.05,3,"paint")
         for x,z in [(-25,44),(41,-215)]:
             for foot in (-1,1):
                 box(x+foot*3,0,z,1.4,15,1.5,"trim")
@@ -161,6 +182,11 @@ def landscape(name):
     write(name)
 
 def main():
+    tube((0,.10,0),(0,1.18,0),.58,"orange",10)
+    tube((0,.23,0),(0,.38,0),.60,"paint",10)
+    box(0,1.18,0,.8,.13,.43,"edge")
+    plaque(0,.24,.55,1.03,"CORE");write("core")
+    sprite("spray",["      w   ","  w   ww  ","   w ww w "," w   www  ","  ww ww   "],dict(w="wave"),.18)
     for name in ("estuary","railbed","saltpan","airfield","orbit"):landscape(name)
     for line in (OUT/"fleet.txt").read_text().splitlines():
         if not line or line.startswith("#"):continue
@@ -174,9 +200,18 @@ def main():
             sprite(name,rows,dict(h=col,f="skin",c="edge",j=col,b="black",w="paint",p="shadow"),.188)
         else:craft(name,f,w,h,d,col)
     target=OUT.parent/"mods"/"long-watch";target.mkdir(parents=True,exist_ok=True)
-    data=bytearray((OUT/"models"/"lintel.mesh").read_bytes())
+    for name,dest in [("lintel","oxide"),("kestrel","harbor")]:
+        repaint(name,target/(dest+".mesh"))
+    # The add-on acknowledgment is a shorter, falling version of the dispatch signal.
+    import wave
+    with wave.open(str(OUT/"sounds"/"blocked.wav")) as source:
+        with wave.open(str(target/"radio.wav"),"wb") as result:
+            result.setparams(source.getparams());result.writeframes(source.readframes(source.getnframes()//2))
+
+def repaint(name,target):
+    data=bytearray((OUT/"models"/(name+".mesh")).read_bytes())
     for offset in range(8+24,len(data),28):
         red,green,blue=data[offset:offset+3]
         if blue>red*1.15 and green>red*1.15:data[offset:offset+3]=bytes((144,82,48))
-    (target/"oxide.mesh").write_bytes(data)
+    target.write_bytes(data)
 if __name__=="__main__":main()

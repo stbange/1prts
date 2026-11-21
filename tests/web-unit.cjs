@@ -5,7 +5,7 @@ const vr = { hidden: true };
 const gl = { FRAMEBUFFER: 1, async makeXRCompatible() {}, bindFramebuffer() {} };
 const canvas = { focus() {}, getContext() { return gl; } };
 global.document = { baseURI: 'https://example.test/builds/game/', getElementById(id) { return {status,vr,canvas}[id]; } };
-const { Module: runtime, configureXR } = require('../web/boot.js');
+const { Module: runtime, configureXR, slatePoint } = require('../web/boot.js');
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
 test('load individual files under a prefix and report failed assets', async () => {
@@ -39,6 +39,7 @@ function setup(fallback=false) {
     async end(){if(handlers.end)handlers.end();}
   };
   const adapter = {
+    _orra_xr_wrist:p=>calls.push(["wrist",p]), _orra_xr_pick:(...p)=>calls.push(["pick",...p]), _orra_xr_mark:()=>0,
     canvas,HEAPF32:new Float32Array(80),_malloc:()=>16,_free:p=>released.push(p),
     _orra_xr_mode:v=>calls.push(['mode',v]),_orra_xr_tick:(...v)=>calls.push(['tick',...v]),
     _orra_xr_eye:(...v)=>calls.push(['eye',...v]),_orra_xr_action:v=>calls.push(['action',v])
@@ -78,6 +79,19 @@ test('stereo views, locomotion, input edges and exit preserve one simulation',as
     assert.equal(eyes.length,4);assert.equal(ticks.length,2);assert.equal(ticks[0][2],.6);
     assert.ok(ticks[0][4]>0);assert.equal(ticks[1][4],0);assert.equal(ticks[1][1],.02);
     assert.deepEqual(t.calls.filter(c=>c[0]==='action').map(c=>c[1]),[0,1,2,3,1]);
+    const hand=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,-.5,1]);
+    const ray=new Float32Array(hand);ray[13]=.19;ray[14]=0;
+    left.gripSpace="left";right.targetRaySpace="right";
+    t.frames.shift()(140,{...valid,getPose:which=>({transform:{matrix:which==="left"?hand:ray}})});
+    t.handlers.selectstart({inputSource:right});assert.ok(t.calls.some(c=>c[0]==="pick"));
     await t.session.end();assert.deepEqual(t.calls.at(-1),['mode',0]);assert.deepEqual(t.released,[16]);
   }
+});
+
+test('tracked controller ray intersects a physical slate',()=>{
+  const slate=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,-.5,1]);
+  const ray=new Float32Array(slate);ray[14]=0;
+  assert.deepEqual(slatePoint(slate,ray),[.5,.5]);
+  ray[12]=1;assert.equal(slatePoint(slate,ray),null);ray[14]=-1;assert.equal(slatePoint(slate,ray),null);
+  ray[10]=0;assert.equal(slatePoint(slate,ray),null);
 });

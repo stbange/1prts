@@ -330,6 +330,14 @@ def vehicle(name,col,scale,armor):
         beam((x,h+3.9,-l*.4),(x,h+4.2,-l*.70),.14,"shadow")
         beam((x,h+3.68,-l*.70),(x,h+1.55,-l*.70),.055,"black")
         box(x,h+1.28,-l*.70,.82,.30,.77,"dark")
+    if name=="wake":
+        box(-w*.26,h*.82,-l*.13,w*.35,1.22,l*.27,"plum")
+        box(-w*.26,h*.82+.53,-l*.13+l*.139,w*.32,.44,.07,"glass")
+        box(-w*.26,h*.82+1.25,-l*.13,w*.42,.16,l*.30,"rose")
+        for side in (-1,1):
+            quad((side*w*.4,.35,-l*.45),(0,.15,-l*.515),(0,1.3,-l*.515),(side*w*.4,1.8,-l*.45),"plum")
+            for stroke in range(3):
+                box(side*w*.47,1.17,l*.30-stroke*.52,.12,.25+stroke*.14,.12,"white")
     if armor:
         box(w*.34,h+.11,l*.07,.85,.80,.9,"blue")
         box(w*.34,h+.34,l*.07+.46,.68,.27,.05,"glass")

@@ -93,13 +93,23 @@ def exercise(browser, url, layout, pack=False):
             cdp=context.new_cdp_session(page)
             def fingers(kind, points):
                 cdp.send("Input.dispatchTouchEvent",{"type":kind,"touchPoints":[{"x":x,"y":y,"id":i} for i,x,y in points]})
+            def wait_for_fingers(pressed, previous_yaw=None):
+                # Chromium may acknowledge the command before delivering it to the canvas.
+                page.wait_for_function("""([pressed, previousYaw]) => {
+                    Module._orra_clock(0);
+                    const fields = Module.UTF8ToString(Module._orra_status()).split('|');
+                    return fields[13] === pressed && fields[14] === pressed &&
+                        (previousYaw === null || fields[12] !== previousYaw);
+                }""", arg=["1" if pressed else "0", previous_yaw], timeout=5000)
             origin=status()
             fingers("touchStart",[(1,120,300),(2,630,300)])
             fingers("touchMove",[(1,120,246),(2,666,294)])
+            wait_for_fingers(True, origin[12])
             advance(12)
             moved=status()
             assert moved[13:15]==["1","1"] and moved[11]!=origin[11] and moved[12]!=origin[12], moved
             fingers("touchCancel",[])
+            wait_for_fingers(False)
             advance(1)
             assert status()[13:15]==["0","0"],status()
             touch(204,43);advance(0);touch(715,134);advance(0)

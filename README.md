@@ -22,18 +22,20 @@ On Windows launch `build/bin/1stprts.exe`. Keep `content.json`, `assets/`, `scri
 | E | Use a hatch, change vessels or open a dispatch desk. Walk along the ferry ramp to disembark at a berth. |
 | Tab, arrows, Enter | Raise the orders slate, select an order and confirm. Number keys and clickable rows dispatch directly. Page Down turns the page. |
 | C, V | Open the crew register or address the crew in sight. Select a crew, use left or right to choose a target, then confirm the assignment. |
+| B | Open the sector chart on the slate. Select a friendly crew, mark a destination, then confirm the order. Rival markers show the age of the last report. |
+| F5, F9 | Save or resume the current operation, including the commander’s position on a moving deck. |
 | L | Read recent radio messages and their ages. A crew card keeps the coordinates and age of its last field report. |
 | M or F2, F1, Escape, R | Choose an operation, open the field guide, lower a panel, or retry a finished operation. |
 
 On a touch-first browser, drag on the left to walk and on the right to look. Tap **Orders** or **Interact** at the bottom right. Tap **Crews** for a crew card. Tap either side of its target line to change the destination. The selected assignment survives rotation.
 
-In WebXR, the left stick walks and the right stick snap-turns. The left trigger raises the slate, the left grip advances its selection, the right trigger confirms and the right grip uses a hatch. Tracked controllers can point at the left-hand slate. Point at the Gate Six switch room and confirm to send an available section. Left X/Y open operations and crews, right B changes the assignment target, and pressing the right stick retries a finished operation.
+In WebXR, the left stick walks and the right stick snap-turns. The left trigger raises the slate, the left grip advances its selection, the right trigger confirms and the right grip uses a hatch. Tracked controllers can point at the left-hand slate. Point at a crew to open its card. Choose a job, mark a crew, ground position, surveyed pad or berth, and confirm on the wrist slate. Left X/Y open operations and crews, right B changes the assignment target, and pressing the right stick retries a finished operation.
 
 ## Campaign
 
 The six named missions contain **39 unit types, 27 base facilities, three objective structures, six factions and six mission upgrades**. The Compact also has a playable alternate operation at Gate Six. Unit tests check the scene placements against the catalog. [Complete roster](docs/roster.md)
 
-The implementation plan covers repeatable army production, contested resources, crewed interiors across the roster, world targeting and campaign saves. [Implementation checklist](openspec/changes/complete-basin-campaign/tasks.md) · [Milestones and playable acceptance tests](openspec/changes/complete-basin-campaign/design.md)
+Gate Six factories can produce several independently crewed vehicles. Each bay has its own queue and power feed. Select a bay on the slate to relieve its watch or inspect a blocked rollout. Both sides can dispatch a Mole to the same salvage lot. [Implementation checklist](openspec/changes/complete-basin-campaign/tasks.md) · [Milestones and playable acceptance tests](openspec/changes/complete-basin-campaign/design.md)
 
 | Operation | Commander's assignment |
 | --- | --- |

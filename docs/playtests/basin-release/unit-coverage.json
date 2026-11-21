@@ -1,0 +1,631 @@
+{
+  "native": {
+    "src/app.c": {
+      "hit": 475,
+      "total": 492,
+      "uncovered": [
+        59,
+        103,
+        158,
+        180,
+        215,
+        219,
+        226,
+        236,
+        257,
+        258,
+        264,
+        276,
+        338,
+        507,
+        593,
+        594,
+        608
+      ]
+    },
+    "src/chart.c": {
+      "hit": 68,
+      "total": 70,
+      "uncovered": [
+        43,
+        57
+      ]
+    },
+    "src/entry.c": {
+      "hit": 2,
+      "total": 2,
+      "uncovered": []
+    },
+    "src/headless.c": {
+      "hit": 69,
+      "total": 70,
+      "uncovered": [
+        65
+      ]
+    },
+    "src/main.c": {
+      "hit": 39,
+      "total": 39,
+      "uncovered": []
+    },
+    "src/point.c": {
+      "hit": 115,
+      "total": 123,
+      "uncovered": [
+        24,
+        30,
+        75,
+        92,
+        107,
+        108,
+        109,
+        143
+      ]
+    },
+    "src/render.c": {
+      "hit": 353,
+      "total": 366,
+      "uncovered": [
+        66,
+        67,
+        96,
+        97,
+        132,
+        190,
+        233,
+        316,
+        327,
+        402,
+        419,
+        462,
+        463
+      ]
+    },
+    "src/replay.c": {
+      "hit": 135,
+      "total": 144,
+      "uncovered": [
+        20,
+        30,
+        36,
+        39,
+        44,
+        48,
+        67,
+        141,
+        142
+      ]
+    },
+    "src/sim.c": {
+      "hit": 459,
+      "total": 464,
+      "uncovered": [
+        287,
+        388,
+        430,
+        442,
+        448
+      ]
+    },
+    "src/sound.c": {
+      "hit": 32,
+      "total": 36,
+      "uncovered": [
+        13,
+        28,
+        29,
+        36
+      ]
+    },
+    "src/storage.c": {
+      "hit": 146,
+      "total": 155,
+      "uncovered": [
+        22,
+        47,
+        55,
+        56,
+        87,
+        88,
+        89,
+        168,
+        169
+      ]
+    },
+    "src/ui.c": {
+      "hit": 331,
+      "total": 334,
+      "uncovered": [
+        76,
+        161,
+        390
+      ]
+    },
+    "src/world.c": {
+      "hit": 339,
+      "total": 350,
+      "uncovered": [
+        139,
+        193,
+        213,
+        215,
+        224,
+        237,
+        240,
+        243,
+        332,
+        339,
+        411
+      ]
+    },
+    "src/xr.c": {
+      "hit": 103,
+      "total": 104,
+      "uncovered": [
+        53
+      ]
+    }
+  },
+  "all_c": {
+    "src/app.c": {
+      "hit": 475,
+      "total": 504,
+      "uncovered": [
+        59,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        103,
+        158,
+        180,
+        215,
+        219,
+        226,
+        236,
+        238,
+        239,
+        240,
+        244,
+        245,
+        246,
+        257,
+        258,
+        264,
+        276,
+        338,
+        507,
+        593,
+        594,
+        608
+      ]
+    },
+    "src/chart.c": {
+      "hit": 68,
+      "total": 70,
+      "uncovered": [
+        43,
+        57
+      ]
+    },
+    "src/entry.c": {
+      "hit": 2,
+      "total": 2,
+      "uncovered": []
+    },
+    "src/headless.c": {
+      "hit": 69,
+      "total": 74,
+      "uncovered": [
+        48,
+        50,
+        51,
+        52,
+        65
+      ]
+    },
+    "src/main.c": {
+      "hit": 39,
+      "total": 52,
+      "uncovered": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        26,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71
+      ]
+    },
+    "src/point.c": {
+      "hit": 115,
+      "total": 123,
+      "uncovered": [
+        24,
+        30,
+        75,
+        92,
+        107,
+        108,
+        109,
+        143
+      ]
+    },
+    "src/render.c": {
+      "hit": 353,
+      "total": 367,
+      "uncovered": [
+        66,
+        67,
+        70,
+        96,
+        97,
+        132,
+        190,
+        233,
+        316,
+        327,
+        402,
+        419,
+        462,
+        463
+      ]
+    },
+    "src/replay.c": {
+      "hit": 135,
+      "total": 144,
+      "uncovered": [
+        20,
+        30,
+        36,
+        39,
+        44,
+        48,
+        67,
+        141,
+        142
+      ]
+    },
+    "src/sim.c": {
+      "hit": 459,
+      "total": 464,
+      "uncovered": [
+        287,
+        388,
+        430,
+        442,
+        448
+      ]
+    },
+    "src/sound.c": {
+      "hit": 32,
+      "total": 36,
+      "uncovered": [
+        13,
+        28,
+        29,
+        36
+      ]
+    },
+    "src/storage.c": {
+      "hit": 146,
+      "total": 160,
+      "uncovered": [
+        16,
+        17,
+        22,
+        47,
+        55,
+        56,
+        87,
+        88,
+        89,
+        112,
+        113,
+        114,
+        168,
+        169
+      ]
+    },
+    "src/ui.c": {
+      "hit": 331,
+      "total": 334,
+      "uncovered": [
+        76,
+        161,
+        390
+      ]
+    },
+    "src/world.c": {
+      "hit": 339,
+      "total": 350,
+      "uncovered": [
+        139,
+        193,
+        213,
+        215,
+        224,
+        237,
+        240,
+        243,
+        332,
+        339,
+        411
+      ]
+    },
+    "src/xr.c": {
+      "hit": 103,
+      "total": 108,
+      "uncovered": [
+        53,
+        62,
+        63,
+        64,
+        65
+      ]
+    }
+  },
+  "shipped_lua": {
+    "mods/long-watch/init.lua": {
+      "hit": 6,
+      "total": 6,
+      "uncovered": []
+    },
+    "mods/wire-quay/init.lua": {
+      "hit": 73,
+      "total": 73,
+      "uncovered": []
+    },
+    "scripts/archive.lua": {
+      "hit": 174,
+      "total": 176,
+      "uncovered": [
+        1,
+        100
+      ]
+    },
+    "scripts/army.lua": {
+      "hit": 286,
+      "total": 297,
+      "uncovered": [
+        1,
+        33,
+        43,
+        50,
+        68,
+        123,
+        225,
+        297,
+        298,
+        303,
+        332
+      ]
+    },
+    "scripts/catalog.lua": {
+      "hit": 112,
+      "total": 113,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/dispatch_points.lua": {
+      "hit": 38,
+      "total": 39,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/fieldwork.lua": {
+      "hit": 104,
+      "total": 116,
+      "uncovered": [
+        1,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        20,
+        32,
+        36,
+        83
+      ]
+    },
+    "scripts/freight.lua": {
+      "hit": 82,
+      "total": 88,
+      "uncovered": [
+        1,
+        37,
+        73,
+        79,
+        80,
+        90
+      ]
+    },
+    "scripts/gate_six.lua": {
+      "hit": 341,
+      "total": 358,
+      "uncovered": [
+        1,
+        100,
+        101,
+        102,
+        238,
+        240,
+        241,
+        242,
+        243,
+        244,
+        246,
+        247,
+        248,
+        249,
+        289,
+        345,
+        346
+      ]
+    },
+    "scripts/lift.lua": {
+      "hit": 39,
+      "total": 40,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/manifest.lua": {
+      "hit": 70,
+      "total": 71,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/operations.lua": {
+      "hit": 326,
+      "total": 335,
+      "uncovered": [
+        1,
+        176,
+        246,
+        247,
+        252,
+        296,
+        310,
+        382,
+        383
+      ]
+    },
+    "scripts/records.lua": {
+      "hit": 54,
+      "total": 55,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/routes.lua": {
+      "hit": 152,
+      "total": 160,
+      "uncovered": [
+        1,
+        48,
+        55,
+        63,
+        86,
+        102,
+        118,
+        143
+      ]
+    },
+    "scripts/runtime.lua": {
+      "hit": 415,
+      "total": 426,
+      "uncovered": [
+        1,
+        102,
+        103,
+        104,
+        469,
+        472,
+        475,
+        481,
+        482,
+        483,
+        485
+      ]
+    },
+    "scripts/scenes.lua": {
+      "hit": 428,
+      "total": 429,
+      "uncovered": [
+        429
+      ]
+    },
+    "scripts/site.lua": {
+      "hit": 13,
+      "total": 14,
+      "uncovered": [
+        1
+      ]
+    },
+    "scripts/tactics.lua": {
+      "hit": 298,
+      "total": 339,
+      "uncovered": [
+        1,
+        60,
+        61,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        79,
+        80,
+        81,
+        83,
+        101,
+        107,
+        108,
+        114,
+        117,
+        120,
+        124,
+        132,
+        135,
+        167,
+        237,
+        238,
+        248,
+        249,
+        250,
+        251,
+        261,
+        265,
+        278,
+        279,
+        280,
+        291,
+        292,
+        293,
+        335,
+        343,
+        374
+      ]
+    },
+    "scripts/tide_window.lua": {
+      "hit": 222,
+      "total": 225,
+      "uncovered": [
+        1,
+        41,
+        124
+      ]
+    },
+    "scripts/workshops.lua": {
+      "hit": 158,
+      "total": 166,
+      "uncovered": [
+        1,
+        87,
+        90,
+        107,
+        144,
+        145,
+        147,
+        174
+      ]
+    }
+  }
+}

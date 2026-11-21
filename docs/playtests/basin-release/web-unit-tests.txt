@@ -1,0 +1,25 @@
+Startup: missing test asset
+✔ load individual files under a prefix and report failed assets (10.664245ms)
+✔ stream sector meshes once and retry a failed crossing (5.472791ms)
+✔ unsupported and declined sessions leave flat play available (1.110782ms)
+✔ stereo views, locomotion, input edges and exit preserve one simulation (1.739482ms)
+✔ tracked controller ray intersects a physical slate (0.161829ms)
+✔ browser save transaction restores both generations and rolls back on quota failure (2.478414ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.954509
+ℹ start of coverage report
+ℹ ----------------------------------------------------------
+ℹ file      | line % | branch % | funcs % | uncovered lines
+ℹ ----------------------------------------------------------
+ℹ web       |        |          |         | 
+ℹ  boot.js  | 100.00 |    93.06 |   93.02 | 
+ℹ ----------------------------------------------------------
+ℹ all files | 100.00 |    93.06 |   93.02 | 
+ℹ ----------------------------------------------------------
+ℹ end of coverage report

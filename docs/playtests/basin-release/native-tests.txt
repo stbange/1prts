@@ -1,0 +1,48 @@
+Internal ctest changing into directory: build
+Test project build
+      Start  3: lua_units
+      Start 21: cadence_and_packs
+      Start  7: armor_first_replay
+ 1/21 Test  #7: armor_first_replay ...............   Passed    2.04 sec
+      Start  4: headless_units
+ 2/21 Test  #4: headless_units ...................   Passed    1.04 sec
+      Start 19: ferry_bridge_replay
+ 3/21 Test #19: ferry_bridge_replay ..............   Passed    0.77 sec
+      Start 11: tide-window_replay
+ 4/21 Test #11: tide-window_replay ...............   Passed    1.03 sec
+      Start  5: gate_six_replay
+ 5/21 Test  #5: gate_six_replay ..................   Passed    1.22 sec
+      Start  8: second_tank_replay
+ 6/21 Test  #8: second_tank_replay ...............   Passed    0.67 sec
+      Start 16: high-water_replay
+ 7/21 Test #16: high-water_replay ................   Passed    1.06 sec
+      Start 12: compact-bank_replay
+ 8/21 Test #12: compact-bank_replay ..............   Passed    0.99 sec
+      Start 18: station_lift_replay
+ 9/21 Test #18: station_lift_replay ..............   Passed    1.08 sec
+      Start 17: depot_replay
+10/21 Test #17: depot_replay .....................   Passed    0.94 sec
+      Start 20: asset_readability
+11/21 Test #20: asset_readability ................   Passed    0.20 sec
+      Start 15: night-mail_replay
+12/21 Test #15: night-mail_replay ................   Passed    0.55 sec
+      Start 10: gantry_replay
+13/21 Test #10: gantry_replay ....................   Passed    0.73 sec
+      Start  9: dispatch_replay
+14/21 Test #21: cadence_and_packs ................   Passed   12.62 sec
+      Start  2: engine_units
+15/21 Test  #9: dispatch_replay ..................   Passed    0.60 sec
+      Start  6: rival_replay
+16/21 Test  #6: rival_replay .....................   Passed    0.50 sec
+      Start 13: westbound_replay
+17/21 Test #13: westbound_replay .................   Passed    1.01 sec
+      Start 14: white-mile_replay
+18/21 Test #14: white-mile_replay ................   Passed    0.61 sec
+      Start  1: cli_units
+19/21 Test  #1: cli_units ........................   Passed    0.01 sec
+20/21 Test  #2: engine_units .....................   Passed    5.50 sec
+21/21 Test  #3: lua_units ........................   Passed   47.55 sec
+
+100% tests passed, 0 tests failed out of 21
+
+Total Test time (real) =  47.55 sec

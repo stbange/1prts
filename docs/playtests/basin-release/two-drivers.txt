@@ -1,0 +1,6 @@
+state second-aboard 887665372
+pose second-aboard local 0.15 0.00 7.99 world -15.85 0.00 26.99
+checkpoint second-aboard 1511 active  0 0 2267843449
+state both-drivers 3994840568
+pose both-drivers local 0.15 0.00 7.99 world 6.15 0.00 31.27
+checkpoint both-drivers 1576 active  0 0 2884297942

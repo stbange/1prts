@@ -1,0 +1,1490 @@
+{
+  "pillars": {
+    "feel": 1,
+    "flow": 0.75,
+    "choice": 1,
+    "pace": 0.8899321846262642,
+    "fair": 1,
+    "loop": 1
+  },
+  "composite": 91.01189303385894,
+  "episodes": {
+    "novice": 40,
+    "human": 40,
+    "oracle": 40,
+    "spam": 40,
+    "infantry": 40
+  },
+  "wins": {
+    "novice": 0,
+    "human": 40,
+    "oracle": 40,
+    "spam": 0,
+    "infantry": 0
+  },
+  "unfinished": {
+    "novice": 0,
+    "human": 0,
+    "oracle": 0,
+    "spam": 0,
+    "infantry": 0
+  },
+  "objective": {
+    "novice": 0.0,
+    "human": 1.0,
+    "oracle": 1.0,
+    "spam": 0.0,
+    "infantry": 0.21555555555556
+  },
+  "human_sd": 0.0,
+  "skill_gap": 1.0,
+  "mean_seconds": {
+    "novice": 169.63333333333333,
+    "human": 116.095,
+    "oracle": 102.0,
+    "spam": 169.93333333333334,
+    "infantry": 186.93333333333334
+  },
+  "latency_p95_ms": 29.363829999999997,
+  "drop_rate": 0,
+  "distinct_timing_cases": 6,
+  "feedback": {
+    "mill_order": 3,
+    "hauler_order": 3,
+    "mill_complete": 3,
+    "gate_loss": 2
+  },
+  "channels": 2.75,
+  "easing_ticks": 3,
+  "entropy": 0.9030899869919434,
+  "largest_share": 0.125,
+  "spam_ratio": 0.0,
+  "usage": {
+    "harvest": 80,
+    "mill": 80,
+    "motor": 80,
+    "armor": 80,
+    "guard": 80,
+    "watch": 80,
+    "section": 80,
+    "advance": 80
+  },
+  "cv": 1.089933113388286,
+  "overload_seconds": 0,
+  "near_misses_per_min": null,
+  "hurtbox_ratio": null,
+  "warning_ms": 17966.666666666668,
+  "contrast": 4.879816853695999,
+  "contrast_pass_fraction": 0.6339088092076139,
+  "foreground_pixels": 22590,
+  "ttfa_s": 0.4733527,
+  "retry_s": 0.0206569,
+  "reward_median_s": 1.0,
+  "reward_p95_s": 5.666666666666667,
+  "milestone_median_s": 59.96666666666667,
+  "render_p95_ms": 30.587714999999996,
+  "delivered_fps": 45.356194669694645,
+  "frame_interval_p95_ms": 30.674954999999994,
+  "episodes_detail": [
+    {
+      "seed": 42,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 42,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 121.83333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 42,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 42,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 42,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 43,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 43,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 192.93333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 43,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 43,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 43,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 44,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 44,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 125.3,
+      "objective": 1.0
+    },
+    {
+      "seed": 44,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 44,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 44,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 45,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 45,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 99.43333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 45,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 45,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 45,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 46,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 167.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 46,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.1,
+      "objective": 1.0
+    },
+    {
+      "seed": 46,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 46,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 46,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 47,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 159.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 47,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 112.53333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 47,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 47,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 47,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 48,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 48,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 116.1,
+      "objective": 1.0
+    },
+    {
+      "seed": 48,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 48,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 48,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 49,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 49,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 114.56666666666666,
+      "objective": 1.0
+    },
+    {
+      "seed": 49,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 49,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 49,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 50,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 50,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.4,
+      "objective": 1.0
+    },
+    {
+      "seed": 50,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 50,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 50,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 51,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 51,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 109.33333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 51,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 51,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 51,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 52,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 52,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.2,
+      "objective": 1.0
+    },
+    {
+      "seed": 52,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 52,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 52,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 53,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 53,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 120.2,
+      "objective": 1.0
+    },
+    {
+      "seed": 53,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 53,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 53,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 54,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 54,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 114.03333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 54,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 54,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 54,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 55,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 55,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 110.2,
+      "objective": 1.0
+    },
+    {
+      "seed": 55,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 55,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 55,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 56,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 56,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.03333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 56,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 56,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 56,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 57,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 57,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.13333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 57,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 57,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 57,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 58,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 58,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.63333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 58,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 58,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 58,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 59,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 59,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 110.8,
+      "objective": 1.0
+    },
+    {
+      "seed": 59,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 59,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 59,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 60,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 60,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 122.96666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 60,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 60,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 60,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 61,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 61,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 120.23333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 61,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 61,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 61,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1042,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1042,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 118.1,
+      "objective": 1.0
+    },
+    {
+      "seed": 1042,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1042,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1042,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1043,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1043,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.46666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 1043,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1043,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1043,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1044,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1044,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 102.43333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 1044,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1044,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1044,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1045,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1045,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.5,
+      "objective": 1.0
+    },
+    {
+      "seed": 1045,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1045,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1045,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1046,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1046,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 112.8,
+      "objective": 1.0
+    },
+    {
+      "seed": 1046,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1046,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1046,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1047,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1047,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 113.3,
+      "objective": 1.0
+    },
+    {
+      "seed": 1047,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1047,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1047,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1048,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1048,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.16666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 1048,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1048,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1048,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1049,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1049,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 102.46666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 1049,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1049,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1049,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1050,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1050,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 125.43333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 1050,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1050,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1050,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1051,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1051,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 99.73333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 1051,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1051,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1051,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1052,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1052,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.4,
+      "objective": 1.0
+    },
+    {
+      "seed": 1052,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1052,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1052,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1053,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1053,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 110.83333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 1053,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1053,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1053,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1054,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1054,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 114.26666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 1054,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1054,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1054,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1055,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1055,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 110.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1055,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1055,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1055,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1056,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1056,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 112.43333333333334,
+      "objective": 1.0
+    },
+    {
+      "seed": 1056,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1056,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1056,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1057,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1057,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 115.86666666666666,
+      "objective": 1.0
+    },
+    {
+      "seed": 1057,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1057,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1057,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1058,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1058,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 114.83333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 1058,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1058,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1058,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1059,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1059,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 105.73333333333333,
+      "objective": 1.0
+    },
+    {
+      "seed": 1059,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1059,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1059,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1060,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1060,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 117.6,
+      "objective": 1.0
+    },
+    {
+      "seed": 1060,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1060,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1060,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    },
+    {
+      "seed": 1061,
+      "persona": "novice",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1061,
+      "persona": "human",
+      "result": "victory",
+      "seconds": 114.46666666666667,
+      "objective": 1.0
+    },
+    {
+      "seed": 1061,
+      "persona": "oracle",
+      "result": "victory",
+      "seconds": 102.0,
+      "objective": 1.0
+    },
+    {
+      "seed": 1061,
+      "persona": "spam",
+      "result": "defeat",
+      "seconds": 169.93333333333334,
+      "objective": 0.0
+    },
+    {
+      "seed": 1061,
+      "persona": "infantry",
+      "result": "defeat",
+      "seconds": 186.93333333333334,
+      "objective": 0.21555555555556
+    }
+  ]
+}

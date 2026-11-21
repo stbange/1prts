@@ -1,0 +1,41 @@
+seed,result,first_mill_tick,accepted,rejected,first_rejection
+42,victory,103,20,8,Already commissioned: Watch House
+43,victory,14,34,29,Required first: Motor Hall
+44,victory,45,29,26,Field crews are already home.
+45,active,227,33,23,More alloy needed.
+46,victory,107,33,23,Bay is already working.
+47,victory,18,35,19,Crew unavailable. Produce the unit first.
+48,victory,49,17,12,Already commissioned: Watch House
+49,active,258,45,16,Commission mill first.
+50,victory,111,21,10,Required first: Motor Hall
+51,victory,22,14,13,Reserve unavailable.
+52,victory,53,34,22,Bay is already working.
+53,active,84,44,19,Required first: Watch House
+54,victory,-1,28,23,Crew occupied. Wait for the current job.
+55,victory,26,24,10,Crew unavailable. Produce the unit first.
+56,victory,57,28,30,Field crews are already home.
+57,active,88,37,24,Required first: Watch House
+58,active,119,38,20,More alloy needed.
+59,victory,30,25,24,Field crews are already home.
+60,victory,61,16,13,Required first: Plate Mill
+61,victory,287,14,15,Commission mill first.
+1042,victory,23,21,10,Bay is already working.
+1043,active,54,28,34,Crew unavailable. Produce the unit first.
+1044,victory,85,18,14,Bay is already working.
+1045,victory,116,26,19,Crew unavailable. Produce the unit first.
+1046,victory,91,27,4,Bay is already working.
+1047,victory,58,29,24,Already commissioned: Plate Mill
+1048,victory,173,29,18,Crew unavailable. Produce the unit first.
+1049,victory,120,18,12,Required first: Plate Mill
+1050,active,31,42,26,Bay is already working.
+1051,victory,62,21,9,Crew unavailable. Produce the unit first.
+1052,victory,93,20,15,Already commissioned: Plate Mill
+1053,victory,125,29,16,No outstanding order.
+1054,victory,35,33,17,More alloy needed.
+1055,victory,66,27,24,Reserve unavailable.
+1056,active,97,36,22,Crew unavailable. Produce the unit first.
+1057,victory,8,17,12,Crew unavailable. Produce the unit first.
+1058,victory,210,31,18,More alloy needed.
+1059,victory,70,30,24,Reserve unavailable.
+1060,victory,101,27,25,More alloy needed.
+1061,victory,12,23,6,Required first: Motor Hall

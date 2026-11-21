@@ -1,0 +1,70 @@
+Type	Job operation	Crew instance	Job	Observed receipt	Walk operation	Working area
+anvil	westbound	anvil	guard	yard watch / anvil	westbound	watch cab
+assay	white-mile	assay	assay	assay report / 0 loads	white-mile	sample lab
+barrow	gate-six	barrow	sample	sample received / 1	gate-six	sample locker
+beacon	night-mail	beacon	guide	approach slot until 1530	night-mail	signal loft
+chain-crew	white-mile	chain-crew	survey	survey report / 0 loads		Personnel on foot
+channel-section	compact-bank	channel-section	embark	watch relieved / channel-section		Personnel on foot
+cleat	high-water	cleat	berth	approach slot until 480	high-water	tug winch
+collar-watch	high-water	collar-watch	guard	yard watch / collar-watch		Personnel on foot
+cradle	high-water	cradle	recover	crew cleared for service	high-water	pressure shop
+crossbill	night-mail	crossbill	survey	survey report / 0 loads	compact-bank	observer cabin
+customs	tide-window	customs	berth	approach slot until 630	tide-window	berth office
+depot	gate-six	depot	store	stores checked / 10	gate-six	dispatch office
+dray	gate-six	dray	cargo	freight received / 1	gate-six	freight bed
+dynamo	gate-six	dynamo	power	grid feed live	gate-six	generator room
+exchange	westbound	exchange	switch	switch route open	westbound	points office
+fitters	gate-six	fitters	fit	crew cleared for service		Personnel on foot
+flight	night-mail	flight	recover	crew cleared for service	night-mail	flight line
+gallery	gate-six	gallery	reserve	grid feed live	gate-six	accumulator room
+gantry	night-mail	gantry	recover	crew cleared for service	night-mail	recovery hoist
+gate	gate-six	gate	guard	yard watch / gate	gate-six	switch room
+gate-section	gate-six	gate-section	guard	yard watch / gate-section		Personnel on foot
+gimbal	gate-six	gimbal	guide	approach slot until 3480	gate-six	signal cabin
+glint	white-mile	glint	assay	assay report / 0 loads	white-mile	assay bench
+ground-watch	night-mail	ground-watch	guard	yard watch / ground-watch		Personnel on foot
+hinge	gate-six	hinge	recover	crew cleared for service	gate-six	recovery bay
+infirmary	gate-six	infirmary	crew	watch relieved / infirmary-1	gate-six	recovery room
+kestrel	tide-window	kestrel	berth	approach slot until 330	tide-window	vehicle deck
+kite	night-mail	kite	cargo	freight received / 1	night-mail	loading rack
+lark	high-water	lark	dock	approach slot until 330	high-water	pressure lobby
+lintel	gate-six	lintel	guard	yard watch / lintel	gate-six	crew gallery
+lock	high-water	lock	dock	approach slot until 1680	high-water	pressure lobby
+loom	high-water	loom	crew	watch relieved / loom-1	high-water	shift cabin
+mill	gate-six	mill	refine	alloy received / 1	gate-six	roller floor
+mole	gate-six	mole	load	freight received / 1	gate-six	load register
+mooring	gate-six	mooring	berth	approach slot until 4980	gate-six	mooring winch
+motor	gate-six	motor	fit	crew cleared for service	gate-six	fitting pit
+plumb	gate-six	plumb	survey	survey report / 0 loads	gate-six	survey desk
+points	gate-six	points	switch	switch route open		Personnel on foot
+porter	gate-six	porter	crew	watch relieved / porter-1	gate-six	crew cab
+post	gate-six	post	guard	yard watch / post	gate-six	lookout desk
+prism	white-mile	prism	survey	survey report / 0 loads	white-mile	bearing room
+pump	gate-six	pump	drain	drain route open	gate-six	pump floor
+quarters	gate-six	quarters	crew	watch relieved / quarters-1	gate-six	duty room
+reed	gate-six	reed	sound	sound report / 0 loads	gate-six	sounding room
+relay	tide-window	relay	sound	sound report / 0 loads	tide-window	relay room
+rivet	high-water	rivet	recover	crew cleared for service	high-water	joint shop
+rook	night-mail	rook	survey	survey report / 0 loads	night-mail	observer desk
+roundhouse	westbound	roundhouse	fit	crew cleared for service	westbound	refit pit
+shed	gate-six	shed	recover	crew cleared for service	gate-six	repair shop
+shoe	white-mile	shoe	guard	yard watch / shoe	white-mile	running gear
+shunter	westbound	shunter	cargo	freight received / 1	westbound	coupling bay
+siding	gate-six	siding	cargo	freight received / 1	gate-six	loading office
+signals	gate-six	signals	survey	survey report / 0 loads	gate-six	radio room
+sleeper	westbound	sleeper	track	track route open	westbound	track rack
+slipway	gate-six	slipway	berth	approach slot until 4530	gate-six	launch winch
+spaceport	high-water	spaceport	dock	approach slot until 1380	high-water	transfer hall
+span	gate-six	span	crossing	crossing route open	gate-six	span winch
+spindle	high-water	spindle	cargo	freight received / 1	high-water	module bay
+station	high-water	station	dock	approach slot until 1230	high-water	traffic control
+stores	gate-six	stores	store	stores checked / 10	westbound	stock room
+sump	gate-six	sump	drain	drain route open	gate-six	drainage bay
+survey	gate-six	survey	survey	survey report / 0 loads	gate-six	dispatch office
+tag	gate-six	tag	survey	survey report / 0 loads		Personnel on foot
+tally	gate-six	tally	support	yard watch / tally	gate-six	plotting room
+tern	night-mail	tern	mail	mail received / 1	night-mail	mail locker
+tower	night-mail	tower	guide	approach slot until 1380	night-mail	approach desk
+wake	compact-bank	wake	embark	watch relieved / wake-1	gate-six	troop deck
+watch	gate-six	watch	crew	watch relieved / watch-steward	gate-six	muster desk
+whistle	westbound	whistle	survey	survey report / 0 loads	westbound	line register

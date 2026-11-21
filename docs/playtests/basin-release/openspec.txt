@@ -1,0 +1,6 @@
+✓ spec/campaign-catalog
+✓ spec/commander-feedback
+✓ change/complete-basin-campaign
+✓ change/define-first-command
+✓ spec/field-prototype
+Totals: 5 passed, 0 failed (5 items)

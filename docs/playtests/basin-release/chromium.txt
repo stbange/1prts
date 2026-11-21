@@ -1,0 +1,5 @@
+boot desktop False {'ms': 1235, 'heap': 17104896, 'assets': 121}
+boot desktop True {'ms': 776, 'heap': 17104896, 'assets': 130}
+boot touch False {'ms': 625, 'heap': 17104896, 'assets': 120}
+boot xr False {'ms': 595, 'heap': 17104896, 'assets': 120}
+Desktop boarding, loose livery and hold overrides, touch and stereo XR victories passed.

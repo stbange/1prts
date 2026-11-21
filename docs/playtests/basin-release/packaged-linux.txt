@@ -1,0 +1,22 @@
+tests/gate-six.route passed at line 36, tick 3394, victory, alloy 21, body 8.0 10.4
+tests/tide-window.route passed at line 21, tick 17250, victory, alloy 2, body 0.0 50.0
+tests/compact-bank.route passed at line 15, tick 2815, victory, alloy 8, body 0.0 11.0
+tests/westbound.route passed at line 19, tick 3107, victory, alloy 4, body 0.0 7.3
+tests/white-mile.route passed at line 18, tick 2943, victory, alloy 4, body 0.0 6.7
+tests/night-mail.route passed at line 22, tick 4261, victory, alloy 4, body 0.0 14.0
+tests/high-water.route passed at line 26, tick 4874, victory, alloy 8, body 1.0 45.0
+tests/second-tank.route passed at line 37, tick 1576, active, alloy 5, body -15.8 27.0
+state second-aboard 887665372
+pose second-aboard local 0.15 0.00 7.99 world -15.85 0.00 26.99
+checkpoint second-aboard 1511 active  0 0 2267843449
+state both-drivers 3994840568
+pose both-drivers local 0.15 0.00 7.99 world 6.15 0.00 31.27
+checkpoint both-drivers 1576 active  0 0 2884297942
+replay-workdir/second.route passed at line 11, tick 1050, active, alloy 2, body 3.0 22.0
+replay-workdir/second.route passed at line 11, tick 1050, active, alloy 2, body 3.0 22.0
+replay-workdir/gate-six-quit.route passed at line 38, tick 2133, active, alloy 17, body 8.0 10.4
+replay-workdir/gate-six-quit.route passed at line 3, tick 2133, active, alloy 17, body 8.0 10.4
+replay-workdir/tide-window-quit.route passed at line 20, tick 5971, active, alloy 2, body 0.0 50.0
+replay-workdir/tide-window-quit.route passed at line 3, tick 5971, active, alloy 2, body 0.0 50.0
+Gate Six and Tide Window agree at every checkpoint at 30 and 90 Hz. Loose pack verified.
+All seven packaged operations, both drivers, process resume and loose packs passed.

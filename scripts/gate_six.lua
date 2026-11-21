@@ -266,13 +266,14 @@ end
 local function shift(s, a)
     for _, bay in ipairs({ "fit", "watch", "motor" }) do
         local q = a.queues[bay]
-        local site=(a==s.red and "rival-" or "")..bay
-        local grid=not game.army and a.power or game.army and game.army.grid_on(s,a,site)
+        local site = (a == s.red and "rival-" or "") .. bay
+        local grid = not game.army and a.power or game.army and game.army.grid_on(s, a, site)
         if
             q
             and a.staffed
-            and not a.away
+            and not (a.away and bay == "fit")
             and (not s.service or not s.service[site])
+            and not (s.army and s.army.relief and s.army.relief[site])
             and (bay == "fit" or grid or (bay == a.priority and a.reserve > 0))
         then
             if not q.started then
@@ -323,7 +324,12 @@ local function shift(s, a)
 end
 local function rival(s)
     local a = s.red
-    if game.army and (a.loads<=2 or s.tactical and next(s.tactical.intel)) and s.army.lots["common-lot"] > 0 and a.haul == 0 then
+    if
+        game.army
+        and (a.loads <= 2 or s.tactical and next(s.tactical.intel))
+        and s.army.lots["common-lot"] > 0
+        and a.haul == 0
+    then
         game.army.lot(s, a, "common-lot")
     end
     if not a.harvesting then
@@ -378,7 +384,10 @@ function game.step(s)
     if s.tick % 60 == 0 then
         rival(s)
     end
-    if game.army then game.army.grid(s,s.blue);game.army.grid(s,s.red) end
+    if game.army then
+        game.army.grid(s, s.blue)
+        game.army.grid(s, s.red)
+    end
     shift(s, s.blue)
     shift(s, s.red)
     if game.army then

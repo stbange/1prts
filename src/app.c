@@ -35,7 +35,14 @@ static void enter_sector(App *a) {
     a->ground_target[0]=0;
     a->voice_at = -1000;
 }
+static void clear_request(App *a) {
+    ++a->sector_request;
+    SDL_free(a->pending_ledger);
+    a->pending_ledger=NULL;
+    a->pending_mission[0]=0;
+}
 void app_adopt(App *a,Sim *s,Renderer *r) {
+    clear_request(a);
     sim_close(&a->sim); render_close(&a->renderer);
     a->sim=*s; a->renderer=*r;
     enter_sector(a);
@@ -72,10 +79,7 @@ void app_sector_ready(App *a, int request, int success) {
     a->pending_ledger = NULL;
 }
 bool app_stage(App *a, const char *id, const char *ledger) {
-    ++a->sector_request;
-    SDL_free(a->pending_ledger);
-    a->pending_ledger = NULL;
-    a->pending_mission[0] = 0;
+    clear_request(a);
 #ifdef __EMSCRIPTEN__
     if (!EM_ASM_INT({ return Module.requestSector(UTF8ToString($0), $1); }, id, a->sector_request)) {
         if (ledger && !(a->pending_ledger = SDL_strdup(ledger)))
@@ -89,6 +93,7 @@ bool app_stage(App *a, const char *id, const char *ledger) {
 }
 bool app_mission(App *a, const char *id) { return app_stage(a, id, NULL); }
 static void retry(App *a) {
+    clear_request(a);
     char *entry = sim_text(&a->sim, "entry");
     if (entry) {
         if (sim_reset(&a->sim) && sim_import(&a->sim, "enter", entry)) {
@@ -126,6 +131,7 @@ static const char *field_choices[][2] = {
     {"bay:section", "Muster another section"},
     {"bay:priority", "Assign this bay reserve power"},
     {"bay:power", "Switch this bay grid feed"},
+    {"bay:staff", "Relieve or recall this bay watch"},
 };
 const char *app_field_choice(const App *a,int listing,bool label) {
     int i=listing-3-assigned_count(a);
@@ -135,7 +141,7 @@ int app_list_count(const App *a) {
     if (a->panel == CREW_JOB) {
         const Place *p=&a->sim.place[a->sim.roster[a->member]];
         bool bay=!strcmp(a->sim.mission,"gate-six") && (!strcmp(p->type,"watch") || !strcmp(p->type,"motor"));
-        return assigned_count(a) + 3 + (bay ? 14 : 10);
+        return assigned_count(a) + 3 + (bay ? 15 : 10);
     }
     return a->panel == OPERATIONS ? a->sim.operation_count+4
            : a->panel == CREWS    ? a->sim.crew_count
@@ -180,6 +186,12 @@ void app_choose(App *a) {
         const Order *job = app_crew_order(a, a->listing - 3);
         char order[160];
         const char *field=app_field_choice(a,a->listing,false);
+        if (a->destination<0 || a->destination>=a->sim.places) {
+            a->destination=a->sim.roster[a->member];
+            a->pointed=false;
+            tell(a,"Target has left the sector. Mark a new destination.");
+            return;
+        }
         const char *target=*a->ground_target ? a->ground_target : a->sim.place[a->destination].key;
         if (field && !strcmp(field, "chart")) {
             a->aiming = true;

@@ -60,6 +60,22 @@ static void point_input(App *a, int mode) {
 static void slate_controls(App *a) {
     VERIFY(app_mission(a, "gate-six"));
     Sim *s = &a->sim;
+    V3 lot, gate;
+    VERIFY(world_object(s, place(s, "common-lot"), &lot));
+    VERIFY(app_mark(a, (V3){lot.x, 4, lot.z}, (V3){0, -1, 0}) && a->panel == FIELD &&
+           a->message_ticks > 0);
+    VERIFY(!app_mark(a, (V3){350, 5, 150}, (V3){0, 1, 0}));
+    VERIFY(!app_mark(a, (V3){350, 5, 150}, (V3){0, -1, 0}));
+    a->panel = CREWS;
+    VERIFY(!app_mark(a, lot, (V3){0, -1, 0}));
+    a->panel = FIELD;
+    VERIFY(!world_ground(s, (V3){429, 0, 0}));
+    int gate_id = place(s, "gate");
+    VERIFY(world_object(s, gate_id, &gate));
+    float yaw = world_angle(s, gate_id);
+    const V3 wall[] = {{12, 0, 0}, {0, 0, -4}, {5, 0, 1}};
+    for (int i = 0; i < 3; i++)
+        VERIFY(!world_ground(s, to_world(wall[i], gate, yaw)));
     s->objective[0] = 0;
     s->relief_at = 1;
     bool *stages[] = {&s->blue.mill,  &s->blue.harvesting, &s->blue.watch, &s->blue.section,
@@ -97,6 +113,9 @@ static void slate_controls(App *a) {
     ui_wrist(a);
     a->renderer.ui_count = 0;
     VERIFY(app_mission(a, "tide-window"));
+    Camera step = {.pos = {110, 1, 80}, .aboard = -1};
+    camera_move(&step, s, .5f, 1, .04f);
+    VERIFY(step.pos.y < 1);
     a->panel = SLATE;
     ui_wrist(a);
     a->renderer.ui_count = 0;
@@ -257,6 +276,15 @@ void dispatch_state_test(App *a) {
     app_key(a, SDL_SCANCODE_ESCAPE);
     app_screen_point(a, .5f, .5f);
     VERIFY(!world_point(s, mid, (V3){0}, -1).ground);
+    a->panel = CREW_JOB;
+    a->ground_target[0] = 0;
+    a->pointed = true;
+    a->destination = place(s, "lintel");
+    choice(a, "move");
+    VERIFY(strstr(a->message, "left the sector"));
+    a->destination = s->places;
+    choice(a, "move");
+    VERIFY(a->destination == s->roster[a->member] && strstr(a->message, "left the sector"));
     VERIFY(app_mission(a, "high-water"));
     a->panel = CHART;
     ui_wrist(a);

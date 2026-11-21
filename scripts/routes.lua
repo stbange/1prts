@@ -11,6 +11,7 @@ local routes = {
     estuary = {
         road = { { 4, 69 }, { 30, 20 }, { 78, -35 }, { 78, -168 }, { 30, -218 }, { 4, -263 } },
         water = { { 0, 24 }, { 0, -40 }, { 12, -146 }, { 0, -225 } },
+        shallows = { { 22, 21 }, { 36, -42 }, { 41, -148 }, { 55, -174 } },
         width = 8,
         laybys = { { 30, 20, 42, 20 }, { 30, -218, 43, -216 } },
     },
@@ -141,7 +142,7 @@ function M.plan(ctx, s, key, target, offset, reported)
     if kind == "water" and ctx.terrain ~= "estuary" and f ~= "launch" then
         return nil, "No navigable channel."
     end
-    local stations = map[kind] or map.road
+    local stations = kind == "water" and f ~= "ferry" and map.shallows or map[kind] or map.road
     local lane = {}
     local short = kind == "road"
         and map.span

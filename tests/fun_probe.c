@@ -191,6 +191,7 @@ int main(int argc, char **argv) {
     boot = SDL_GetTicksNS();
     out = argv[2];
     require(app_open(&game, argv[1], true), "startup");
+    xr_attach(&game);
     require(SDL_SetWindowSize(game.window, 960, 540), "window");
     finish_gpu = (void(APIENTRY *)(void))SDL_GL_GetProcAddress("glFinish");
     read_pixels = (void(APIENTRY *)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum,

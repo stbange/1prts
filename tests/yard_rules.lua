@@ -106,6 +106,20 @@ assert(not g.command(s, "move:dray@station") and g.command(s, "move:lark@station
 ticks(g, s, 1650)
 assert(s.tactical.posted.lark)
 
+-- The qualified fitter changes rooms. The other factory keeps working.
+g, s, site = setup()
+s.blue.mill, s.blue.watch, s.blue.motor, s.blue.armor, s.blue.alloy = true, true, true, true, 30
+assert(g.command(s, "armor") and g.command(s, "section"))
+assert(g.command(s, "bay:staff@motor"))
+local seat = s.army.relief.motor
+assert(seat and s.instances[seat].parent == "quarters")
+local before = s.army.bays.motor.left
+ticks(g, s, 40)
+assert(s.army.bays.motor.left == before and s.blue.queues.watch.left < 90)
+s = g.restore(g.save(s))
+assert(s.army.bays.motor.left == before and g.command(s, "bay:staff@motor"))
+ticks(g, s, 1)
+assert(s.army.bays.motor.left == before - 1 and s.instances[seat].parent == "motor")
 -- A blocked road has a surveyed passing lane. A rail junction keeps its reservation.
 g, s, site = setup()
 assert(g.command(s, "move:mole@gate"))

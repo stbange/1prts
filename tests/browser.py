@@ -164,6 +164,16 @@ def exercise(browser, url, layout, pack=False):
             assert status()[0]=="active" and any(s.endswith("/oxide.mesh") for s in requests),status()
             advance(3500)
         assert status()[0]=="victory",status()
+        if pack:
+            page.keyboard.press("m");advance(0);page.keyboard.press("8");advance(0)
+            page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).split('|')[7]==='wire-quay'")
+            page.keyboard.press("e");advance(0)
+            assert int(status()[8])>=0 and status()[20]=="quay-courier",status()
+            page.keyboard.press("F5");advance(0)
+            page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('saved in this browser')")
+            page.reload();page.wait_for_function(READY)
+            page.keyboard.press("F9");advance(0)
+            assert status()[7]=="wire-quay" and int(status()[8])>=0 and any(p.endswith("courier.mesh") for p in requests)
         if layout=="xr":
             assert int(status()[8])>=0
             targets=[("gate-six","mole",-8,1,2),("tide-window","kestrel",0,1,0),

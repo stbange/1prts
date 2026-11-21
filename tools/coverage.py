@@ -88,6 +88,7 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("build",type=Path)
     parser.add_argument("--luac", default=shutil.which("luac5.4") or "luac")
+    parser.add_argument("--report",type=Path,help="write per-source unit line counts and uncovered lines")
     args=parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="orra-unit-") as folder:
         temp=Path(folder)
@@ -95,8 +96,16 @@ if __name__ == "__main__":
         run(["ctest","--test-dir",str(args.build.resolve()),"-R","^(cli|engine|lua|headless)_units$","--output-on-failure"],env=env)
         native = native_coverage(args.build.resolve(),temp)
         threshold("C in the measured native configuration",native)
-        native_ok = threshold("First-party C including unmeasured platform adapters",with_target_adapters(native))
-        lua_ok = threshold("Shipped Lua",lua_coverage(args.luac,temp/"lua.hits"))
+        union=with_target_adapters(native)
+        native_ok=threshold("First-party C including unmeasured platform adapters",union)
+        lua=lua_coverage(args.luac,temp/"lua.hits")
+        lua_ok=threshold("Shipped Lua",lua)
+        if args.report:
+            def per_file(inventory):
+                return {p.relative_to(ROOT).as_posix():{"hit":sum(lines.values()),"total":len(lines),
+                    "uncovered":sorted(n for n,v in lines.items() if not v)} for p,lines in sorted(inventory.items())}
+            args.report.write_text(json.dumps({"native":per_file(native),"all_c":per_file(union),
+                "shipped_lua":per_file(lua)},indent=2)+"\n")
     browser = subprocess.run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",
          "--test-coverage-lines=95","tests/web-unit.cjs"],cwd=ROOT)
     if not (native_ok and lua_ok and browser.returncode == 0):

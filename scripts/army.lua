@@ -21,6 +21,7 @@ return function(ctx, rules)
             sites = {},
             counts = {},
             offline = {},
+            relief = {},
             feeds = {},
             priority = {},
             lots = { ["home-lot"] = 8, ["north-lot"] = 8, ["common-lot"] = 1 },
@@ -209,7 +210,13 @@ return function(ctx, rules)
             local powered = q.pad
                 or M.grid_on(s, a, bay)
                 or a.reserve > 0 and s.army.priority[a == s.red and "rival" or "home"] == bay
-            if a.staffed and not s.service[bay] and powered and not (q.pad and a.away) then
+            if
+                a.staffed
+                and not (s.army.relief or {})[bay]
+                and not s.service[bay]
+                and powered
+                and not (q.pad and a.away)
+            then
                 if not q.started then
                     q.started = true
                     a.reserved = a.reserved - q.cost
@@ -286,7 +293,7 @@ return function(ctx, rules)
         if bay then
             local a = bay.owner == "rival" and s.red or s.blue
             local reason = bay.left == 0 and "exit occupied"
-                or s.service[key] and "crew away"
+                or ((s.army.relief or {})[key] or s.service[key]) and "crew away"
                 or not M.grid_on(s, a, key) and not bay.pad and "grid isolated"
                 or "on shift"
             return ("%s / %s / %ds / %s"):format(key, bay.id, math.ceil(bay.left / 30), reason)
@@ -319,6 +326,27 @@ return function(ctx, rules)
                 or (bay == "watch" or bay == "motor") and s.blue[bay]
             )
         then
+            if action == "staff" then
+                local seat = s.instances[bay].crew[1]
+                if not seat or not ctx.index.quarters then
+                    return false
+                end
+                local away = s.army.relief or {}
+                s.army.relief = away
+                local i = ctx.index[seat]
+                if away[bay] then
+                    s.frames[i] = nil
+                    s.instances[seat].parent = bay
+                    away[bay] = nil
+                    s.report = seat .. " back at " .. bay .. "."
+                else
+                    away[bay] = seat
+                    s.frames[i] = { 1, 0.08, 1, 0, ctx.index.quarters }
+                    s.instances[seat].parent = "quarters"
+                    s.report = seat .. " off watch. " .. bay .. " waiting."
+                end
+                return true
+            end
             if action == "power" then
                 s.army.offline[bay] = not s.army.offline[bay]
                 return true

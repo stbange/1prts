@@ -11,7 +11,7 @@ static void key_event(App *a, SDL_Scancode sc, bool down) {
     e.key.scancode = sc;
     app_event(a, &e);
 }
-static bool expect(const App *a, const char *key, const char *value) {
+static bool expect(App *a, const char *key, const char *value) {
     if (!strcmp(key, "mission"))
         return !strcmp(a->sim.mission, value);
     if (!strcmp(key, "stage"))
@@ -22,6 +22,16 @@ static bool expect(const App *a, const char *key, const char *value) {
         return a->sim.tick == atoi(value);
     if (!strcmp(key, "hold-target"))
         return a->sim.hold_ticks == atoi(value);
+    if (!strcmp(key, "guard"))
+        return a->sim.blue.guard == (atoi(value) != 0);
+    if (!strcmp(key, "dispatch")) {
+        char crew[64], verb[24], target[64], report[160], expected[160];
+        if (sscanf(value, "%63[^@]@%23[^@]@%63s", crew, verb, target) != 3)
+            return false;
+        sim_inspect(&a->sim, crew, report, sizeof report);
+        snprintf(expected, sizeof expected, "%s / %s / %s", crew, verb, target);
+        return !strcmp(report, expected);
+    }
     if (!strcmp(key, "claiming"))
         return (a->sim.blue.hold > 0) == (atoi(value) != 0);
     if (!strcmp(key, "working")) {
@@ -63,8 +73,9 @@ static void checkpoint(App *a, const char *name) {
     const Sim *s = &a->sim;
     uint32_t hash = sim_digest(&a->sim);
     printf("state %s %u\n", name, hash);
+    V3 eye = camera_eye(&a->camera, s);
     printf("pose %s local %.2f %.2f %.2f world %.2f %.2f %.2f\n", name, a->camera.local.x,
-           a->camera.local.y, a->camera.local.z, a->camera.pos.x, a->camera.pos.y, a->camera.pos.z);
+           a->camera.local.y, a->camera.local.z, eye.x, eye.y - 1.72f, eye.z);
     /* sim_digest covers both ledgers. Add only the projected world data the player sees. */
     for (int i = 0; i < s->places; i++) {
         V3 p = {0};
@@ -157,7 +168,7 @@ bool app_route(App *a, const char *path) {
         }
     }
     fprintf(stderr, "%s %s at line %d, tick %d, %s, alloy %d, body %.1f %.1f\n", path,
-            ok ? "passed" : "FAILED", n, a->sim.tick, a->sim.result, a->sim.blue.alloy, a->camera.pos.x,
-            a->camera.pos.z);
+            ok ? "passed" : "FAILED", n, a->sim.tick, a->sim.result, a->sim.blue.alloy,
+            a->camera.pos.x, a->camera.pos.z);
     return ok;
 }

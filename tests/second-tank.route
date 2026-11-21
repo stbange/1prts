@@ -20,3 +20,18 @@ expect vessel lintel-2
 key 8
 shot second-lintel
 checkpoint second-aboard
+# The first driver's gate instruction is pending. From the second tank identify its own driver in the register.
+key C
+key PageDown
+key PageDown
+key PageDown
+key 5
+key Right
+key 6
+key Escape
+key Escape
+wait 65
+expect vessel lintel-2
+expect guard 1
+expect dispatch lintel-2@move@gate
+checkpoint both-drivers

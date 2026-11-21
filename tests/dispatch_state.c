@@ -173,6 +173,10 @@ void dispatch_state_test(App *a) {
     SDL_RemovePath(slot);
     slate_controls(a);
     equivalent_orders(a);
+    const char *verify_orders = "expect guard 0\nexpect dispatch mole@move@west-pad\n";
+    const char *route = "orra-unit-files/check-driver.route";
+    VERIFY(SDL_SaveFile(route, verify_orders, strlen(verify_orders)) && app_route(a, route));
+    SDL_RemovePath(route);
     VERIFY(app_mission(a, "compact-bank") && a->camera.aboard == place(s, "shed"));
     SDL_strlcpy(a->pending_mission, "gate-six", sizeof a->pending_mission);
     orra_sector_ready(a->sector_request + 2, 1);

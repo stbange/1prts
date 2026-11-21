@@ -1,0 +1,18 @@
+{
+  "api": 1,
+  "entry": "init.lua",
+  "files": [
+    "init.lua",
+    "oxide.mesh",
+    "CREDITS.md",
+    "harbor.mesh",
+    "radio.wav"
+  ],
+  "overrides": [
+    "gate-six.hold_ticks",
+    "lintel.mesh",
+    "tide-window.deadline",
+    "kestrel.mesh",
+    "ack.wav"
+  ]
+}

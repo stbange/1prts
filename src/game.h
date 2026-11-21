@@ -31,7 +31,8 @@ typedef struct {
     char model[24], condition[24], key[32], name[50], family[20], role[24], asset[180];
     V3 pos, size, current;
     float yaw, facing;
-    int parent, linked;
+    int parent, linked, berth;
+    float ramp;
     bool hull, station, moved;
 } Place;
 typedef struct {

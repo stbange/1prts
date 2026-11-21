@@ -113,7 +113,7 @@ void campaign_cases(App *a) {
     a->camera = (Camera){.pos = {0, 0, -29.9f}, .aboard = -1};
     camera_move(&a->camera, s, 0, 1, 1);
     REQUIRE(a->camera.pos.z > -30);
-    REQUIRE(sim_step(s, 151 + 350 * 30 + 10 - s->tick) && !strcmp(s->stage, "island"));
+    REQUIRE(sim_step(s, 151 + 380 * 30 - s->tick) && !strcmp(s->stage, "island"));
     a->camera.aboard = ferry;
     a->camera.local = (V3){0, 0, 50.5f};
     a->camera.yaw = world_angle(s, ferry);
@@ -123,6 +123,12 @@ void campaign_cases(App *a) {
     V3 ashore = camera_eye(&a->camera, s);
     REQUIRE(hypotf(ashore.x - before.x, ashore.z - before.z) < .1f &&
             fabsf(ashore.y - before.y) < .02f);
+    Camera bow = {.aboard = ferry, .local = {0, 0, -53.01f}};
+    V3 bord = camera_eye(&bow, s);
+    camera_move(&bow, s, 0, 1, 1.f / 30);
+    REQUIRE(bow.aboard < 0 && fabsf(bord.y - camera_eye(&bow, s).y) < .02f);
+    camera_move(&bow, s, 0, -1, 1.f / 30);
+    REQUIRE(bow.aboard == ferry);
     REQUIRE(sim_step(s, 2100));
     stable(ashore, camera_eye(&a->camera, s));
     REQUIRE(app_mission(a, "high-water"));

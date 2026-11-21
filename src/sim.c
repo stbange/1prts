@@ -126,6 +126,8 @@ static void moving_frames(Sim *g) {
                 p->moved = true;
                 p->current = (V3){float_at(L, 1), float_at(L, 2), float_at(L, 3)};
                 p->facing = float_at(L, 4);
+                p->berth = (int)float_at(L, 6);
+                p->ramp = float_at(L, 7);
                 int parent = (int)float_at(L, 5);
                 p->linked = parent >= 0 && parent <= g->places && parent != i + 1 ? parent : 0;
             }
@@ -211,8 +213,11 @@ bool sim_snapshot(Sim *g) {
     return true;
 }
 bool sim_reset(Sim *g) {
-    for (int i = 0; i < g->places; i++)
+    for (int i = 0; i < g->places; i++) {
         g->place[i].moved = false;
+        g->place[i].berth = 0;
+        g->place[i].ramp = 0;
+    }
     method(g, "new");
     if (!call(g, 0, 1))
         return false;

@@ -221,6 +221,8 @@ function M.make(id, catalog, fleet, base_site)
     end
     if id == "tide-window" then
         entity("rival-ferry", "kestrel", { 78, 0, -156 })
+        scene[#scene + 1] = { "fore-ramp", 0, -6, -48, 0, parent = index.kestrel, key = "fore-ramp" }
+        index["fore-ramp"] = #scene
         for n = 1, 2 do
             local key = "core-" .. n
             scene[#scene + 1] = { "core", 13 + 2 * n, 0, 54, 0, key = key, name = "Power core " .. n }

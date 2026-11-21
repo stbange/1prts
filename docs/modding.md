@@ -34,7 +34,7 @@ end)
 | `api.on(event, fn)` | Subscribe to `order`, `complete`, `berth`, `crew` or `result`. The callback receives the state and the order ID, completed job, landing, crew ID or outcome respectively. |
 | `api.override(key, value)` | Declare the key in the pack manifest first. Timers use simulation ticks at 30 Hz. A model name ending in `.mesh` or a sound name ending in `.wav` resolves to a replacement file in the pack. |
 
-World coordinates use metres with Y up and angles in radians. A moving entity's frame contains X, Y, Z, yaw and its parent's one-based scene index. Zero selects the world frame. An embarked vehicle and its crew keep their local coordinates as the parent moves.
+World coordinates use metres with Y up and angles in radians. A moving entity's frame contains X, Y, Z, yaw and its parent's one-based scene index. Zero selects the world frame. A ferry can append a shore connection flag (1 moored, −1 underway) and its bow ramp reach in metres. An embarked vehicle and its crew keep their local coordinates as the parent moves.
 
 ## Reproduce a change
 

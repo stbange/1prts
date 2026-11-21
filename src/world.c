@@ -212,8 +212,8 @@ static float pavement_height(V3 p) {
         return ceilf((20 - p.z) / .65f) * .29f;
     return 0;
 }
-static float ramp_floor(float z, float length) {
-    return .84f * clamp(1 - (z - length * .5f) / 2.4f, 0, 1);
+static float ramp_floor(float z, float length, float reach) {
+    return .84f * clamp(1 - (z - length * .5f) / reach, 0, 1);
 }
 static bool occupied(const Sim *g, int aboard, V3 p) {
     for (int i = 0; i < g->places; i++) {
@@ -224,6 +224,7 @@ static bool occupied(const Sim *g, int aboard, V3 p) {
     }
     return false;
 }
+static bool interact_at(const Sim *g,Camera *c,int i);
 void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec) {
     if (strafe == 0 && forward == 0)
         return;
@@ -239,17 +240,20 @@ void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec
     if (c->aboard >= 0) {
         Shape sh = world_asset_shape(g, c->aboard);
         const Place *hull = &g->place[c->aboard];
+        bool bow = !strcmp(hull->family, "ferry");
+        float reach = fmaxf(2.4f, hull->ramp);
         float side = hull->hull ? .47f : .32f, end = hull->hull ? .49f : .30f;
         V3 next = c->local;
         next.x = clamp(next.x + delta.x, -sh.w * side, sh.w * side);
         if (!occupied(g, c->aboard, next))
             c->local.x = next.x;
         next = c->local;
-        next.z = clamp(next.z + delta.z, -sh.d * end, hull->hull ? sh.d * .5f + 3.5f : sh.d * .45f);
+        next.z = clamp(next.z + delta.z, bow ? -sh.d * .5f - reach - 1 : -sh.d * end,
+                       hull->hull ? sh.d * .5f + 3.5f : sh.d * .45f);
         if (!occupied(g, c->aboard, next))
             c->local.z = next.z;
         if (hull->hull && c->local.z >= sh.d * .45f)
-            c->local.y = ramp_floor(c->local.z, sh.d);
+            c->local.y = ramp_floor(c->local.z, sh.d, 2.4f);
         if (!strcmp(hull->family, "ferry") || !strcmp(hull->family, "station")) {
             float bridge = fminf(5.8f, sh.h * .47f);
             if (fabsf(c->local.x + sh.w * .29f) < 1.3f && c->local.z <= sh.d * .08f &&
@@ -259,8 +263,13 @@ void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec
                      c->local.z < -sh.d * .405f)
                 c->local.y = .84f;
         }
+        if (bow && c->local.z < -sh.d * .45f) {
+            c->local.y = ramp_floor(-c->local.z, sh.d, reach);
+            if (delta.z < 0 && c->local.z <= -sh.d * .5f - reach && fabsf(c->local.x) < 2.2f)
+                interact_at(g, c, c->aboard);
+        }
         if (hull->hull && delta.z > 0 && c->local.z >= sh.d * .5f + 2.4f && fabsf(c->local.x) < 2.2f)
-            world_interact(g, c);
+            interact_at(g, c, c->aboard);
     } else {
         V3 next = c->pos;
         next.x += delta.x;
@@ -285,8 +294,13 @@ void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec
                 float yaw = world_angle(g, near);
                 V3 from = to_local(before, origin, yaw), to = to_local(c->pos, origin, yaw);
                 float threshold = world_asset_shape(g, near).d * .5f + 2.4f;
+                if (!strcmp(g->place[near].family, "ferry") && to.z < 0) {
+                    threshold += fmaxf(2.4f, g->place[near].ramp) - 2.4f;
+                    from.z = -from.z;
+                    to.z = -to.z;
+                }
                 if (from.z >= threshold && to.z < threshold && fabsf(to.x) < 2.2f)
-                    world_interact(g, c);
+                    interact_at(g,c,near);
             }
         }
     }
@@ -322,12 +336,19 @@ int world_nearest(const Sim *g, const Camera *c) {
         const Place *p = &g->place[i];
         V3 origin;
         Shape sh = world_asset_shape(g, i);
-        if (!sh.boardable || i == c->aboard || !world_object(g, i, &origin))
+        if (!sh.boardable || i == c->aboard || (c->aboard < 0 && p->berth < 0) ||
+            !world_object(g, i, &origin))
             continue;
         V3 hatch = to_world((V3){0, p->hull ? .84f : 0, sh.d * .53f}, origin, world_angle(g, i));
         if (p->hull)
             hatch = to_world((V3){0, .84f, sh.d * .50f}, origin, world_angle(g, i));
         float d = hypotf(hypotf(observer.x - hatch.x, observer.z - hatch.z), observer.y - hatch.y);
+        if (!strcmp(p->family, "ferry") && p->berth >= 0) {
+            V3 fore =
+                to_world((V3){0, 0, -sh.d * .5f - fmaxf(2.4f, p->ramp)}, origin, world_angle(g, i));
+            d = fminf(d,
+                      hypotf(hypotf(observer.x - fore.x, observer.z - fore.z), observer.y - fore.y));
+        }
         if (c->aboard >= 0 && !strcmp(g->place[c->aboard].family, "station") &&
             !strcmp(p->family, "tender")) {
             V3 bow = to_world((V3){0, .84f, -sh.d * .49f}, origin, world_angle(g, i));
@@ -340,13 +361,15 @@ int world_nearest(const Sim *g, const Camera *c) {
     }
     if (best < 0 && c->aboard >= 0) {
         Shape sh = world_asset_shape(g, c->aboard);
-        if (c->local.z > sh.d * .49f - 2.8f && fabsf(c->local.x) < 3.5f)
+        if ((c->local.z > sh.d * .49f - 2.8f ||
+             (!strcmp(g->place[c->aboard].family, "ferry") && c->local.z < -sh.d * .49f + 2.8f)) &&
+            fabsf(c->local.x) < 3.5f)
             best = c->aboard;
     }
     return best;
 }
-bool world_interact(const Sim *g, Camera *c) {
-    int i = world_nearest(g, c);
+bool world_interact(const Sim *g, Camera *c) { return interact_at(g, c, world_nearest(g, c)); }
+static bool interact_at(const Sim *g, Camera *c, int i) {
     if (i < 0)
         return false;
     const Place *p = &g->place[i];
@@ -359,9 +382,10 @@ bool world_interact(const Sim *g, Camera *c) {
                            world_angle(g, i));
         if (p->hull) {
             exit = feet(g, c);
-            if (parent < 0 && (origin.y > 3 || !passable(g, (V3){exit.x, 0, exit.z + 2})))
+            float outward = c->local.z < 0 ? -2 : 2;
+            if (parent < 0 && (origin.y > 3 || !passable(g, (V3){exit.x, 0, exit.z + outward})))
                 return false;
-            if (parent < 0 && !strcmp(p->key, "kestrel") && origin.z < -.3f && origin.z > -229.7f)
+            if (parent < 0 && p->berth < 0)
                 return false;
         }
         c->aboard = parent;
@@ -376,7 +400,9 @@ bool world_interact(const Sim *g, Camera *c) {
         c->aboard = i;
         if (p->hull) {
             c->local = to_local(here, origin, world_angle(g, i));
-            c->local.z = clamp(c->local.z, -sh.d * .49f, sh.d * .5f + 3.5f);
+            float front =
+                !strcmp(p->family, "ferry") ? -sh.d * .5f - fmaxf(2.4f, p->ramp) - 1 : -sh.d * .49f;
+            c->local.z = clamp(c->local.z, front, sh.d * .5f + 3.5f);
         } else
             c->local = (V3){0, .84f, sh.d * .39f};
     }

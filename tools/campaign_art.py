@@ -42,8 +42,13 @@ def craft(name,f,w,h,d,col):
                 z=(j-2)*d*.15
                 tube((x,.57,z),(x+side*.47,.57,z),.53,"shadow",8)
         if f in {"launch","ferry","pontoon"}:
-            quad((x,0,-d*.5),(0,.2,-d*.5-3),(0,1.95,-d*.5-3),(x,floor+1.06,-d*.5),col)
-    box(0,floor,-d*.49,w,1.12,.25,col)
+            nose=side*4.55 if f=="ferry" else 0
+            quad((x,0,-d*.5),(nose,.2,-d*.5-3),(nose,1.95,-d*.5-3),(x,floor+1.06,-d*.5),col)
+    if f=="ferry":
+        for side in (-1,1):box(side*w*.36,floor,-d*.49,w*.27,1.12,.25,col)
+        for j in range(8):box(0,floor*(1-(j+1)/8),-d*.5-j*.30,8.7,.12,.36,"tread")
+    else:
+        box(0,floor,-d*.49,w,1.12,.25,col)
     box(0,floor+2.75,-d*.49,w,.25,.25,"edge")
     canopy=max(2.72,min(5.2,h*.56))
     box(0,floor+canopy,-d*.25,w+.4,.22,d*.47,col)
@@ -182,6 +187,10 @@ def landscape(name):
     write(name)
 
 def main():
+    for j in range(16):
+        box(0,.84*(1-(j+1)/16),-j*.32,8.9,.12,.36,"tread")
+        for side in (-1,1):box(side*4.26,.84*(1-(j+1)/16)+.115,-j*.32,.25,.04,.31,"paint")
+    write("fore-ramp")
     tube((0,.10,0),(0,1.18,0),.58,"orange",10)
     tube((0,.23,0),(0,.38,0),.60,"paint",10)
     box(0,1.18,0,.8,.13,.43,"edge")

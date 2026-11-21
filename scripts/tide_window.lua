@@ -111,7 +111,13 @@ return function(ctx)
         return true
     end
     local function frame(s, key, x, y, z, yaw, parent)
-        s.frames[ctx.index[key]] = { x, y, z, yaw or 0, parent and ctx.index[parent] or 0 }
+        local pose = { x, y, z, yaw or 0, parent and ctx.index[parent] or 0 }
+        if key == "kestrel" or key == "rival-ferry" then
+            local moored = (math.abs(z) < 0.05 or math.abs(z + 230) < 0.05)
+            pose[6] = moored and 1 or -1
+            pose[7] = key == "kestrel" and s.gear == "ramp" and 5 or 2.4
+        end
+        s.frames[ctx.index[key]] = pose
     end
     function rules.step(s)
         if s.result ~= "active" then
@@ -183,7 +189,13 @@ return function(ctx)
         elseif s.stage == "discharge" then
             local t = math.min(1, (now - s.since) / (30 * H))
             local x = s.landing == "slip" and 55 or 0
-            frame(s, "mole", x + 17 * t, 0.84 * (1 - t), -214 + 38 * t)
+            local z = 16 - 78 * t
+            local reach = s.gear == "ramp" and 5 or 2.4
+            if z >= -48 - reach then
+                frame(s, "mole", 0, 0.84 * math.min(1, math.max(0, 1 + (z + 48) / reach)), z, 0, "kestrel")
+            else
+                frame(s, "mole", x, 0, -230 + z)
+            end
             if t == 1 then
                 s.stage = "island"
                 s.since = now
@@ -210,8 +222,8 @@ return function(ctx)
             end
             local length = (s.landing == "slip" and 225 or 150) * H
             local t = math.min(1, (now - s.since) / length)
-            local x = s.landing == "slip" and 72 or 17
-            frame(s, "mole", x + (-30 - x) * t, 0, -176 - 97 * t)
+            local x = s.landing == "slip" and 55 or 0
+            frame(s, "mole", x + (-30 - x) * t, 0, -292 + 19 * t)
             s.installed = math.floor(t * 2)
             if t == 1 then
                 s.result = "victory"
@@ -236,6 +248,7 @@ return function(ctx)
                 "kestrel"
             )
         end
+        frame(s, "fore-ramp", 0, s.gear == "ramp" and 0.02 or -6, -48, 0, "kestrel")
         s.progress = s.installed
     end
     return rules

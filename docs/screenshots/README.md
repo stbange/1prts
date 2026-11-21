@@ -10,6 +10,6 @@ These 1280 × 720 PNGs are lossless captures of the native OpenGL framebuffer. E
 | Westbound | [Winter shunting yard](west-exchange.png) |
 | White Mile | [Survey camp](white-mile.png) |
 | Night Mail | [View from the airborne tiltrotor](night-flight.png) |
-| High Water | [Arrival inside Crown Station](crown-station.png) |
+| High Water | [Arrival at Crown Station](crown-station.png) · [Inhabited pressure gallery](pressure-gallery.png) |
 
 Set the environment variable ORRA_CAPTURE_DIR to an existing folder, then run the rendered CTest replays. The route files specify the capture ticks and camera inputs. [Recorded routes](../../tests) · [Art and attribution](../../assets/CREDITS.md)

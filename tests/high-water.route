@@ -15,7 +15,9 @@ expect vessel station
 shot 15-crown-station
 key 7
 key 8
-wait 760
+hold W 615
+shot 18-pressure-gallery
+wait 145
 key 9
 wait 485
 key 0

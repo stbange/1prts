@@ -28,6 +28,15 @@ Object.defineProperty(navigator, 'xr', {value: {
   }
 }});
 WebGL2RenderingContext.prototype.makeXRCompatible=async()=>{};
+const clear=WebGL2RenderingContext.prototype.clear;
+window.xrDepthRegions=new Set();
+WebGL2RenderingContext.prototype.clear=function(mask){
+  const v=this.getParameter(this.VIEWPORT), box=this.getParameter(this.SCISSOR_BOX);
+  if(window.testSession && !testSession.ended && (mask & this.DEPTH_BUFFER_BIT) &&
+     v[2]*2===this.drawingBufferWidth && this.isEnabled(this.SCISSOR_TEST) &&
+     v.every((value,i)=>value===box[i])) xrDepthRegions.add(v[0]);
+  return clear.call(this,mask);
+};
 window.XRWebGLLayer=class{
   constructor(s,g){this.framebuffer=null;this.gl=g;}
   getViewport(v){const w=this.gl.drawingBufferWidth/2;window.xrEyes=(window.xrEyes||0)+1;
@@ -59,7 +68,7 @@ def exercise(browser, url, mobile=False):
         page.keyboard.press("Tab");page.keyboard.press("F1")
         page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('|guide|')")
         page.keyboard.press("Escape");page.locator("#vr").click()
-        page.wait_for_function("()=>window.xrEyes>=4")
+        page.wait_for_function("()=>window.xrEyes>=4 && xrDepthRegions.size===2")
         page.evaluate("""()=>{const event=new Event('selectstart');event.inputSource={handedness:'left'};testSession.dispatchEvent(event);}""")
         page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('|orders|')")
         page.evaluate("()=>testSession.end()")

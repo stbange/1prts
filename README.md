@@ -6,6 +6,8 @@ Orra Basin is a first-person real-time strategy game about six factions competin
 
 ## Play
 
+[Play Orra Basin in your browser](https://stbange.github.io/1prts/)
+
 Build with CMake 3.20 or newer and a C11 compiler. The build finds an installed SDL3 or fetches its pinned sources, and fetches Lua 5.4.8. Local source trees can be supplied with `-DORRA_SDL_SOURCE=...` and `-DORRA_LUA_SOURCE=...`.
 
 ```sh

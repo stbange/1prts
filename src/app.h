@@ -16,7 +16,7 @@ typedef struct {
     bool running, touch, captured, xr, keys[SDL_SCANCODE_COUNT];
     bool left_down, right_down;
     SDL_FingerID left_id, right_id;
-    float left_x, left_y, stick_x, stick_y;
+    float left_x, left_y, stick_x, stick_y, stride_x, stride_y;
     double accumulator;
     char message[120];
     int message_ticks;
@@ -34,6 +34,7 @@ void app_action(App *, int);
 void app_touch(App *, float, float);
 void ui_size(const App *, int *, int *);
 void ui_draw(App *, int, int);
+void ui_relief_notice(Renderer *, const Sim *, bool);
 void ui_tap(App *, float, float);
 bool app_route(App *, const char *);
 int orra_run(int, char **);

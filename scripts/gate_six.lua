@@ -45,15 +45,52 @@ local function order(s,a,id)
     elseif id=="advance" or id=="guard" then
         local unit=id=="advance" and "section" or "armor"
         if not a[unit] then report(s,a,"Crew unavailable. Produce the unit first.") return false end
+        if a[id] then report(s,a,"Crew already has that field order.") return false end
         a[id]=true
         report(s,a,id=="advance" and "Gate Section moving to the switch room." or "Lintel moving to the gate yard.")
     elseif id=="recall" then
+        if not a.advance and not a.guard then report(s,a,"Field crews are already home.") return false end
         a.advance,a.guard=false,false
         report(s,a,"Field crews returning to the yard.")
     else return false end
     return true
 end
-function game.command(s,id) return order(s,s.blue,id) end
+-- One follow-on can cross the last three simulation ticks of a production transition.
+-- Check each dependency and the price again when the crew actually takes the order.
+local function finishing(a,q)
+    return q and q.left<=3 and (game.jobs[q.id].bay=="fit" or a.power)
+end
+function game.command(s,id)
+    local a,job=s.blue,game.jobs[id]
+    if s.result~="active" or not job or a[id] or a.alloy<job.cost then return order(s,a,id) end
+    if a.pending and a.pending.id==id then report(s,a,"Dispatch already holds this order.") return false end
+    local bay=a.queues[job.bay]
+    local needs=job.needs and not a[job.needs]
+    if bay or needs then
+        local supplier=needs and a.queues[game.jobs[job.needs].bay]
+        if a.pending or (bay and (bay.id==id or not finishing(a,bay)))
+                or (needs and (not finishing(a,supplier) or supplier.id~=job.needs)) then
+            return order(s,a,id)
+        end
+        a.pending={id=id,expires=s.tick+3}
+        report(s,a,"Dispatch holding "..job.label.." for the handover.")
+        return true
+    end
+    return order(s,a,id)
+end
+local function handover(s)
+    local a=s.blue
+    local pending=a.pending
+    if not pending then return end
+    local job=game.jobs[pending.id]
+    if not a.queues[job.bay] and (not job.needs or a[job.needs]) then
+        a.pending=nil
+        order(s,a,pending.id)
+    elseif s.tick>=pending.expires then
+        a.pending=nil
+        report(s,a,"Handover expired. Check crew and power.")
+    end
+end
 local function shift(s,a)
     for _,bay in ipairs({"fit","watch","motor"}) do
         local q=a.queues[bay]
@@ -89,12 +126,16 @@ local function rival(s)
     elseif not a.section then order(s,a,"section")
     elseif not a.motor then order(s,a,"motor")
     elseif not a.armor then order(s,a,"armor") end
-    if a.section and s.tick>=3000 then order(s,a,"advance") end
+    if a.section and s.relief_at and s.tick>=s.relief_at then order(s,a,"advance") end
     if a.armor and a.readiness>0 and s.tick>=3600 then order(s,a,"guard") end
 end
 function game.step(s)
     if s.result~="active" then return end
     s.tick=s.tick+1
+    if not s.relief_at and (s.blue.walk>=120 or s.tick>=2760) then
+        s.relief_at=math.min(3000,s.tick+240)
+        report(s,s.blue,"Lookouts report Compact relief forming at the north road.")
+    end
     if s.tick%60==0 then rival(s) end
     shift(s,s.blue); shift(s,s.red)
     local b,r=s.blue,s.red
@@ -111,5 +152,6 @@ function game.step(s)
     claim(b,r); claim(r,b)
     if b.hold>=game.hold_ticks then s.result="victory"; s.report="Gate Six secured. The road is open." end
     if r.hold>=game.hold_ticks then s.result="defeat"; s.report="Compact watch controls Gate Six." end
+    if s.result=="active" then handover(s) else b.pending=nil end
 end
 return game

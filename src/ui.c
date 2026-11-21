@@ -144,6 +144,40 @@ static void guide_panel(App *a, int w, int h) {
     T(x + 16, y + 199, 1.15f, "< PREV     NEXT >      CATEGORY     CLOSE", MUTE);
     (void)h;
 }
+void ui_relief_notice(Renderer *r, const Sim *g, bool compact) {
+    if (!g->relief_at || strcmp(g->result, "active"))
+        return;
+    char text[56];
+    if (g->red.hold > 0)
+        snprintf(text, sizeof text, "CONTROL LOST IN %dS", (g->hold_ticks - g->red.hold + 29) / 30);
+    else if (g->tick < g->relief_at)
+        snprintf(text, sizeof text, "COMPACT RELIEF IN %dS", (g->relief_at - g->tick + 29) / 30);
+    else if (g->red.walk >= 300)
+        snprintf(text, sizeof text, "RIVAL IN SWITCH ROOM");
+    else if (g->red.walk > 0 || g->red.drive > 0)
+        snprintf(text, sizeof text, "COMPACT ON APPROACH");
+    else
+        return;
+    float scale = compact ? .94f : 1.14f;
+    int width = (int)ceilf(strlen(text) * 6 * scale) + 16;
+    R(15, 89, width, 22, 0x142326ff);
+    R(15, 89, 3, 22, AMBER);
+    T(23, 96, scale, text, AMBER);
+}
+static const char *field_objective(const Sim *g) {
+    const Side *crew = &g->blue;
+    if (!crew->mill) return "Commission Plate Mill";
+    if (!crew->harvesting) return "Dispatch the hauler";
+    if (!crew->watch) return "Build the Watch House";
+    if (!crew->section) return "Muster a Gate Section";
+    if (g->relief_at) {
+        if (!crew->motor) return "Build Motor Hall for support";
+        if (!crew->armor) return "Produce a Lintel for support";
+        if (!crew->guard) return "Send armor to the gate yard";
+    }
+    if (!crew->advance) return "Send infantry to Gate Six";
+    return crew->walk < 300 ? "Infantry moving to Gate Six" : "Hold the switch room";
+}
 void ui_draw(App *a, int w, int h) {
     Renderer *r = &a->renderer;
     Sim *g = &a->sim;
@@ -156,17 +190,13 @@ void ui_draw(App *a, int w, int h) {
     T(47, 21, 1.0f, "WEIR ASSEMBLY", BLUE);
     T(47, 35, 1.85f, "GATE SIX", PAPER);
     if (a->panel == FIELD && !strcmp(g->result, "active")) {
-        const char *objective = !g->blue.mill         ? "Commission Plate Mill"
-                                : !g->blue.harvesting ? "Dispatch the hauler"
-                                : !g->blue.watch      ? "Build the Watch House"
-                                : !g->blue.section    ? "Muster a Gate Section"
-                                : g->blue.walk < 300  ? "Send infantry to Gate Six"
-                                                      : "Hold the switch room";
+        const char *objective = field_objective(g);
         int ow = (int)strlen(objective) * 7 + 19;
         R(15, 64, ow, 20, 0x1b2c2bc9);
         R(15, 64, 2, 20, BLUE);
         T(23, 70, 1.14f, objective, PAPER);
     }
+    ui_relief_notice(r, g, w < 700 && a->panel != FIELD);
     if (w > 675)
         compass(r, w, a->camera.yaw);
     R(w - 183, 14, 168, 43, INK);

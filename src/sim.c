@@ -82,6 +82,8 @@ static void read_side(lua_State *L, const char *name, Side *a) {
     a->motor = flag(L, -1, "motor");
     a->section = flag(L, -1, "section");
     a->armor = flag(L, -1, "armor");
+    a->advance = flag(L, -1, "advance");
+    a->guard = flag(L, -1, "guard");
     a->work[0] = 0;
     a->work_left = 0;
     lua_getfield(L, -1, "queues");
@@ -102,6 +104,7 @@ bool sim_snapshot(Sim *g) {
     lua_State *L = g->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, g->state);
     g->tick = number(L, -1, "tick");
+    g->relief_at = number(L, -1, "relief_at");
     string_field(L, -1, "report", g->report, sizeof g->report);
     string_field(L, -1, "result", g->result, sizeof g->result);
     read_side(L, "blue", &g->blue);

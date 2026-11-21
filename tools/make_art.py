@@ -360,8 +360,11 @@ person=[
     "   fsjbbbbjjff    ","     ppppppp      ","     pppbbpp      ","     ppb  pp      ",
     "     ppp  pp      ","     bpp  pb      ","     ppb  pp      ","     bbb  bbb     ","    bbbb  bbbb    "]
 for name,jacket,hat in (("worker","orange","lamp"),("section","teal","light"),("enemysection","plum","rose")):
-    sprite(name,person,dict(h=hat,H="edge",f="skin",F="white",c="copper",j=jacket,w="paint",s="skin",
-                             p="shadow",b="black",r="tread"),.077)
+    colors=dict(h=hat,H="edge",f="skin",F="white",c="copper",j=jacket,w="paint",s="skin",
+                p="shadow",b="black",r="tread")
+    if name=="enemysection":
+        colors.update(h="f0ce91", H="fff2ba", j="362234", w="ffe8a8", p="20262a", b="161b20")
+    sprite(name,person,colors,.077)
 for name,hz in (("ack",482),("blocked",185)):
     with wave.open(str(OUT/"sounds"/(name+".wav")),"wb") as wav:
         wav.setparams((1,2,22050,0,"NONE","not compressed"))

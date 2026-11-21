@@ -45,6 +45,42 @@ local done=s.tick;G.step(s);assert(s.tick==done)
 local idle=G.new();step(idle,5700);assert(idle.result=="defeat")
 local empty=G.new();G.command(empty,"harvest");step(empty,340);assert(empty.blue.stock==1 and empty.blue.alloy==8)
 G.command(empty,"mill");step(empty,3000);assert(empty.blue.loads==0 and empty.blue.alloy==36)
+-- Reserve a follow-on without double spending, replaying it or stealing the active crew.
+local early=G.new()
+assert(not G.command(early,"recall"))
+assert(G.command(early,"mill"))
+step(early,116)
+assert(not G.command(early,"watch") and not early.blue.pending)
+step(early,1)
+assert(G.command(early,"watch") and not G.command(early,"watch"))
+assert(not G.command(early,"mill") and early.blue.alloy==4)
+step(early,3)
+assert(early.blue.mill and early.blue.queues.fit.id=="watch" and early.blue.alloy==1)
+assert(not early.blue.pending)
+local prep=G.new()
+G.command(prep,"mill"); G.command(prep,"harvest"); step(prep,300)
+G.command(prep,"watch"); step(prep,87)
+assert(G.command(prep,"section") and not G.command(prep,"motor"))
+step(prep,3); assert(prep.blue.queues.watch.id=="section")
+step(prep,90); assert(G.command(prep,"advance") and not G.command(prep,"advance"))
+step(prep,121)
+assert(prep.relief_at and prep.relief_at-prep.tick>=230 and prep.red.walk==0)
+step(prep,300); assert(prep.red.walk>0)
+-- A data pack can put a production prerequisite in a powered bay. Power loss expires its handover.
+local jobs=G.jobs
+jobs.armor.needs="section"
+local power=G.new()
+power.blue.watch=true; power.blue.motor=true; power.blue.alloy=20
+assert(G.command(power,"section"));step(power,88)
+assert(G.command(power,"power")); assert(not G.command(power,"armor"))
+assert(G.command(power,"power")); assert(G.command(power,"armor"))
+assert(G.command(power,"power")); step(power,3)
+assert(not power.blue.pending and not power.blue.queues.motor)
+assert(power.report:find("expired"))
+jobs.armor.needs="motor"
+local ending=G.new();ending.blue.advance=true;ending.blue.walk=300;ending.blue.hold=1799
+ending.blue.pending={id="watch",expires=2}
+G.step(ending);assert(ending.result=="victory" and not ending.blue.pending)
 debug.sethook()
 -- luac -l lists even portions whose enclosing function never executes. The
 -- separate coverage runner supplies that complete denominator for each file.

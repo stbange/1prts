@@ -102,10 +102,13 @@ void app_key(App *a, SDL_Scancode k) {
         camera_reset(&a->camera);
         a->panel = FIELD;
         a->message_ticks = 0;
+        a->stride_x = a->stride_y = 0;
         return;
     }
     if (k == SDL_SCANCODE_E) {
         bool boarded = world_interact(&a->sim, &a->camera);
+        if (boarded)
+            a->stride_x = a->stride_y = 0;
         if (!boarded && world_terminal(&a->sim, &a->camera)) {
             a->panel = SLATE;
             capture_mouse(a, false);
@@ -153,6 +156,7 @@ void app_event(App *a, const SDL_Event *e) {
         memset(a->keys, 0, sizeof a->keys);
         a->left_down = a->right_down = false;
         a->stick_x = a->stick_y = 0;
+        a->stride_x = a->stride_y = 0;
         capture_mouse(a, false);
         break;
     case SDL_EVENT_KEY_DOWN:
@@ -217,20 +221,37 @@ void app_event(App *a, const SDL_Event *e) {
         break;
     }
 }
+static float stride(float previous, float target) {
+    float next = previous + .62f * (target - previous);
+    return fabsf(target - next) < .01f ? target : next;
+}
+static int finished(const Side *s) {
+    return s->mill + s->watch + s->motor + s->section + s->armor;
+}
 void app_tick(App *a) {
     if (a->message_ticks > 0)
         a->message_ticks--;
     if (a->panel == FIELD) {
         camera_look(&a->camera, (a->keys[SDL_SCANCODE_RIGHT] - a->keys[SDL_SCANCODE_LEFT]) * .034f,
                     (a->keys[SDL_SCANCODE_UP] - a->keys[SDL_SCANCODE_DOWN]) * .025f);
-        camera_move(&a->camera, &a->sim, a->keys[SDL_SCANCODE_D] - a->keys[SDL_SCANCODE_A] + a->stick_x,
-                    a->keys[SDL_SCANCODE_W] - a->keys[SDL_SCANCODE_S] + a->stick_y,
+        a->stride_x = stride(a->stride_x, a->keys[SDL_SCANCODE_D] - a->keys[SDL_SCANCODE_A] + a->stick_x);
+        a->stride_y = stride(a->stride_y, a->keys[SDL_SCANCODE_W] - a->keys[SDL_SCANCODE_S] + a->stick_y);
+        camera_move(&a->camera, &a->sim, a->stride_x, a->stride_y,
                     (a->keys[SDL_SCANCODE_LSHIFT] ? 1.7f : 1.f) / 30.f);
+    } else {
+        a->stride_x = a->stride_y = 0;
     }
+    int previous_jobs = finished(&a->sim.blue), warning = a->sim.relief_at;
+    bool active = !strcmp(a->sim.result, "active");
     if (!sim_step(&a->sim, 1)) {
         SDL_Log("Mission error: %s", a->sim.error);
         a->running = false;
-    }
+    } else if (active && strcmp(a->sim.result, "active"))
+        play_cue(a, !strcmp(a->sim.result, "defeat"));
+    else if (!warning && a->sim.relief_at)
+        play_cue(a, 1);
+    else if (previous_jobs < finished(&a->sim.blue))
+        play_cue(a, 0);
 }
 void app_draw(App *a) {
     SDL_GetWindowSizeInPixels(a->window, &a->width, &a->height);

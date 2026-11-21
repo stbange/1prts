@@ -185,6 +185,51 @@ static void inputs(App *a) {
 }
 void component_tests(App *, const char *);
 void host_tests(const char *);
+static int observed_orders;
+static void check_order(int tick, int index, bool accepted) {
+    CHECK(tick == 0 && index == 1);
+    CHECK(accepted == (observed_orders == 0));
+    observed_orders++;
+}
+static void dispatch_cases(App *a) {
+    CHECK(sim_reset(&a->sim));
+    camera_reset(&a->camera);
+    a->observe_order = check_order;
+    app_action(a, 1);
+    app_action(a, 1);
+    a->observe_order = NULL;
+    CHECK(observed_orders == 2);
+    unsigned cues = a->audio_cues;
+    CHECK(sim_step(&a->sim, 119));
+    app_tick(a);
+    CHECK(a->audio_cues == cues + 1);
+    CHECK(sim_step(&a->sim, 2759 - a->sim.tick));
+    app_tick(a);
+    CHECK(a->sim.relief_at == 3000 && a->audio_cues == cues + 2);
+    xr_attach(a);
+    a->panel = FIELD;
+    Mat projection = mat_projection(1, 1), view = mat_view((V3){0, 1.72f, 0}, 0, 0);
+    orra_xr_eye(projection.v, view.v, 0, 0, 64, 64, 0, 1.72f, 0);
+    CHECK(sim_step(&a->sim, 270));
+    ui_relief_notice(&a->renderer, &a->sim, true);
+    CHECK(a->sim.red.walk > 0);
+    CHECK(sim_step(&a->sim, 280));
+    app_draw(a);
+    a->sim.red.hold = 0;
+    ui_relief_notice(&a->renderer, &a->sim, false);
+    a->sim.red.walk = 0;
+    ui_relief_notice(&a->renderer, &a->sim, false);
+    CHECK(sim_step(&a->sim, 5097 - a->sim.tick));
+    while (!strcmp(a->sim.result, "active")) app_tick(a);
+    CHECK(a->audio_cues == cues + 3);
+    app_key(a, SDL_SCANCODE_R);
+    a->keys[SDL_SCANCODE_W] = true;
+    app_tick(a);
+    CHECK(a->stride_y > 0 && a->stride_y < 1);
+    a->keys[SDL_SCANCODE_W] = false;
+    for (int i = 0; i < 8; i++) app_tick(a);
+    CHECK(a->stride_y == 0);
+}
 int main(int argc, char **argv) {
     CHECK(argc == 2);
     math_cases();
@@ -199,6 +244,7 @@ int main(int argc, char **argv) {
     }
     logic_cases(a);
     inputs(a);
+    dispatch_cases(a);
     component_tests(a, argv[1]);
     CHECK(!render_capture(&a->renderer, "/missing-orra-directory/a.ppm"));
     app_close(a);

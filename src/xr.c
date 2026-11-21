@@ -47,9 +47,12 @@ void orra_xr_eye(const float *projection, const float *view, int x, int y, int w
     Mat vp = mat_mul(p, mat_mul(v, base));
     V3 eye = to_world((V3){ox, oy, oz}, anchor, game->camera.yaw);
     render_view(&game->renderer, &game->sim, &game->camera, vp, eye, x, y, w, h);
-    if (game->panel != FIELD) {
+    if (game->panel != FIELD || game->sim.relief_at) {
         int lw = 900, lh = (int)(900.f * h / w);
-        ui_draw(game, lw, lh);
+        if (game->panel == FIELD)
+            ui_relief_notice(&game->renderer, &game->sim, false);
+        else
+            ui_draw(game, lw, lh);
         render_overlay(&game->renderer, lw, lh);
     }
 }

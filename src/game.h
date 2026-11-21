@@ -33,14 +33,14 @@ typedef struct {
 } Place;
 typedef struct {
     int alloy, loads, haul, draw, hold, walk, drive, rollout, ready, work_left, stock;
-    bool harvesting, mill, watch, motor, section, armor, power;
+    bool harvesting, mill, watch, motor, section, armor, power, advance, guard;
     char work[24];
 } Side;
 typedef struct {
     lua_State *L;
     int rules, state;
     char root[1024], error[320], report[160], result[16];
-    int tick, hold_ticks;
+    int tick, hold_ticks, relief_at;
     Side blue, red;
     Catalog cats[CATEGORY_COUNT];
     Order orders[ORDER_COUNT];

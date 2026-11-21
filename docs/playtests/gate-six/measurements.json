@@ -1,0 +1,178 @@
+{
+  "before": {
+    "pillars": {
+      "feel": 0.475,
+      "flow": 0.75,
+      "choice": 1,
+      "pace": 0.6472170354632976,
+      "fair": 0.4569661804939301,
+      "loop": 1
+    },
+    "composite": 61.39577436188323,
+    "episodes": {
+      "novice": 40,
+      "human": 40,
+      "oracle": 40,
+      "spam": 40,
+      "infantry": 40
+    },
+    "wins": {
+      "novice": 0,
+      "human": 40,
+      "oracle": 40,
+      "spam": 0,
+      "infantry": 40
+    },
+    "unfinished": {
+      "novice": 31,
+      "human": 0,
+      "oracle": 0,
+      "spam": 0,
+      "infantry": 0
+    },
+    "objective": {
+      "novice": 0.11156944444444448,
+      "human": 1.0,
+      "oracle": 1.0,
+      "spam": 0.0,
+      "infantry": 1.0
+    },
+    "human_sd": 0.0,
+    "skill_gap": 0.8884305555555555,
+    "mean_seconds": {
+      "novice": 228.66583333333332,
+      "human": 106.4175,
+      "oracle": 83.0,
+      "spam": 169.93333333333334,
+      "infantry": 83.0
+    },
+    "latency_p95_ms": 18.146565,
+    "drop_rate": 1,
+    "distinct_timing_cases": 6,
+    "feedback": {
+      "mill_order": 3,
+      "hauler_order": 3,
+      "mill_complete": 2,
+      "gate_loss": 1
+    },
+    "channels": 2.25,
+    "easing_ticks": 0,
+    "entropy": 0.9030899869919434,
+    "largest_share": 0.125,
+    "spam_ratio": 0.0,
+    "usage": {
+      "harvest": 80,
+      "mill": 80,
+      "motor": 80,
+      "armor": 80,
+      "guard": 80,
+      "watch": 80,
+      "section": 80,
+      "advance": 80
+    },
+    "cv": 2.8868941604652534,
+    "overload_seconds": 0,
+    "near_misses_per_min": null,
+    "hurtbox_ratio": null,
+    "warning_ms": 0.0,
+    "contrast": 3.198763263457511,
+    "contrast_pass_fraction": 0.37797579465354436,
+    "foreground_pixels": 22557,
+    "ttfa_s": 0.3522591,
+    "retry_s": 0.0160971,
+    "reward_median_s": 1.0,
+    "reward_p95_s": 5.694999999999997,
+    "milestone_median_s": 59.96666666666667,
+    "render_p95_ms": 18.548229999999982,
+    "delivered_fps": 58.44643204988587,
+    "frame_interval_p95_ms": 18.590274999999984
+  },
+  "after": {
+    "pillars": {
+      "feel": 1,
+      "flow": 0.75,
+      "choice": 1,
+      "pace": 0.8899321846262642,
+      "fair": 1,
+      "loop": 1
+    },
+    "composite": 91.01189303385894,
+    "episodes": {
+      "novice": 40,
+      "human": 40,
+      "oracle": 40,
+      "spam": 40,
+      "infantry": 40
+    },
+    "wins": {
+      "novice": 0,
+      "human": 40,
+      "oracle": 40,
+      "spam": 0,
+      "infantry": 0
+    },
+    "unfinished": {
+      "novice": 29,
+      "human": 0,
+      "oracle": 0,
+      "spam": 0,
+      "infantry": 0
+    },
+    "objective": {
+      "novice": 0.09233333333333317,
+      "human": 1.0,
+      "oracle": 1.0,
+      "spam": 0.0,
+      "infantry": 0.21555555555556
+    },
+    "human_sd": 0.0,
+    "skill_gap": 0.9076666666666668,
+    "mean_seconds": {
+      "novice": 223.33666666666667,
+      "human": 116.095,
+      "oracle": 102.0,
+      "spam": 169.93333333333334,
+      "infantry": 186.93333333333334
+    },
+    "latency_p95_ms": 16.390365,
+    "drop_rate": 0,
+    "distinct_timing_cases": 6,
+    "feedback": {
+      "mill_order": 3,
+      "hauler_order": 3,
+      "mill_complete": 3,
+      "gate_loss": 2
+    },
+    "channels": 2.75,
+    "easing_ticks": 3,
+    "entropy": 0.9030899869919434,
+    "largest_share": 0.125,
+    "spam_ratio": 0.0,
+    "usage": {
+      "harvest": 80,
+      "mill": 80,
+      "motor": 80,
+      "armor": 80,
+      "guard": 80,
+      "watch": 80,
+      "section": 80,
+      "advance": 80
+    },
+    "cv": 1.089933113388286,
+    "overload_seconds": 0,
+    "near_misses_per_min": null,
+    "hurtbox_ratio": null,
+    "warning_ms": 17966.666666666668,
+    "contrast": 4.89026107323953,
+    "contrast_pass_fraction": 0.6312851636911354,
+    "foreground_pixels": 22573,
+    "ttfa_s": 0.30260879999999996,
+    "retry_s": 0.017123799999999998,
+    "reward_median_s": 1.0,
+    "reward_p95_s": 5.666666666666667,
+    "milestone_median_s": 59.96666666666667,
+    "render_p95_ms": 17.68607499999999,
+    "delivered_fps": 58.718526869597895,
+    "frame_interval_p95_ms": 18.189904999999996
+  }
+}

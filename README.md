@@ -27,7 +27,7 @@ On Windows launch `build/bin/1stprts.exe`. Keep `assets/` and `scripts/` beside 
 
 On a touch-first browser, drag the left side to walk, drag the right side to look, and tap the on-screen controls to open the slate, issue orders and board. In supported secure WebXR sessions use the left stick to walk and the right stick to snap-turn. Left trigger opens the slate, left grip cycles its selection, right trigger confirms, and right grip operates the hatch.
 
-**Winning the opening.** Order a Plate Mill and start the hauler. A processed load earns four alloy. A Watch House and Gate Section let you occupy the switch room. A Motor Hall and Lintel let you contest the yard. Send the section to the gate and keep enemy armor out of the painted yard for 60 consecutive seconds. The clock and your crews keep moving while a panel is open.
+**Winning the opening.** Order a Plate Mill and start the hauler. A processed load earns four alloy. A Watch House and Gate Section let you occupy the switch room. A Motor Hall and Lintel let you contest the yard. Lookouts call out the Compact relief party when they spot your infantry crossing. Send armor to support the section and keep the room clear for 60 consecutive seconds. If the Compact takes it, the field notice shows how long you have to recover it. The clock and crews keep moving while a panel is open.
 
 ## Scope and content
 
@@ -53,6 +53,8 @@ openspec validate --all --strict
 On Linux with GCC, Lua 5.4's `luac`, Python 3 and Node 24, configure with `-DORRA_COVERAGE=ON` and run `python3 tools/coverage.py build`. The runner collects fresh unit-only profiles, inventories the first-party C and Lua sources, then enforces three independent 95% line gates including browser JavaScript. Run `python3 tests/browser.py build-web/bin` with Playwright Chromium installed for rendered desktop, touch and emulated WebXR checks.
 
 Set `ORRA_CAPTURE_DIR` to an existing directory and run `1stprts --replay tests/gantry.route` or `tests/gate-six.route` for first-person framebuffer captures. On headless Linux set `SDL_VIDEODRIVER=offscreen SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1`. [Screenshot gallery](docs/screenshots/README.md) · [Campaign OpenSpec milestones](openspec/changes/define-first-command/tasks.md)
+
+The Gate Six playtest compares two matched groups of seeds across five commander policies and records rendered feedback, timing and legibility. [Evaluation, captures and reproduction instructions](docs/playtests/gate-six/README.md)
 
 ## Licenses
 

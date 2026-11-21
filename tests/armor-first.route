@@ -1,0 +1,17 @@
+key 2
+key 1
+wait 300
+key 4
+wait 310
+key 6
+wait 310
+key 3
+wait 95
+key 5
+wait 92
+expect armor 1
+expect section 1
+key 8
+key 7
+wait 2500
+expect result victory

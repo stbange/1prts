@@ -1,0 +1,2 @@
+# Original game art
+The Orra Basin terrain, industrial buildings, vehicles, crew sprites, bitmap lettering and radio tones were authored for 1stprts by the 1stprts contributors. The source for the models and sound is in tools/make_art.py. These original assets and screenshots of them are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The shaders and source code use the project's MIT license.

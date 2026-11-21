@@ -1,0 +1,34 @@
+# Build both arms of the base and win without detaching the commander's view.
+shot 01-gate-six
+key 2
+key 1
+wait 130
+key 3
+wait 180
+key 5
+wait 310
+key 4
+wait 160
+key Tab
+shot 02-command-slate
+key Tab
+wait 140
+key 6
+wait 290
+expect armor 1
+expect section 1
+look 125 14
+shot 03-armor-yard
+look -125 -14
+# Walk to the Lintel's rear hatch from the Survey Hall road.
+hold D 28
+hold W 57
+key E
+expect aboard 1
+key 8
+key 7
+wait 85
+shot 03-aboard-lintel
+wait 2100
+expect result victory
+shot 04-gate-secured

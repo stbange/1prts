@@ -2,11 +2,13 @@
 
 These implementation milestones take the Orra Basin campaign from a ground battle to the shipping lanes and then into orbit.
 
+The first executable slice and its verification are documented in the repository README. The checkboxes here describe the larger campaign milestones, including remaining platform and simulation work.
+
 ## 1. Boot the portable runtime
 
 - [ ] 1.1 Create CMake targets for the C11/SDL3/OpenGL host, the headless simulation, Lua 5.4 and the Emscripten port.
 - [ ] 1.2 Load a manifest, a scripted mission and a visual asset from the sibling folders on all targets. Exercise a non-default working directory and a website served at a subpath.
-- [ ] 1.3 Add the unit runners, source inventories and per-language 95% line-coverage gates before adding gameplay systems.
+- [x] 1.3 Add unit runners, source inventories and independent 95% unit line-coverage gates.
 
 ## 2. Build the two ground forces
 
@@ -17,7 +19,7 @@ These implementation milestones take the Orra Basin campaign from a ground battl
 ## 3. Deliver Gate Six
 
 - [ ] 3.1 Ship surveyed pads, finite haul cycles, stock reservations, grid priority and staffed training and vehicle queues. Check cancellation, duplicate confirmations and a power interruption.
-- [ ] 3.2 Script a rival that pays for its units, takes terrain-appropriate routes and sends its infantry into the station. Exercise the 60-second hold, interruption and either faction winning.
+- [x] 3.2 Script a rival that pays for its units, takes terrain-appropriate routes and sends its infantry into the station. Exercise the 60-second hold, interruption and either faction winning.
 - [ ] 3.3 Replay infantry-first and armor-first openings at different render rates. Win from the yard and from aboard a produced vehicle. Verify the rival can win against an idle player.
 - [ ] 3.4 Change the gate hold and a vehicle livery with external pack overrides. Repeat on native and web with the same respective binaries.
 

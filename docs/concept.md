@@ -10,6 +10,8 @@ When the basin authority dissolved, its garrisons split. The terrace towns inher
 
 The pacing reference is the original 1995 *Command & Conquer*. A hauler returns, the mill pays out, a factory door opens and the unit you paid for joins a fight that is already moving. Here, every one of those events happens somewhere you can stand. The basin's water dispute supplies the campaign, and its dredges, gatehouses and bridge machinery supply the shapes of the armies. [Faction, unit and building field guide](field-guide.md)
 
+The campaign also follows the Terrace Railway, Salt Survey, Lantern Pilots and Meridian Dock Trust. The first executable operation is Gate Six. The remaining five operations are described in the campaign inventory. [Expanded roster and operations](roster.md)
+
 ## Being the commander
 
 You are a field commander attached to an Assembly yard. Your authority travels by radio. Your body travels on foot or aboard something a crew operates. The tank commander runs the vehicle while you lean out of its cupola and give orders to the rest of the column. In later operations a pilot can fly you to a site and an engineer can keep a ship running while you are on another deck.

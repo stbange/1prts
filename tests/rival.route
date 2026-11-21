@@ -1,0 +1,5 @@
+wait 5700
+expect result defeat
+key R
+expect result active
+expect alloy 8

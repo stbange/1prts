@@ -1,0 +1,63 @@
+name: Game builds and tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Linux graphics drivers and unit tools
+        if: runner.os == 'Linux'
+        run: >
+          sudo apt-get update && sudo apt-get install -y lua5.4 libegl1-mesa-dev
+          libgl1-mesa-dev libgles2-mesa-dev libx11-dev libxext-dev libxrandr-dev
+          libxcursor-dev libxi-dev libxfixes-dev libxkbcommon-dev libasound2-dev
+      - name: Configure native
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DORRA_COVERAGE=${{ runner.os == 'Linux' && 'ON' || 'OFF' }}
+      - run: cmake --build build --config Release --parallel 4
+      - name: Linux runtime and rendered replays
+        if: runner.os == 'Linux'
+        run: |
+          ctest --test-dir build -C Release --output-on-failure
+          python3 tools/coverage.py build
+      - name: Native launch and Lua unit checks
+        if: runner.os != 'Linux'
+        run: ctest --test-dir build -C Release -R "^(cli|lua)_units$" --output-on-failure
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Gate-Six-${{ runner.os }}
+          path: build/bin/
+  web:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.69
+      - name: Build Emscripten distribution
+        run: |
+          emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-web --parallel 4
+      - name: Exercise browser inputs
+        run: |
+          python3 -m pip install playwright
+          python3 -m playwright install --with-deps chromium
+          python3 tests/browser.py build-web/bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Gate-Six-Web
+          path: build-web/bin/

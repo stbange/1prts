@@ -1,0 +1,17 @@
+# Take the physical stairs to the Survey Hall inspection gantry.
+key 1
+key 2
+wait 140
+key 3
+wait 170
+key 5
+wait 340
+key 4
+wait 270
+key 6
+wait 330
+hold A 111
+hold W 89
+expect height 5.8
+look 200 62
+shot 00-survey-gantry

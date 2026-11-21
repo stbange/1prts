@@ -1,0 +1,10 @@
+# Enter the Survey Hall on foot and operate its staffed dispatch desk.
+hold A 139
+hold W 166
+look 38 27
+shot 05-dispatch-room
+key E
+expect panel orders
+key 2
+expect alloy 4
+key Tab

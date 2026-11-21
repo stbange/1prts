@@ -1,5 +1,7 @@
 # Orra Basin field guide
 
+The campaign contains six factions, 39 unit types, 27 base facilities, three objective structures, six missions and six upgrades. This guide describes the original two armies and their first encounters. [Complete campaign inventory](roster.md)
+
 ## Who is fighting
 
 | Field note | Weir Assembly | Sounding Compact |

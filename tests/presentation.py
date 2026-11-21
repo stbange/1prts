@@ -45,6 +45,23 @@ with tempfile.TemporaryDirectory() as directory:
         route.write_text("\n".join(["rate "+str(rate)]+controls))
         result=subprocess.check_output([binary,"--replay",route],env=dict(os.environ,ORRA_COMPACT_REPLAY="1"),text=True)
         assert next(v for v in result.splitlines() if v.startswith("state ")) == reference.splitlines()[0]
+    def resume_after_exit(sector, commands):
+        saves=temp/(sector+"-saves")
+        runtime=dict(os.environ,ORRA_COMPACT_REPLAY="1",ORRA_SAVE_DIR=str(saves))
+        runtime.pop("ORRA_CAPTURE_DIR",None)
+        def play(keys):
+            path=temp/(sector+"-quit.route")
+            path.write_text("\n".join(keys+["wait 183","checkpoint restored"]))
+            replay=subprocess.check_output([binary,"--mission",sector,"--replay",path],cwd=temp,env=runtime,text=True)
+            return [line for line in replay.splitlines() if line.startswith(("state restored","pose restored","checkpoint restored"))]
+        baseline=play(commands+["key F5"])
+        assert len(baseline)==3 and (saves/"command.sav").is_file()
+        resumed=play(["key F9"])
+        assert resumed==baseline,(sector,baseline,resumed)
+    capture=(repo/"gate-six.route").read_text().split("wait 2100")[0].splitlines()
+    resume_after_exit("gate-six",capture+["wait 570","expect claiming 1"])
+    crossing=(repo/"tide-window.route").read_text().split("wait 1800")[0].splitlines()
+    resume_after_exit("tide-window",crossing+["key C","key 7","key 1","key Escape","key Escape","expect working depot"])
     executable=checksum(binary)
     base_frame=None
     for sector in ("gate-six","tide-window"):

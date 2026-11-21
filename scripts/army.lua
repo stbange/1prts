@@ -4,6 +4,8 @@ return function(ctx, rules)
     local M = {}
     local pads = { ["west-pad"] = true, ["east-pad"] = true, ["bank-pad"] = true }
     local recipes = rules.jobs
+    recipes.dynamo =
+        { cost = 4, duration = 120, draw = 0, bay = "fit", label = "Dynamo House", needs = "mill" }
     local function faction(s, a)
         return a == s.red and "rival" or ctx.owner
     end
@@ -19,6 +21,7 @@ return function(ctx, rules)
             sites = {},
             counts = {},
             offline = {},
+            feeds = {},
             priority = {},
             lots = { ["home-lot"] = 8, ["north-lot"] = 8, ["common-lot"] = 1 },
         }
@@ -38,7 +41,7 @@ return function(ctx, rules)
         for _ in pairs(s.army.bays) do
             pending = pending + 1
         end
-        return not orra_reserve_scene or orra_reserve_scene(#ctx.site + pending * 3)
+        return not orra_reserve_scene or orra_reserve_scene(#ctx.site + pending * 4)
     end
     function M.queue(s, a, id, producer, pad)
         local recipe = recipes[id]
@@ -46,6 +49,9 @@ return function(ctx, rules)
             return false
         end
         local rival = a == s.red
+        if pad and not pads[pad] then
+            return say(s, a, "Unknown survey pad.")
+        end
         if pad and s.army.sites[pad] then
             return say(s, a, "Survey pad occupied.")
         end
@@ -53,9 +59,6 @@ return function(ctx, rules)
         local works = s.army.sites[producer]
         if not works and recipe.needs and not a[recipe.needs] then
             return say(s, a, "Commission " .. recipe.needs .. " first.")
-        end
-        if pad and (not pads[pad] or s.army.sites[pad]) then
-            return say(s, a, "Survey pad occupied.")
         end
         if s.army.bays[producer] or a.queues[recipe.bay] and not works then
             return say(s, a, "Bay is already working.")
@@ -79,7 +82,9 @@ return function(ctx, rules)
         if pad then
             s.army.sites[pad] = { owner = faction(s, a), reserved = true }
         end
-        say(s, a, producer .. " accepted " .. recipe.label .. ".")
+        local station = s.instances[producer == "fit" and "fitters" or producer]
+        local worker = station and (station.crew[1] or producer) or producer
+        say(s, a, worker .. " accepted " .. recipe.label .. " at " .. producer .. ".")
         return true
     end
     function M.cancel(s, a, minimum)
@@ -147,6 +152,48 @@ return function(ctx, rules)
         s.army.bays[bay] = nil
         say(s, a, instance.name .. " ready at " .. bay .. ".")
     end
+    function M.grid(s, a)
+        local sign = a == s.red and "rival-" or ""
+        local who = a == s.red and "rival" or "home"
+        local priority = s.army.priority[who] or sign .. a.priority
+        local loads = {}
+        local capacity = 6
+        for _, kind in ipairs({ "mill", "watch", "motor" }) do
+            if a[kind] then
+                loads[sign .. kind] = recipes[kind].draw
+            end
+        end
+        for key, site in pairs(s.army.sites) do
+            if site.owner == faction(s, a) and site.type then
+                if site.type == "dynamo" then
+                    capacity = capacity + 6
+                else
+                    loads[key] = recipes[site.type].draw
+                end
+            end
+        end
+        local keys = {}
+        for key in pairs(loads) do
+            keys[#keys + 1] = key
+        end
+        table.sort(keys, function(x, y)
+            if x == priority or y == priority then
+                return x == priority and y ~= priority
+            end
+            return x < y
+        end)
+        for _, key in ipairs(keys) do
+            local online = a.power and not s.army.offline[key] and loads[key] <= capacity
+            s.army.feeds[key] = online
+            if online then
+                capacity = capacity - loads[key]
+            end
+        end
+    end
+    function M.grid_on(s, a, key)
+        local main = s.army.feeds[key]
+        return main == true or main == nil and a.power and not s.army.offline[key]
+    end
     function M.tick(s)
         if not next(s.army.bays) then
             return
@@ -160,14 +207,14 @@ return function(ctx, rules)
             local q = s.army.bays[bay]
             local a = q.owner == "rival" and s.red or s.blue
             local powered = q.pad
-                or a.power and not s.army.offline[bay]
+                or M.grid_on(s, a, bay)
                 or a.reserve > 0 and s.army.priority[a == s.red and "rival" or "home"] == bay
             if a.staffed and not s.service[bay] and powered and not (q.pad and a.away) then
                 if not q.started then
                     q.started = true
                     a.reserved = a.reserved - q.cost
                 end
-                if not q.pad and not a.power then
+                if not q.pad and not M.grid_on(s, a, bay) then
                     a.reserve = a.reserve - 1
                 end
                 q.left = math.max(0, q.left - 1)
@@ -203,12 +250,17 @@ return function(ctx, rules)
                     a.loads = lots[home]
                 end
             end
-        elseif a.mill and a.power and a.staffed then
+        elseif a.mill and M.grid_on(s, a, rival and "rival-mill" or "mill") and a.staffed then
             a.haul, a.stock, a.alloy = 0, 0, a.alloy + 4
             if lots[lot] == 0 then
                 a.lot = home
             end
             say(s, a, "Mole to dispatch. Four alloy delivered.")
+        end
+        local load = ctx.index[rival and "rival-load" or "mole-load"]
+        local parent = ctx.index[rival and "rival-mole" or "mole"]
+        if load then
+            s.frames[load] = { 0, a.stock == 1 and 1.1 or -8, 3, 0, parent }
         end
         if lot == "common-lot" then
             local i = ctx.index[rival and "rival-mole" or "mole"]
@@ -235,9 +287,13 @@ return function(ctx, rules)
             local a = bay.owner == "rival" and s.red or s.blue
             local reason = bay.left == 0 and "exit occupied"
                 or s.service[key] and "crew away"
-                or (not a.power or s.army.offline[key]) and not bay.pad and "grid isolated"
+                or not M.grid_on(s, a, key) and not bay.pad and "grid isolated"
                 or "on shift"
             return ("%s / %s / %ds / %s"):format(key, bay.id, math.ceil(bay.left / 30), reason)
+        end
+        local original = s.blue.queues[key == "fitters" and "fit" or key]
+        if original then
+            return ("%s / %s / %ds"):format(key, original.id, math.ceil(original.left / 30))
         end
         local lots = s.army.lots[key]
         if lots then

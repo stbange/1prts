@@ -96,8 +96,18 @@ for _, directory in ipairs(manifest.packs or {}) do
                 v.owner and v.terrain and type(v.units) == "string" and type(v.buildings) == "string",
                 "incomplete sector"
             )
-            local file = assert(io.open(path(root, "assets/models/" .. v.terrain .. ".mesh"), "rb"))
-            file:close()
+            local terrain = "assets/models/" .. v.terrain .. ".mesh"
+            local declared = false
+            for _, file in ipairs(manifest.files or {}) do
+                if file == terrain then
+                    declared = true
+                    break
+                end
+            end
+            if not declared then
+                local file = assert(io.open(path(root, terrain), "rb"))
+                file:close()
+            end
             if v.routes then
                 assert(v.routes.road and #v.routes.road > 0, "sector needs road junctions")
                 for _, lane in pairs(v.routes) do
@@ -149,6 +159,7 @@ local id = requested or "gate-six"
 local mission = assert(missions[id], "unknown mission " .. id)
 local sector = mission.sector or id
 local ctx = scenes.make(sector, catalog, fleet, script("site"), sectors)
+local stations = script("dispatch_points")(ctx, sectors[sector] and sectors[sector].targets)
 ctx.emit = emit
 ctx.freight = script("freight")(ctx)
 ctx.packages = packages
@@ -184,6 +195,7 @@ if id == "gate-six" then
         { "common", "Salvage the shared plate lot", "mole" },
         { "build:motor@west-pad", "Build Motor Hall / west pad", "fitters" },
         { "build:watch@east-pad", "Build Watch House / east pad", "fitters" },
+        { "build:dynamo@bank-pad", "Add six grid capacity / bank pad", "fitters" },
         { "build:mill@bank-pad", "Build Plate Mill / bank pad", "fitters" },
     }) do
         rules.actions[#rules.actions + 1] = action
@@ -238,6 +250,7 @@ local initial_places = #ctx.site
 local archive = script("archive")(ctx, rules, records, decode, mission, initial_places)
 rules.save, rules.restore, rules.ledger, rules.enter, rules.next =
     archive.save, archive.restore, archive.ledger, archive.enter, archive.next
+rules.entry = archive.entry
 local navigation = script("routes")
 ctx.army = rules.army
 ctx.position = function(s, key)
@@ -294,6 +307,10 @@ end
 function rules.command(s, order)
     if s.result ~= "active" then
         return false
+    end
+    local addressed = order:match("^work:(.+@.+)$") or order:match("^move:(.+@.+)$")
+    if stations[addressed] then
+        order = stations[addressed]
     end
     local landing = order:match("^lift%-call%-(%d)$")
     if landing then
@@ -457,7 +474,15 @@ function rules.inspect(s, key)
     if t.group[key] then
         return "GROUP / standing by"
     end
-    return rules.army and rules.army.status(s, key) or ""
+    local status = rules.army and rules.army.status(s, key)
+    if status and status ~= "" then
+        return status
+    end
+    local unit = s.instances[key]
+    if unit and unit.veterans then
+        return "Assigned watch / " .. table.concat(unit.veterans, ", ")
+    end
+    return unit and unit.person or ""
 end
 function rules.record(s)
     return records.encode(s)

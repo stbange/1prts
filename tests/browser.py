@@ -88,6 +88,8 @@ def exercise(browser, url, layout, pack=False):
     try:
         page.goto(url+"?replayClock=1")
         page.wait_for_function(READY)
+        assert not any(url.endswith("/station.mesh") for url in requests),requests
+        print("boot",layout,pack,page.evaluate("()=>({ms:Math.round(performance.now()),heap:Module.HEAPF32.byteLength,assets:performance.getEntriesByType('resource').length})"),flush=True)
         assert len(page.locator("canvas").screenshot())>12000
         assert int(status()[15])==(2700 if pack else 1800)
         if layout=="touch":
@@ -164,12 +166,13 @@ def exercise(browser, url, layout, pack=False):
         assert status()[0]=="victory",status()
         if layout=="xr":
             assert int(status()[8])>=0
-            targets=[("gate-six","mole",-8,1,2),("tide-window","kestrel",0,3,0),
-                     ("westbound","shunter",0,2,-3),("white-mile","barrow",0,2,-3),
-                     ("night-mail","kite",0,3,-10),("high-water","lark",0,3,0),
-                     ("compact-bank","hinge",-27,2,5)]
+            targets=[("gate-six","mole",-8,1,2),("tide-window","kestrel",0,1,0),
+                     ("westbound","shunter",-1,2,-3),("white-mile","barrow",-1,2,-3),
+                     ("night-mail","kite",0,1,-10),("high-water","lark",0,1,0),
+                     ("compact-bank","hinge",-28,2,5)]
             for index,(sector,crew,x,y,z) in enumerate(targets):
                 page.keyboard.press("m");advance(0);page.keyboard.press(str(index+1));advance(0)
+                page.wait_for_function("id=>Module.UTF8ToString(Module._orra_status()).split('|')[7]===id",arg=sector)
                 state=status();assert state[7]==sector,state
                 cx,cz,yaw=float(state[10]),float(state[11]),float(state[12])
                 cy=1.72

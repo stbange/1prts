@@ -72,6 +72,7 @@ enum { UNITS, BUILDINGS, FACTIONS, MISSIONS, UPGRADES };
 bool sim_open(Sim *, const char *);
 bool sim_open_mission(Sim *, const char *, const char *);
 bool sim_order(Sim *, const char *);
+bool sim_contact(const Sim *, const char *, V3 *, int *);
 void sim_crew_report(const Sim *, const char *, char *, size_t);
 void sim_inspect(Sim *, const char *, char *, size_t);
 void sim_log(const Sim *, int, char *, size_t);

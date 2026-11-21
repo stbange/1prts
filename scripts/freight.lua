@@ -54,6 +54,16 @@ return function(ctx)
             attach(s, entry[1], entry[2])
         end
     end
+    -- Unload at the actual receiving door or loading apron, in the receiver's frame.
+    local berths = {
+        freight = { -3, 0, 12 },
+        ["assay-load"] = { 2, 0, 8 },
+        ["mail-1"] = { -9, 0, 13 },
+        ["mail-2"] = { -36, 0, 12 },
+        ["mail-3"] = { -4, 0, 7 },
+        module = { -2, 0, 45 },
+        transfer = { 6, 0, 353 },
+    }
     function M.deliver(s, key)
         local entry = entries[key]
         if not entry then
@@ -61,6 +71,14 @@ return function(ctx)
         end
         if s.freight.items[entry[1]] ~= entry[2] then
             return false
+        end
+        local p, port, berth = ctx.position(s, entry[2]), ctx.position(s, entry[3]), berths[key]
+        if berth then
+            local dx, dy, dz = p[1] - port[1] - berth[1], p[2] - port[2] - berth[2], p[3] - port[3] - berth[3]
+            if dx * dx + dy * dy + dz * dz > 25 then
+                s.report = entry[2] .. " waiting for " .. entry[3] .. " to meet the handover."
+                return false
+            end
         end
         attach(s, entry[1], entry[3], -(#key % 3))
         s.freight.deliveries[key] = entry[1]

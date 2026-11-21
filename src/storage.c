@@ -25,7 +25,8 @@ static bool paths(char slot[1400], char previous[1400], char temporary[1400]) {
     if (ok) {
         snprintf(slot, 1400, "%s/command.sav", dir);
         snprintf(previous, 1400, "%s/previous.sav", dir);
-        snprintf(temporary, 1400, "%s/command.tmp", dir);
+        snprintf(temporary, 1400, "%s/command-%llx-%08x.tmp", dir,
+                 (unsigned long long)SDL_GetPerformanceCounter(), (unsigned)SDL_rand_bits());
     }
     SDL_free(pref);
     return ok;
@@ -55,9 +56,10 @@ static char *read_slot(const char *name, char **body) {
     return NULL;
 }
 static bool replace_file(const char *path, const char *temporary, const char *text) {
-    if (!SDL_SaveFile(temporary, text, strlen(text)))
-        return false;
-    return SDL_RenamePath(temporary, path);
+    bool ok = SDL_SaveFile(temporary, text, strlen(text)) && SDL_RenamePath(temporary, path);
+    if (!ok)
+        SDL_RemovePath(temporary);
+    return ok;
 }
 bool app_save(App *a) {
     char slot[1400], previous[1400], temporary[1400], head[920];
@@ -131,7 +133,7 @@ static bool restore(App *a, char *body, char *why, size_t length) {
                &used) != 18 ||
         !isfinite(c.pos.x + c.pos.y + c.pos.z + c.yaw + c.pitch + c.local.x + c.local.y +
                   c.local.z) ||
-        panel < FIELD || panel > RADIO || selected < 0 || listing < 0 || body[used] != '\n')
+        panel < FIELD || panel > CHART || selected < 0 || listing < 0 || body[used] != '\n')
         return false;
     Sim *s = calloc(1, sizeof *s);
     Renderer *r = calloc(1, sizeof *r);
@@ -200,7 +202,7 @@ bool app_resume(App *a) {
 }
 bool app_continue(App *a) {
     char *next = sim_text(&a->sim, "next"), *ledger = sim_text(&a->sim, "ledger");
-    bool ok = next && *next && ledger && app_mission(a, next) && sim_import(&a->sim, "enter", ledger);
+    bool ok = next && *next && ledger && app_stage(a, next, ledger);
     free(next);
     free(ledger);
     notice(a, ok ? "Campaign watch reported for duty." : "No linked operation available.");

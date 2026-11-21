@@ -128,8 +128,12 @@ function M.fleet(read)
         if line:sub(1, 1) ~= "#" then
             local id, name, gear, x, z = line:match("^(%S+) (%S+) (%S+) (%S+) (%S+)$")
             local def = assert(fleet[id], "room references unknown asset")
-            def.room = { name = name, gear = gear, x = assert(tonumber(x)) * def.w, z = assert(tonumber(z))
-                * def.d }
+            def.room = {
+                name = name,
+                gear = gear,
+                x = assert(tonumber(x)) * def.w,
+                z = assert(tonumber(z)) * def.d,
+            }
         end
     end
     return fleet
@@ -248,7 +252,9 @@ function M.make(id, catalog, fleet, base_site, sectors)
     local function entity(key, unit, pos)
         assert(type(key) == "string" and key:match("^[%w-]+$") and #key <= 50, "invalid instance ID")
         local def = assert(fleet[unit], unit)
-        assert(not index[key], "duplicate entity " .. key)
+        for _, child in ipairs({ key, key .. "-1", key .. "-2", key .. "-work" }) do
+            assert(not index[child], "duplicate entity " .. child)
+        end
         local model = def.model or people_models[unit] or unit
         local row = { model, pos[1], pos[2], pos[3], pos[4] or 0 }
         row.owner = key:match("^rival%-") and "rival" or plan[1]
@@ -389,6 +395,10 @@ function M.make(id, catalog, fleet, base_site, sectors)
         for n = 2, #manifest do
             fitting("core", manifest[n], manifest[1], n * 1.4, 0.08, 2)
         end
+    end
+    if gate then
+        fitting("core", "mole-load", "mole", 0, -8, 3)
+        fitting("core", "rival-load", "rival-mole", 0, -8, 3)
     end
     if index.depot then
         fitting("depot-gantry", "depot-gallery", "depot", 0, 0, 0)

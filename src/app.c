@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 static void tell(App *a, const char *msg) {
     snprintf(a->message, sizeof a->message, "%s", msg);
@@ -22,6 +25,7 @@ static void enter_sector(App *a) {
         }
     }
     a->panel = FIELD;
+    a->message[0] = 0;
     a->selected = a->listing = a->category = a->item = a->message_ticks = 0;
     a->stride_x = a->stride_y = a->stick_x = a->stick_y = 0;
     a->left_down = a->right_down = false;
@@ -36,10 +40,11 @@ void app_adopt(App *a,Sim *s,Renderer *r) {
     a->sim=*s; a->renderer=*r;
     enter_sector(a);
 }
-bool app_mission(App *a, const char *id) {
+static bool open_stage(App *a, const char *id, const char *ledger) {
     Sim *next = calloc(1, sizeof *next);
     Renderer *view = calloc(1, sizeof *view);
-    bool ok = next && view && sim_open_mission(next, a->sim.root, id) && render_open(view, next);
+    bool ok = next && view && sim_open_mission(next, a->sim.root, id) &&
+              (!ledger || sim_import(next, "enter", ledger)) && render_open(view, next);
     if (ok) {
         app_adopt(a,next,view);
     } else {
@@ -55,6 +60,45 @@ bool app_mission(App *a, const char *id) {
     free(next);
     return ok;
 }
+void app_sector_ready(App *a, int request, int success) {
+    if (request != a->sector_request || !*a->pending_mission)
+        return;
+    if (success)
+        open_stage(a, a->pending_mission, a->pending_ledger);
+    else
+        tell(a, "Could not load sector files. Check the connection and select the operation again.");
+    a->pending_mission[0] = 0;
+    SDL_free(a->pending_ledger);
+    a->pending_ledger = NULL;
+}
+bool app_stage(App *a, const char *id, const char *ledger) {
+    ++a->sector_request;
+    SDL_free(a->pending_ledger);
+    a->pending_ledger = NULL;
+    a->pending_mission[0] = 0;
+#ifdef __EMSCRIPTEN__
+    if (!EM_ASM_INT({ return Module.requestSector(UTF8ToString($0), $1); }, id, a->sector_request)) {
+        if (ledger && !(a->pending_ledger = SDL_strdup(ledger)))
+            return false;
+        SDL_strlcpy(a->pending_mission, id, sizeof a->pending_mission);
+        tell(a, "Loading operation charts and models.");
+        return true;
+    }
+#endif
+    return open_stage(a, id, ledger);
+}
+bool app_mission(App *a, const char *id) { return app_stage(a, id, NULL); }
+static void retry(App *a) {
+    char *entry = sim_text(&a->sim, "entry");
+    if (entry) {
+        if (sim_reset(&a->sim) && sim_import(&a->sim, "enter", entry)) {
+            a->renderer.loaded_places = 0;
+            enter_sector(a);
+        } else
+            tell(a, a->sim.error);
+        free(entry);
+    }
+}
 const Order *app_crew_order(const App *a, int choice) {
     const char *key = a->sim.place[a->sim.roster[a->member]].key;
     for (int i = 0; i < a->sim.order_count; i++)
@@ -68,11 +112,20 @@ static int assigned_count(const App *a) {
     return n;
 }
 static const char *field_choices[][2] = {
-    {"point","Point at a world destination"}, {"group","Add or remove from group"}, {"move","Move to target"}, {"scout","Scout and report"},
-    {"escort","Escort moving crew"}, {"engage","Engage reported contact"}, {"hold","Hold position"},
-    {"withdraw","Withdraw to target"}, {"support","Support or recover target"},
-    {"bay:armor","Produce another armored crew"}, {"bay:section","Muster another section"},
-    {"bay:priority","Assign this bay reserve power"}, {"bay:power","Switch this bay grid feed"},
+    {"point", "Point at a world destination"},
+    {"group", "Add or remove from group"},
+    {"move", "Move to target"},
+    {"scout", "Scout and report"},
+    {"escort", "Escort moving crew"},
+    {"engage", "Engage reported contact"},
+    {"hold", "Hold position"},
+    {"withdraw", "Withdraw to target"},
+    {"support", "Support or recover target"},
+    {"chart", "Choose target on sector chart"},
+    {"bay:armor", "Produce another armored crew"},
+    {"bay:section", "Muster another section"},
+    {"bay:priority", "Assign this bay reserve power"},
+    {"bay:power", "Switch this bay grid feed"},
 };
 const char *app_field_choice(const App *a,int listing,bool label) {
     int i=listing-3-assigned_count(a);
@@ -82,7 +135,7 @@ int app_list_count(const App *a) {
     if (a->panel == CREW_JOB) {
         const Place *p=&a->sim.place[a->sim.roster[a->member]];
         bool bay=!strcmp(a->sim.mission,"gate-six") && (!strcmp(p->type,"watch") || !strcmp(p->type,"motor"));
-        return assigned_count(a)+3+(bay ? 13 : 9);
+        return assigned_count(a) + 3 + (bay ? 14 : 10);
     }
     return a->panel == OPERATIONS ? a->sim.operation_count+4
            : a->panel == CREWS    ? a->sim.crew_count
@@ -93,7 +146,11 @@ void app_target(App *a, int direction) {
     for (int i = 0; i < a->sim.places; i++) {
         a->destination = (a->destination + direction + a->sim.places) % a->sim.places;
         const Place *p = &a->sim.place[a->destination];
-        if (p->key[0] && (!strcmp(p->owner, "rival") || !strcmp(p->family,"marker") || p->role[0]))
+        V3 last;
+        int age;
+        if (!strcmp(p->owner, "rival") && !sim_contact(&a->sim, p->key, &last, &age))
+            continue;
+        if (p->key[0] && (!strcmp(p->family, "marker") || p->role[0]))
             return;
     }
 }
@@ -111,8 +168,9 @@ void app_choose(App *a) {
         switch (a->listing-a->sim.operation_count) {
             case 0: app_save(a);break;
             case 1: app_resume(a);break;
-            case 2: { char *ledger=sim_text(&a->sim,"ledger");sim_reset(&a->sim);enter_sector(a);
-                if (ledger) {sim_import(&a->sim,"enter",ledger);free(ledger);}break; }
+            case 2:
+                retry(a);
+                break;
             case 3: app_continue(a);break;
         }
     } else if (a->panel == CREWS && a->listing < a->sim.crew_count)
@@ -123,6 +181,13 @@ void app_choose(App *a) {
         char order[160];
         const char *field=app_field_choice(a,a->listing,false);
         const char *target=*a->ground_target ? a->ground_target : a->sim.place[a->destination].key;
+        if (field && !strcmp(field, "chart")) {
+            a->aiming = true;
+            a->pointed = false;
+            a->listing = assigned_count(a) + 5;
+            a->panel = CHART;
+            return;
+        }
         if (field && !strcmp(field,"point")) {
             a->aiming=true; a->pointed=false; a->listing+=2; a->panel=FIELD;
             tell(a,"Point at a crew, work site or ground. Click or tap to mark.");
@@ -211,6 +276,8 @@ bool app_open(App *a, const char *root, bool hidden) {
     return true;
 }
 void app_close(App *a) {
+    SDL_free(a->pending_ledger);
+    a->pending_ledger = NULL;
     sound_close(a);
     if (a->audio)
         SDL_DestroyAudioStream(a->audio);
@@ -259,6 +326,11 @@ bool app_lift(App *a,bool activate) {
     return false;
 }
 void app_key(App *a, SDL_Scancode k) {
+    if (k == SDL_SCANCODE_B) {
+        a->panel = a->panel == CHART ? FIELD : CHART;
+        capture_mouse(a, false);
+        return;
+    }
     if (k==SDL_SCANCODE_F5) {app_save(a);return;}
     if (k==SDL_SCANCODE_F9) {app_resume(a);return;}
     if (a->aiming && k==SDL_SCANCODE_ESCAPE) {a->aiming=false;a->panel=CREW_JOB;return;}
@@ -347,11 +419,7 @@ void app_key(App *a, SDL_Scancode k) {
         return;
     }
     if (k == SDL_SCANCODE_R && strcmp(a->sim.result, "active")) {
-        sim_reset(&a->sim);
-        enter_sector(a);
-        a->panel = FIELD;
-        a->message_ticks = 0;
-        a->stride_x = a->stride_y = 0;
+        retry(a);
         return;
     }
     if (k == SDL_SCANCODE_E) {

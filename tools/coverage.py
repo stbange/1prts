@@ -41,6 +41,28 @@ def native_coverage(build, temp):
         raise RuntimeError(f"Uninstrumented production sources: {missing}. Configure with ORRA_COVERAGE=ON.")
     return counts
 
+def with_target_adapters(inventory):
+    """Conservative union. Count even continued expressions in unmeasured target-only C blocks."""
+    result={path:dict(lines) for path,lines in inventory.items()}
+    for path,lines in result.items():
+        fallback=False
+        platforms=[]
+        for n,raw in enumerate(path.read_text().splitlines(),1):
+            line=raw.strip()
+            if re.match(r"#if(?:def)?\b",line):
+                target=bool(re.search(r"\b(?:__EMSCRIPTEN__|__APPLE__|_WIN32)\b",line))
+                platforms.append((fallback,target))
+                fallback=fallback or target
+            elif line.startswith("#elif") and platforms:
+                fallback=platforms[-1][0] or bool(re.search(r"__APPLE__|__EMSCRIPTEN__|_WIN32",line))
+            elif line.startswith("#else") and platforms:
+                fallback=platforms[-1][0]
+            elif line.startswith("#endif") and platforms:
+                fallback=platforms.pop()[0]
+            elif fallback and line and not line.startswith(("#","//","/*","*")) and line not in ("{","}"):
+                lines.setdefault(n,False)
+    return result
+
 def lua_coverage(luac, hitfile):
     hits = set(hitfile.read_text().splitlines())
     result = {}
@@ -71,7 +93,9 @@ if __name__ == "__main__":
         temp=Path(folder)
         env=dict(os.environ,GCOV_PREFIX=str(temp),GCOV_PREFIX_STRIP="0",ORRA_LUA_HITS=str(temp/"lua.hits"))
         run(["ctest","--test-dir",str(args.build.resolve()),"-R","^(cli|engine|lua|headless)_units$","--output-on-failure"],env=env)
-        native_ok = threshold("First-party C (compiled native configuration)",native_coverage(args.build.resolve(),temp))
+        native = native_coverage(args.build.resolve(),temp)
+        threshold("C in the measured native configuration",native)
+        native_ok = threshold("First-party C including unmeasured platform adapters",with_target_adapters(native))
         lua_ok = threshold("Shipped Lua",lua_coverage(args.luac,temp/"lua.hits"))
     browser = subprocess.run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",
          "--test-coverage-lines=95","tests/web-unit.cjs"],cwd=ROOT)

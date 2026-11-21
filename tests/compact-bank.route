@@ -12,3 +12,4 @@ wait 820
 key 8
 wait 490
 expect result victory
+shot compact-handover

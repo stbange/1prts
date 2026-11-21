@@ -96,7 +96,7 @@ void rooms_test(const char *root) {
                     done = 1;
             if (!done && walk(&s, host)) {
                 snprintf(passed[total++], 32, "%s", type);
-                printf("walk %s %s %s\n", type, operations[k], p->name);
+                printf("walk\t%s\t%s\t%s\n", type, operations[k], p->name);
             }
         }
         sim_close(&s);

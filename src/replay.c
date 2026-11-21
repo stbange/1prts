@@ -22,10 +22,18 @@ static bool expect(const App *a, const char *key, const char *value) {
         return a->sim.tick == atoi(value);
     if (!strcmp(key, "hold-target"))
         return a->sim.hold_ticks == atoi(value);
+    if (!strcmp(key, "claiming"))
+        return (a->sim.blue.hold > 0) == (atoi(value) != 0);
+    if (!strcmp(key, "working")) {
+        int age;
+        return sim_crew_status(&a->sim, value, &age) == 1;
+    }
     if (!strcmp(key, "result"))
         return !strcmp(a->sim.result, value);
     if (!strcmp(key, "panel"))
         return !strcmp(a->panel == SLATE ? "orders" : a->panel == GUIDE ? "guide" : "field", value);
+    if (!strcmp(key, "deckheight"))
+        return fabsf(a->camera.local.y - (float)atof(value)) < .025f;
     if (!strcmp(key, "height"))
         return fabsf(a->camera.pos.y - (float)atof(value)) < .02f;
     if (!strcmp(key, "aboard"))
@@ -55,15 +63,15 @@ static void checkpoint(App *a, const char *name) {
     const Sim *s = &a->sim;
     uint32_t hash = sim_digest(&a->sim);
     printf("state %s %u\n", name, hash);
-    const unsigned char *sides[] = {(const unsigned char *)&s->blue, (const unsigned char *)&s->red};
-    for (int j = 0; j < 2; j++)
-        for (size_t i = 0; i < sizeof(Side); i++)
-            hash = (hash ^ sides[j][i]) * 16777619u;
+    printf("pose %s local %.2f %.2f %.2f world %.2f %.2f %.2f\n", name, a->camera.local.x,
+           a->camera.local.y, a->camera.local.z, a->camera.pos.x, a->camera.pos.y, a->camera.pos.z);
+    /* sim_digest covers both ledgers. Add only the projected world data the player sees. */
     for (int i = 0; i < s->places; i++) {
         V3 p = {0};
         bool active = world_object(s, i, &p);
         const int fields[] = {active, (int)lroundf(p.x * 1000), (int)lroundf(p.y * 1000),
-                              (int)lroundf(p.z * 1000), s->place[i].linked};
+                              (int)lroundf(p.z * 1000),
+                              s->place[i].moved ? s->place[i].linked : s->place[i].parent};
         for (int j = 0; j < 5; j++)
             hash = (hash ^ (uint32_t)fields[j]) * 16777619u;
     }

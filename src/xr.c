@@ -14,22 +14,30 @@ const char *orra_status(void) {
     static char status[560];
     if (!game)
         return "loading";
-    snprintf(status, sizeof status, "%s|%s|%d|%d|%s|%d|%d|%s|%d|%d|%.3f|%.3f|%.3f|%d|%d|%d|%d|%d|%d|%d|%s|%s|%s",
+    snprintf(status, sizeof status,
+             "%s|%s|%d|%d|%s|%d|%d|%s|%d|%d|%.3f|%.3f|%.3f|%d|%d|%d|%d|%d|%d|%d|%s|%s|%s",
              game->sim.result,
              game->panel == FIELD        ? "field"
              : game->panel == SLATE      ? "orders"
              : game->panel == OPERATIONS ? "operations"
              : game->panel == CREWS      ? "crews"
              : game->panel == CREW_JOB   ? "assignment"
+             : game->panel == CHART      ? "chart"
              : game->panel == RADIO      ? "log"
                                          : "guide",
              game->sim.blue.alloy, game->sim.tick, game->sim.report, game->touch, game->selected,
              game->sim.mission, game->camera.aboard, game->sim.progress, game->camera.pos.x,
              game->camera.pos.z, game->camera.yaw, game->left_down, game->right_down,
-             game->sim.hold_ticks, game->member, game->destination, game->sim.order_count, game->save_pending,
+             game->sim.hold_ticks, game->member, game->destination, game->sim.order_count,
+             game->save_pending,
              game->sim.crew_count ? game->sim.place[game->sim.roster[game->member]].key : "",
-             *game->ground_target ? game->ground_target : game->sim.place[game->destination].key, game->message);
+             *game->ground_target ? game->ground_target : game->sim.place[game->destination].key,
+             game->message);
     return status;
+}
+void orra_sector_ready(int request, int success) {
+    if (game)
+        app_sector_ready(game, request, success);
 }
 void orra_saved(int success) {
     if (!game) return;
@@ -71,6 +79,10 @@ void orra_xr_wrist(const float *pose) {
 int orra_xr_pick(float x, float y) {
     if (game->panel == FIELD || x < 0 || x > 1 || y < 0 || y > 1)
         return 0;
+    if (game->panel == CHART) {
+        chart_pick(game, 350, x * 350, y * 400);
+        return 1;
+    }
     /* Wrist coordinates use the slate's own logical extent, independent of canvas density. */
     if (game->panel == CREW_JOB && y * 400 >= 362)
         app_target(game, x > .5f ? 1 : -1);

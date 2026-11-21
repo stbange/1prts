@@ -1,4 +1,7 @@
 shot 12-west-exchange
+hold W 82
+key E
+expect vessel shunter
 key 1
 key 2
 key 3
@@ -13,3 +16,4 @@ wait 610
 key 7
 wait 1205
 expect result victory
+shot winter-handover

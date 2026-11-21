@@ -144,6 +144,28 @@ static void moving_frames(Sim *g) {
     }
     lua_pop(L, 1);
 }
+bool sim_contact(const Sim *g, const char *target, V3 *p, int *age) {
+    lua_State *L = g->L;
+    int seen = -1;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, g->state);
+    lua_getfield(L, -1, "contacts");
+    if (lua_istable(L, -1)) {
+        lua_pushnil(L);
+        while (lua_next(L, -2)) {
+            char key[64];
+            string_field(L, -1, "target", key, sizeof key);
+            int tick = number(L, -1, "tick");
+            if (!strcmp(key, target) && tick > seen) {
+                *p = (V3){number(L, -1, "x"), 0, number(L, -1, "z")};
+                seen = tick;
+            }
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 2);
+    *age = g->tick - seen;
+    return seen >= 0;
+}
 void sim_crew_report(const Sim *g, const char *key, char *out, size_t size) {
     lua_State *L = g->L;
     out[0] = 0;

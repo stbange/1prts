@@ -25,6 +25,29 @@ test('load individual files under a prefix and report failed assets', async () =
   runtime.printErr('Startup: missing test asset'); assert.equal(status.hidden,false);
 });
 
+test("stream sector meshes once and retry a failed crossing",async()=>{
+  const seen=[], replies=[];
+  runtime.FS={mkdirTree(){},writeFile(){},analyzePath:p=>({exists:p.endsWith("previous.sav")}),
+    readFile:()=>new TextEncoder().encode("ORRA1 00000000\\ntide-window - ")};
+  runtime._orra_sector_ready=(ticket,ok)=>replies.push([ticket,ok]);
+  runtime.addRunDependency=()=>{};runtime.removeRunDependency=()=>{};
+  let fail=true;
+  global.fetch=async url=>{
+    const path=url.pathname.split("/game/")[1];seen.push(path);
+    return {ok:!(path.endsWith("station.mesh")&&fail),status:503,
+      json:async()=>({files:["assets/sectors.txt",...["tank","port","station"].map(x=>"assets/models/"+x+".mesh")]}),
+      text:async()=>"gate-six tank\\ntide-window port\\nhigh-water station",
+      arrayBuffer:async()=>new ArrayBuffer(4)};
+  };
+  runtime.preRun[0]();await flush();
+  assert.ok(seen.includes("assets/models/port.mesh")&&!seen.includes("assets/models/station.mesh"));
+  assert.equal(runtime.requestSector("gate-six",1),1);
+  assert.equal(runtime.requestSector("high-water",2),0);await flush();assert.deepEqual(replies.pop(),[2,0]);
+  fail=false;runtime.requestSector("high-water",3);await flush();assert.deepEqual(replies.pop(),[3,1]);
+  runtime.requestSector("mod-sector",4);await flush();assert.deepEqual(replies.pop(),[4,1]);
+  assert.equal(seen.filter(p=>p.endsWith("tank.mesh")).length,1);
+});
+
 function setup(fallback=false) {
   const handlers={}, frames=[], calls=[], released=[];
   let viewport=0;

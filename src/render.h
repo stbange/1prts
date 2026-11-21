@@ -13,6 +13,13 @@ typedef struct {
     float radius;
 } Mesh;
 typedef struct {
+    V3 position;
+    int mesh;
+    bool visible;
+} RenderPlace;
+typedef struct {
+    RenderPlace *places;
+    int place_capacity, side_pose, work_pose;
     unsigned surface,scene, sky, panel, empty, ui_buffer, ui_array;
     int vp, pose, eye, shadow, livery, inverse, sky_eye, orbit, night_light, extent, tracked,
         wrist_projection;

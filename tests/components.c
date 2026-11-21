@@ -164,6 +164,10 @@ void component_tests(App *a, const char *root) {
     put("parser.route", "expect mission gate-six\nexpect hold-target 1800\nexpect tick 3\nrate "
                         "30\nframes 1\nexpect tick 4\n");
     CHECK(app_route(a, "orra-unit-files/parser.route"));
+    put("parser.route", "wait 2\nexpect deckheight 0\nexpect vessel missing\n");
+    CHECK(!app_route(a, "orra-unit-files/parser.route"));
+    put("parser.route", "rate 30\nwait 1\nexpect stage menu\n");
+    CHECK(!app_route(a, "orra-unit-files/parser.route"));
     SDL_Environment *environment = SDL_GetEnvironment();
     const char *before = SDL_GetEnvironmentVariable(environment, "ORRA_FAILURE_DIR");
     char *previous = before ? SDL_strdup(before) : NULL;

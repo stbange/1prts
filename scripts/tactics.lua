@@ -3,8 +3,15 @@ return function(ctx, nav)
     local M = {}
     local combat = { guard = true, occupy = true, patrol = true, landing = true, support = true }
     local repair = { repair = true, tow = true, recover = true, refit = true }
-    local verbs =
-        { move = true, scout = true, escort = true, engage = true, hold = true, withdraw = true, support = true }
+    local verbs = {
+        move = true,
+        scout = true,
+        escort = true,
+        engage = true,
+        hold = true,
+        withdraw = true,
+        support = true,
+    }
     local function sorted(t)
         local keys = {}
         for k in pairs(t) do
@@ -62,9 +69,13 @@ return function(ctx, nav)
     end
     local function observe(s, key, target)
         local p = nav.position(ctx, s, target)
-        local contact = { observer = key, target = target, x = math.floor(p[1] + 0.5), z = math.floor(
-            p[3] + 0.5
-        ), tick = s.tick }
+        local contact = {
+            observer = key,
+            target = target,
+            x = math.floor(p[1] + 0.5),
+            z = math.floor(p[3] + 0.5),
+            tick = s.tick,
+        }
         local row = ctx.site[ctx.index[key]]
         if row.owner == "rival" then
             s.tactical.intel[target] = contact
@@ -143,7 +154,21 @@ return function(ctx, nav)
         while occupied[slot] do
             slot = slot + 1
         end
-        local path, why = nav.plan(ctx, s, key, target, slot)
+        local reported
+        if owner ~= dest.owner and dest.owner ~= "neutral" and not sight(s, key, target) then
+            local contacts = owner == "rival" and t.intel or s.contacts
+            local latest
+            for _, contact in pairs(contacts) do
+                if contact.target == target and (not latest or latest.tick < contact.tick) then
+                    latest = contact
+                end
+            end
+            if not latest then
+                return say(s, "No report of this crew. Send an observer.")
+            end
+            reported = { latest.x, 0, latest.z }
+        end
+        local path, why = nav.plan(ctx, s, key, target, slot, reported)
         if not path then
             return say(s, why)
         end
@@ -160,6 +185,7 @@ return function(ctx, nav)
             slot = slot,
             serial = s.sequence,
             opened = s.crossing or false,
+            reported = reported,
         }
         if verb == "hold" then
             t.posted[key] = order
@@ -191,11 +217,34 @@ return function(ctx, nav)
         local t = s.tactical
         local row = ctx.site[ctx.index[key]]
         local target = job.target
+        if job.towing then
+            local p = nav.position(ctx, s, job.towing)
+            s.frames[ctx.index[job.towing]] = { p[1], p[2], p[3], p[4], 0 }
+            t.health[job.towing] = 3
+            s.instances[job.towing].status = "ready"
+            s.instances[job.towing].parent = nil
+            say(s, job.towing .. " recommissioned at " .. job.target .. ".")
+            t.orders[key], t.posted[key] = nil, job
+            return
+        end
         t.orders[key] = nil
         t.posted[key] = job
         if job.verb == "support" and row.type == "span" then
             s.crossing = true
         elseif job.verb == "support" and repair[role(row)] and t.health[target] == 0 then
+            local shop = row.owner == "rival" and "rival-motor"
+                or ctx.index.shed and "shed"
+                or ctx.index.motor and "motor"
+                or ctx.index.cradle and "cradle"
+            local tow = shop and (row.type == "hinge" or row.type == "cleat") and nav.plan(ctx, s, key, shop)
+            if tow then
+                s.frames[ctx.index[target]] = { 0, 0, 16, 0, ctx.index[key] }
+                s.instances[target].parent = key
+                job.towing, job.target, job.path, job.leg = target, shop, tow, 1
+                t.orders[key], t.posted[key] = job, nil
+                say(s, key .. " towing " .. target .. " to " .. shop .. ".")
+                return
+            end
             t.health[target] = 3
             s.instances[target].status = "ready"
             say(s, target .. " recommissioned by " .. key .. ".")
@@ -212,7 +261,7 @@ return function(ctx, nav)
             end
         elseif job.verb == "support" then
             s.watchposts[target] = key
-        elseif job.verb == "scout" then
+        elseif job.verb == "scout" and sight(s, key, target) then
             observe(s, key, target)
         end
         say(s, key .. " on station / " .. target .. ".")
@@ -239,22 +288,36 @@ return function(ctx, nav)
                 if job then
                     local row = ctx.site[ctx.index[key]]
                     if not not s.crossing ~= job.opened then
-                        job.path = assert(nav.plan(ctx, s, key, job.target, job.slot))
+                        job.path = assert(nav.plan(ctx, s, key, job.target, job.slot, job.reported))
                         job.leg = 1
                         job.opened = not not s.crossing
                     end
                     local p = nav.position(ctx, s, key)
                     local q = job.path[job.leg]
                     local lock = q[4]
-                    if not lock or not t.locks[lock] or t.locks[lock] == key then
+                    if lock and t.locks[lock] and t.locks[lock] ~= key then
+                        job.waited = (job.waited or 0) + 1
+                        if job.waited == 90 then
+                            local alternative = nav.bypass(ctx, q)
+                            if alternative then
+                                job.path[job.leg] = alternative
+                                say(s, key .. " diverting through the passing lane.")
+                            end
+                        end
+                    else
+                        job.waited = nil
                         if lock then
                             t.locks[lock] = key
                         end
                         local dx, dy, dz = q[1] - p[1], q[2] - p[2], q[3] - p[3]
                         local d = math.sqrt(dx * dx + dy * dy + dz * dz)
-                        local speed = (
-                            { people = 0.18, aircraft = 0.72, tiltrotor = 0.64, tender = 0.9, tug = 0.75 }
-                        )[nav.family(ctx, row)] or 0.36
+                        local speed = ({
+                            people = 0.18,
+                            aircraft = 0.72,
+                            tiltrotor = 0.64,
+                            tender = 0.9,
+                            tug = 0.75,
+                        })[nav.family(ctx, row)] or 0.36
                         local ratio = d > 0 and math.min(1, speed / d) or 1
                         s.frames[ctx.index[key]] =
                             { p[1] + dx * ratio, p[2] + dy * ratio, p[3] + dz * ratio, math.atan(dx, -dz), 0 }
@@ -276,7 +339,7 @@ return function(ctx, nav)
         end
         if s.army and s.tick % 60 == 0 then
             for _, entry in ipairs(s.spawned) do
-                if entry.owner ~= "rival" and sight(s, "rival-survey", entry.key) then
+                if entry.owner and entry.owner ~= "rival" and sight(s, "rival-survey", entry.key) then
                     observe(s, "rival-survey", entry.key)
                 end
             end
@@ -321,7 +384,12 @@ return function(ctx, nav)
         local a = s.red
         for _, key in ipairs(sorted(s.tactical.health)) do
             local row = ctx.site[ctx.index[key]]
-            if row.owner == "rival" and s.tactical.health[key] == 0 and ctx.index["rival-recovery"] then
+            if
+                row.owner == "rival"
+                and s.tactical.health[key] == 0
+                and ctx.index["rival-recovery"]
+                and not s.tactical.orders["rival-recovery"]
+            then
                 M.issue(s, "rival-recovery", "support", key, "rival", true)
             end
         end
@@ -338,7 +406,7 @@ return function(ctx, nav)
                 end
             elseif not contact.diverted and not s.tactical.orders["rival-wake"] then
                 contact.diverted = true
-                M.issue(s, "rival-wake", "scout", "common-lot", "rival", true)
+                M.issue(s, "rival-wake", "scout", key, "rival", true)
             end
         end
     end

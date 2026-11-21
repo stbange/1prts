@@ -30,12 +30,52 @@ var Module = {
         Module.FS.writeFile(directory + "/pack.json", JSON.stringify(pack));
         for (const child of [pack.entry, ...pack.files]) paths.add(directory + "/" + child);
       }
-      await Promise.all([...paths].map(async function (path) {
+      const inflight = new Map(), ready = new Set();
+      async function fetchFile(path) {
         const bytes = await read(path, "arrayBuffer");
         const slash = path.lastIndexOf("/");
         if (slash >= 0) Module.FS.mkdirTree(path.slice(0, slash));
         Module.FS.writeFile(path, new Uint8Array(bytes));
-      }));
+      }
+      function load(path) {
+        if (!inflight.has(path)) inflight.set(path,fetchFile(path).catch(error=>{
+          inflight.delete(path);
+          throw error;
+        }));
+        return inflight.get(path);
+      }
+      const sectors = new Map();
+      if (paths.has("assets/sectors.txt")) {
+        const index = await read("assets/sectors.txt","text");
+        for (const row of index.trim().split(/\r?\n/)) {
+          const [id,...names]=row.trim().split(/\s+/);
+          sectors.set(id,names.map(name=>"assets/models/"+name+".mesh"));
+        }
+        Module.FS.mkdirTree("assets");
+        Module.FS.writeFile("assets/sectors.txt",index);
+        paths.delete("assets/sectors.txt");
+      }
+      const meshes=[...paths].filter(path=>path.startsWith("assets/models/"));
+      async function sector(id) {
+        await Promise.all((sectors.get(id)||meshes).map(load));
+        ready.add(id);
+      }
+      Module.requestSector=(id,ticket)=>{
+        if (ready.has(id)) return 1;
+        sector(id).then(()=>Module._orra_sector_ready(ticket,1),()=>Module._orra_sector_ready(ticket,0));
+        return 0;
+      };
+      const initial=new Set(["gate-six"]);
+      if (sectors.size && Module.FS.analyzePath) for (const slot of ["command.sav","previous.sav"]) {
+        const path="/orra-saves/"+slot;
+        if (Module.FS.analyzePath(path).exists) {
+          const header=new TextDecoder().decode(Module.FS.readFile(path).subarray(0,96));
+          const match=/^ORRA1 [\da-f]{8}\n([\w-]+) /.exec(header);
+          if (match) initial.add(match[1]);
+        }
+      }
+      await Promise.all([...paths].filter(path=>!path.startsWith("assets/models/")).map(load)
+        .concat([...initial].map(sector)));
       Module.removeRunDependency(key);
     })().catch(function (error) { document.getElementById("status").textContent = String(error); });
   }],

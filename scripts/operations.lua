@@ -281,6 +281,11 @@ return function(id, ctx)
             length = seconds * 30,
             cost = cost,
             start = start,
+            bend = id == "white-mile"
+                    and not s.done.shoes
+                    and (order == "sample" or order == "assay-load")
+                    and { -36, 0, -80 }
+                or nil,
         }
         advise(s)
         report(s, job[3] .. " acknowledges: " .. job[2])
@@ -296,6 +301,13 @@ return function(id, ctx)
             s.result = "defeat"
             report(s, "Shift window closed. " .. plan.brief)
             return
+        end
+        if id == "westbound" and (s.tick == 780 or s.tick == 1180) then
+            s.outage = s.tick == 780
+            report(
+                s,
+                s.outage and "West feeder out. The gallery can cover one workshop." or "West feeder restored."
+            )
         end
         -- A shared bay serves the earliest confirmed order. Installations open a second slot.
         local owners = {}
@@ -314,7 +326,7 @@ return function(id, ctx)
                 local paused = ctx.freight and ctx.freight.waits(s, key)
                     or (owners[bay] and owners[bay] ~= work.serial)
                     or (key == "repair" and s.jobs.tow)
-                if bay == "workshop" and not s.blue.power then
+                if bay == "workshop" and (not s.blue.power or s.outage and not s.done.heater) then
                     if s.reserve and not s.priority then
                         s.priority = key
                     end
@@ -332,9 +344,17 @@ return function(id, ctx)
                     local t = math.min(1, work.elapsed / work.length)
                     if job[6] then
                         local dest, origin = job[6], work.start
-                        local x = origin[1] + (dest[1] - origin[1]) * t
+                        local along = t
+                        if work.bend then
+                            if t < 0.5 then
+                                dest, along = work.bend, t * 2
+                            else
+                                origin, along = work.bend, (t - 0.5) * 2
+                            end
+                        end
+                        local x = origin[1] + (dest[1] - origin[1]) * along
                         local y = origin[2] + (dest[2] - origin[2]) * t
-                        local z = origin[3] + (dest[3] - origin[3]) * t
+                        local z = origin[3] + (dest[3] - origin[3]) * along
                         if actor == "kite" or actor == "tern" or actor == "rook" or actor == "crossbill" then
                             y = y + 28 * math.sin(math.pi * t)
                         end

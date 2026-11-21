@@ -1,7 +1,7 @@
 #ifndef ORRA_APP_H
 #define ORRA_APP_H
 #include "render.h"
-typedef enum { FIELD, SLATE, GUIDE, OPERATIONS, CREWS, CREW_JOB, RADIO } Panel;
+typedef enum { FIELD, SLATE, GUIDE, OPERATIONS, CREWS, CREW_JOB, RADIO, CHART } Panel;
 typedef struct {
     Sim sim;
     Camera camera;
@@ -16,6 +16,9 @@ typedef struct {
     Panel panel;
     int selected, category, item, width, height;
     bool save_pending;
+    int sector_request;
+    char pending_mission[32];
+    char *pending_ledger;
     bool running, touch, captured, xr, keys[SDL_SCANCODE_COUNT];
     bool left_down, right_down;
     SDL_FingerID left_id, right_id;
@@ -38,8 +41,11 @@ bool app_resume(App *);
 bool app_continue(App *);
 void app_adopt(App *,Sim *,Renderer *);
 void orra_saved(int);
+void orra_sector_ready(int, int);
+void app_sector_ready(App *, int, int);
 bool app_open(App *, const char *, bool);
 bool app_mission(App *, const char *);
+bool app_stage(App *, const char *, const char *);
 bool app_lift(App *, bool);
 void app_choose(App *);
 const Order *app_crew_order(const App *, int);
@@ -61,6 +67,8 @@ void orra_clock(int);
 void app_draw(App *);
 void app_action(App *, int);
 void app_touch(App *, float, float);
+void chart_draw(App *, int);
+void chart_pick(App *, int, float, float);
 void ui_size(const App *, int *, int *);
 void ui_draw(App *, int, int);
 void ui_wrist(App *);

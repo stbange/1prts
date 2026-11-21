@@ -173,6 +173,32 @@ static bool load_mesh(Renderer *r, const char *root, const Place *place) {
     fVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 28, (void *)24);
     return true;
 }
+static bool map_mesh(Renderer *r, const Sim *g, int i) {
+    Mesh *mesh = find(r, g->place[i].model);
+    if (!mesh) {
+        if (!load_mesh(r, g->root, &g->place[i]))
+            return false;
+        mesh = &r->meshes[r->mesh_count - 1];
+    }
+    r->places[i].mesh = (int)(mesh - r->meshes);
+    return true;
+}
+static bool scene_geometry(Renderer *r, const Sim *g) {
+    if (g->places > r->place_capacity) {
+        RenderPlace *rows = realloc(r->places, (size_t)g->capacity * sizeof *rows);
+        if (!rows)
+            return problem(r, "scene", "cannot allocate visible geometry");
+        r->places = rows;
+        r->place_capacity = g->capacity;
+    }
+    for (int i = r->loaded_places; i < g->places; i++) {
+        r->places[i].mesh = -1;
+        if (strncmp(g->place[i].model, "work-", 5) && !map_mesh(r, g, i))
+            return false;
+    }
+    r->loaded_places = g->places;
+    return true;
+}
 bool render_open(Renderer *r, const Sim *g) {
     memset(r, 0, sizeof *r);
 #define RESOLVE(ret, name, args)                                                                       \
@@ -228,9 +254,8 @@ bool render_open(Renderer *r, const Sim *g) {
     r->tracked = fGetUniformLocation(r->panel, "tracked");
     r->wrist_projection = fGetUniformLocation(r->panel, "wristProjection");
     fGenVertexArrays(1, &r->empty);
-    for (int i = 0; i < g->places; i++)
-        if (!find(r, g->place[i].model) && !load_mesh(r, g->root, &g->place[i]))
-            return false;
+    if (!scene_geometry(r, g))
+        return false;
     if (!find(r, g->terrain))
         return problem(r, "site", "terrain model is required");
     r->loaded_places=g->places;
@@ -241,6 +266,8 @@ bool render_open(Renderer *r, const Sim *g) {
             snprintf(sprite.model,sizeof sprite.model,"%s",poses[n]);
             if (!load_mesh(r,g->root,&sprite)) return false;
         }
+        r->side_pose = (int)(find(r, "operator-side") - r->meshes);
+        r->work_pose = (int)(find(r, "operator-work") - r->meshes);
     }
     char tile_path[1350];
     snprintf(tile_path,sizeof tile_path,"%s/assets/surface.txt",g->root);
@@ -285,9 +312,23 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fViewport(x, y, w, h);
     fDisable(GL_BLEND);
     fEnable(GL_DEPTH_TEST);
-    for (int i=r->loaded_places;i<g->places;i++)
-        if (!find(r,g->place[i].model) && !load_mesh(r,g->root,&g->place[i])) return;
-    r->loaded_places=g->places;
+    if (!scene_geometry(r, g))
+        return;
+    for (int i = 0; i < g->places; i++) {
+        RenderPlace *part = &r->places[i];
+        const Place *row = &g->place[i];
+        part->visible = strcmp(row->model, g->terrain) && world_object(g, i, &part->position);
+        if (!part->visible)
+            continue;
+        const V3 p = part->position;
+        float dx = p.x - eye.x, dy = p.y - eye.y, dz = p.z - eye.z;
+        float distance = dx * dx + dy * dy + dz * dz;
+        if (part->mesh < 0 && distance < 120 * 120 && !map_mesh(r, g, i))
+            return;
+        if (part->mesh < 0 || (distance > 85 * 85 &&
+                               (!strcmp(row->family, "fixture") || !strcmp(row->family, "operator"))))
+            part->visible = false;
+    }
     /* A stereo compositor may use both eyes' depth after this frame. */
     fEnable(GL_SCISSOR_TEST);
     fScissor(x, y, w, h);
@@ -314,17 +355,12 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     for (int pass = 1; pass >= 0; pass--) {
         fUniform1i(r->shadow, pass);
         for (int i = 0; i < g->places; i++) {
-            if (!strcmp(g->place[i].model, g->terrain))
+            const RenderPlace *part = &r->places[i];
+            if (!part->visible)
                 continue;
-            V3 p;
-            if (!world_object(g, i, &p))
-                continue;
-            Place const *o = &g->place[i];
-            if ((!strcmp(o->family,"fixture") || !strcmp(o->family,"operator")) &&
-                (p.x-eye.x)*(p.x-eye.x)+(p.y-eye.y)*(p.y-eye.y)+(p.z-eye.z)*(p.z-eye.z)>100*100)
-                continue;
-            Mesh *m = find(r, o->model);
-            if (!m) continue;
+            const Place *o = &g->place[i];
+            V3 p = part->position;
+            Mesh *m = &r->meshes[part->mesh];
             float radius = m->radius + 2.3f;
             V3 center = pass ? (V3){p.x + .62f * p.y, .073f, p.z - .32f * p.y} : p;
             if (!visible(planes, center, radius * (pass ? 1.28f : 1.f)))
@@ -334,10 +370,12 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
             bool sprite = squad || !strcmp(o->model, "worker") || !strcmp(o->family, "people") ||
                           !strcmp(o->family, "sprite");
             float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : world_angle(g, i);
-            if (!strcmp(o->family,"operator") && find(r,"operator-side")) {
+            if (!strcmp(o->family, "operator") && r->side_pose) {
                 float relative=world_angle(g,i)-a;
-                if (fabsf(sinf(relative))>.68f) m=find(r,"operator-side");
-                else if (((g->tick/38+i)%3)==1) m=find(r,"operator-work");
+                if (fabsf(sinf(relative)) > .68f)
+                    m = &r->meshes[r->side_pose];
+                else if (((g->tick / 38 + i) % 3) == 1)
+                    m = &r->meshes[r->work_pose];
             }
             if (!squad)
                 draw(r, m, p, a);
@@ -451,6 +489,7 @@ void render_close(Renderer *r) {
     if (r->panel)
         fDeleteProgram(r->panel);
     if (r->surface) fDeleteTextures(1,&r->surface);
+    free(r->places);
     free(r->meshes);
     free(r->ui);
     memset(r, 0, sizeof *r);

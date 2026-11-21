@@ -5,12 +5,14 @@ local routes = {
         road = { { 6, 24 }, { 6, -24 }, { 3, -54 }, { 3, -74 }, { 6, -89 } },
         detour = { { -12, -24 }, { -12, -54 } },
         span = { 2, 3 },
+        laybys = { { 6, -24, 15, -25 }, { 3, -54, 15, -54 } },
         width = 6,
     },
     estuary = {
         road = { { 4, 69 }, { 30, 20 }, { 78, -35 }, { 78, -168 }, { 30, -218 }, { 4, -263 } },
         water = { { 0, 24 }, { 0, -40 }, { 12, -146 }, { 0, -225 } },
         width = 8,
+        laybys = { { 30, 20, 42, 20 }, { 30, -218, 43, -216 } },
     },
     railbed = {
         road = { { 20, 45 }, { 20, -50 }, { 20, -110 }, { 20, -165 } },
@@ -23,12 +25,16 @@ local routes = {
         span = { 2, 4 },
         width = 6,
     },
-    airfield = { road = { { 8, 55 }, { 8, -40 }, { 8, -90 }, { 8, -161 } }, air = {
-        { 0, 38 },
-        { -8, -45 },
-        { 8, -120 },
-        { 16, -161 },
-    }, width = 8 },
+    airfield = {
+        road = { { 8, 55 }, { 8, -40 }, { 8, -90 }, { 8, -161 } },
+        air = {
+            { 0, 38 },
+            { -8, -45 },
+            { 8, -120 },
+            { 16, -161 },
+        },
+        width = 8,
+    },
     orbit = {
         road = { { 20, 65 }, { 20, 12 }, { 20, -40 } },
         dock = { { 0, 65 }, { 0, -85 }, { 0, -175 }, { 0, -268 }, { 8, -405 }, { 8, -658 } },
@@ -36,6 +42,17 @@ local routes = {
     },
 }
 local M = { sectors = routes }
+function M.bypass(ctx, node)
+    if not node[4] or not node[4]:match("^road%-") then
+        return
+    end
+    local map = ctx.routes or routes[ctx.terrain]
+    for _, side in ipairs(map.laybys or {}) do
+        if node[1] == side[1] and node[3] == side[2] then
+            return { side[3], 0, side[4], "layby-" .. side[3] .. "-" .. side[4] }
+        end
+    end
+end
 local function dist(a, b)
     return math.sqrt((a[1] - b[1]) ^ 2 + (a[2] - b[2]) ^ 2 + (a[3] - b[3]) ^ 2)
 end
@@ -78,12 +95,12 @@ end
 function M.family(ctx, row)
     return row.family or (ctx.fleet[row.type] or {}).family
 end
-function M.plan(ctx, s, key, target, offset)
+function M.plan(ctx, s, key, target, offset, reported)
     local row, other = ctx.site[ctx.index[key]], ctx.site[ctx.index[target]]
     if not row or not other then
         return nil, "Unknown destination."
     end
-    local start, goal = M.position(ctx, s, key), M.position(ctx, s, target)
+    local start, goal = M.position(ctx, s, key), reported or M.position(ctx, s, target)
     local f = M.family(ctx, row)
     local kind = ({
         rail = "rail",

@@ -38,7 +38,13 @@ return function(ctx, rules, records, decode, mission, initial)
             type(s.blue.queues) == "table"
                 and type(s.red.queues) == "table"
                 and type(s.tactical.orders) == "table"
-                and type(s.campaign.history) == "table",
+                and type(s.campaign.history) == "table"
+                and type(s.campaign.hulls) == "table"
+                and type(s.freight.items) == "table"
+                and type(s.works.receipts) == "table"
+                and math.type(s.seed) == "integer"
+                and math.type(s.random_state) == "integer"
+                and type(s.frames) == "table",
             "incomplete saved state"
         )
         ctx.truncate(initial)
@@ -90,6 +96,20 @@ return function(ctx, rules, records, decode, mission, initial)
                 assert(ctx.index[actor] and ctx.index[job.target], "missing order target")
             end
         end
+        for _, work in pairs(s.jobs or {}) do
+            assert(ctx.index[work.actor] and type(work.elapsed) == "number", "invalid queued crew")
+        end
+        for item, carrier in pairs(s.freight.items) do
+            assert(
+                ctx.index[item] and (carrier == "stores" or ctx.index[carrier]),
+                "unknown cargo or receiver"
+            )
+        end
+        if s.army then
+            for _, job in pairs(s.army.bays) do
+                assert(rules.jobs[job.id] and (not job.pad or ctx.index[job.pad]), "unknown production order")
+            end
+        end
         return s
     end
     local next_base = {
@@ -102,6 +122,7 @@ return function(ctx, rules, records, decode, mission, initial)
     function M.new(s)
         s.seed, s.random_state = 614, 614
         s.campaign = { history = {}, hulls = {}, upgrades = {}, source = "" }
+        s.entry_record = records.encode(s.campaign)
     end
     function M.finish(s)
         if s.result ~= "victory" then
@@ -119,7 +140,7 @@ return function(ctx, rules, records, decode, mission, initial)
                     key = key,
                     type = inst.type,
                     owner = inst.owner,
-                    crew = copy(inst.crew),
+                    crew = copy(inst.veterans or inst.crew),
                     status = inst.status,
                 }
             end
@@ -137,13 +158,18 @@ return function(ctx, rules, records, decode, mission, initial)
         M.finish(s)
         return records.encode(s.campaign)
     end
+    function M.entry(s)
+        return s.entry_record or records.encode({ history = {}, hulls = {}, upgrades = {}, source = "" })
+    end
     function M.enter(s, text)
         local ledger = records.decode(text, decode)
         assert(
-            type(ledger.history) == "table" and type(ledger.upgrades) == "table",
+            type(ledger.history) == "table"
+                and type(ledger.upgrades) == "table"
+                and type(ledger.hulls) == "table",
             "invalid campaign record"
         )
-        s.campaign = ledger
+        s.entry_record, s.campaign = text, ledger
         local function transfer(key)
             local item = ledger.hulls[ctx.owner .. "/" .. key]
             local inst = s.instances[key]
@@ -153,6 +179,9 @@ return function(ctx, rules, records, decode, mission, initial)
             -- A familiar hull can have different operator row numbers at this port.
             -- Keep the source watch's identities as the names on its assigned seats.
             inst.veterans = copy(item.crew)
+            for i, seat in ipairs(inst.crew) do
+                s.instances[seat].person = item.crew[i] or seat
+            end
             inst.status = item.status
             s.report = key .. " and its watch have reported from the previous operation."
         end

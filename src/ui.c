@@ -244,6 +244,8 @@ void ui_draw(App *a, int w, int h) {
     T(183, 38, 1.05f, "[C] CREWS", BLUE);
     if (w > 700)
         T(258, 38, 1.05f, "[L] LOG", MUTE);
+    if (w > 600)
+        T(315, 38, 1.05f, "[B] CHART", MUTE);
     if (a->camera.aboard>=0 && a->panel==FIELD) {
         const Place *p=&g->place[a->camera.aboard];
         snprintf(line,sizeof line,"ABOARD %s",p->name[0]?p->name:p->key);
@@ -299,7 +301,9 @@ void ui_draw(App *a, int w, int h) {
             R(cx - 63, cy + 19, 126, 20, INK);
             T(cx - 55, cy + 25, 1.1f, "[E] DISPATCH DESK", PAPER);
         }
-    } else if (a->panel != GUIDE)
+    } else if (a->panel == CHART)
+        chart_draw(a, w);
+    else if (a->panel != GUIDE)
         order_panel(a, w, h);
     else
         guide_panel(a, w, h);
@@ -326,7 +330,9 @@ void ui_draw(App *a, int w, int h) {
     }
 }
 void ui_wrist(App *a) {
-    if (a->panel == GUIDE)
+    if (a->panel == CHART)
+        chart_draw(a, 350);
+    else if (a->panel == GUIDE)
         guide_panel(a, 350, 400);
     else if (a->panel != FIELD)
         order_panel(a, 350, 400);
@@ -339,6 +345,14 @@ void ui_tap(App *a, float fx, float fy) {
     float x = fx * w, y = fy * h;
     if (strcmp(a->sim.result, "active") && fabsf(y - h / 2.f) < 35 && fabsf(x - w / 2.f) < 180) {
         app_key(a, SDL_SCANCODE_R);
+        return;
+    }
+    if (y < 57 && x >= 310 && x < 392) {
+        app_key(a, SDL_SCANCODE_B);
+        return;
+    }
+    if (a->panel == CHART && y >= 67) {
+        chart_pick(a, w, x, y);
         return;
     }
     if (y < 57 && x >= 250 && x < 310) {

@@ -1,0 +1,25 @@
+key E
+expect vessel lark
+key 1
+key 3
+wait 541
+key 4
+hold W 925
+key 5
+wait 911
+key 6
+wait 662
+hold W 230
+key E
+expect vessel station
+hold W 794
+hold A 56
+hold W 60
+key E
+wait 125
+expect deckheight 6.84
+checkpoint traffic-deck
+shot crown-lift
+key E
+wait 125
+expect deckheight 0.84

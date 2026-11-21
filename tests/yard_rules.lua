@@ -105,3 +105,32 @@ g, s = setup("high-water")
 assert(not g.command(s, "move:dray@station") and g.command(s, "move:lark@station"))
 ticks(g, s, 1650)
 assert(s.tactical.posted.lark)
+
+-- A blocked road has a surveyed passing lane. A rail junction keeps its reservation.
+g, s, site = setup()
+assert(g.command(s, "move:mole@gate"))
+local j = s.tactical.orders.mole
+j.path = { { 6, 0, -24, "road-6--24" }, { 3, 0, -54 } }
+j.leg = 1
+s.tactical.locks["road-6--24"] = "fitters"
+ticks(g, s, 90)
+assert(j.path[1][4]:match("layby") and s.tactical.locks["road-6--24"] == "fitters")
+-- A sighted armored hull and a utility crew produce different paid rival responses.
+for _, pair in ipairs({ { "lintel", "armor" }, { "mole", "section" } }) do
+    g, s, site = setup()
+    local key, recipe = pair[1], pair[2]
+    s.red.motor, s.red.watch, s.red.armor, s.red.section, s.red.alloy = true, true, true, true, 20
+    s.blue.armor = true
+    s.tactical.intel[key] = { observer = "rival-survey", target = key, x = 19, z = -45, tick = s.tick }
+    g.tactics.reinforcement(s)
+    local _, job = next(s.army.bays)
+    assert(job and job.id == recipe and s.tactical.claims[key] and s.red.alloy < 20)
+    s.tick = 400
+    g.tactics.reinforcement(s)
+    assert(s.tactical.intel[key].diverted and s.tactical.orders["rival-wake"].reported[1] == 19)
+end
+g, s, site = setup()
+s.blue.mill, s.blue.alloy = true, 30
+assert(g.command(s, "build:dynamo@bank-pad"))
+ticks(g, s, 122)
+assert(s.army.sites["bank-pad"].building == "dynamo-2")

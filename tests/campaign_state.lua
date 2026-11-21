@@ -30,6 +30,21 @@ local resumed = copy.restore(saved)
 step(r, s, 140)
 step(copy, resumed, 140)
 assert(r.record(s) == copy.record(resumed))
+-- Physical berths, a surveyed pad and a switch use the operation's public validation.
+for _, case in ipairs({
+    { "tide-window", "work:kestrel@public-quay", "work:kestrel@gravel-slip", "ramp" },
+    { "high-water", "work:lark@crown-collar" },
+    { "westbound", "work:points@exchange-switch" },
+    { "gate-six", "work:fitters@west-pad" },
+}) do
+    local api, state = scene(case[1])
+    if case[4] then
+        assert(api.command(state, case[2]) and not api.command(state, case[3]))
+        assert(api.command(state, case[4]) and api.command(state, case[3]) and state.destination == "slip")
+    else
+        assert(not api.command(state, case[2]))
+    end
+end
 -- A report ages in place after a visible rival retreats.
 r, s, b = scene("gate-six")
 local loc = {}
@@ -74,6 +89,20 @@ for _, mission in ipairs(b.operations) do
             local receipt = s.works.receipts[key]
             assert(receipt and receipt.target == key and receipt.message, unit.type)
             tested[unit.type] = receipt.job
+            if os.getenv("ORRA_ROSTER_EVIDENCE") then
+                print(
+                    "job\t"
+                        .. unit.type
+                        .. "\t"
+                        .. mission.id
+                        .. "\t"
+                        .. key
+                        .. "\t"
+                        .. receipt.job
+                        .. "\t"
+                        .. receipt.message
+                )
+            end
         end
     end
 end
@@ -125,6 +154,32 @@ port.gear = "hoist"
 r, s = scene("night-mail")
 r.enter(s, ferry.ledger(port))
 assert(s.linked_hoist and r.command(s, "handoff") and s.handoff == 150)
+-- Retry keeps the incoming watch while discarding upgrades earned on this attempt.
+local before = r.entry(s)
+s.result = "victory"
+r.ledger(s)
+assert(r.entry(s) == before)
+local carried = r.restore(r.save(s))
+assert(r.entry(carried) == before)
+local registry = assert(loadfile(root .. "/scripts/records.lua"))()
+local parse = assert(loadfile(root .. "/scripts/manifest.lua"))()
+local damaged = registry.decode(r.save(s), parse)
+damaged.state.seed = false
+assert(not pcall(r.restore, registry.encode(damaged)))
+local function drive(id, shoes)
+    local gate, field, bundle = scene(id)
+    field.done.drain, field.done.chart, field.done.shoes = true, true, shoes
+    assert(gate.command(field, "sample"))
+    step(gate, field, field.jobs.sample.length // 2)
+    return field.frames[(function()
+        for i, row in ipairs(bundle.site) do
+            if row.key == "barrow" then
+                return i
+            end
+        end
+    end)()][1]
+end
+assert(drive("white-mile", false) < -35 and drive("white-mile", true) > -3)
 local original = io.open
 io.open = function(file, mode)
     if file == root .. "/content.json" then

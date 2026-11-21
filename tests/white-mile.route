@@ -1,4 +1,7 @@
 shot 13-white-mile
+hold W 82
+key E
+expect vessel barrow
 key 1
 key 3
 wait 365
@@ -12,3 +15,4 @@ wait 602
 key 7
 wait 543
 expect result victory
+shot sample-handover

@@ -11,6 +11,40 @@ static bool slab(float p, float v, float low, float high, float *near, float *fa
     *far = fminf(*far, fmaxf(a, b));
     return *near <= *far;
 }
+static V3 difference(V3 a, V3 b) { return (V3){a.x - b.x, a.y - b.y, a.z - b.z}; }
+static V3 cross(V3 a, V3 b) {
+    return (V3){a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+}
+static float dot(V3 a, V3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+/* Only broad-phase candidates are read, once per pointing action. Open mesh doorways
+   and windows transmit a ray, including rays cast from inside an occupied cabin. */
+static float surface(const Sim *s, const Place *row, V3 eye, V3 ray, float limit) {
+    char path[1400];
+    if (*row->asset)
+        snprintf(path, sizeof path, "%s/%s", s->root, row->asset);
+    else
+        snprintf(path, sizeof path, "%s/assets/models/%s.mesh", s->root, row->model);
+    size_t size = 0;
+    unsigned char *data = SDL_LoadFile(path, &size);
+    if (!data)
+        return limit;
+    for (size_t pos = 8; pos + 84 <= size; pos += 84) {
+        V3 a, b, c;
+        memcpy(&a, data + pos, sizeof a);
+        memcpy(&b, data + pos + 28, sizeof b);
+        memcpy(&c, data + pos + 56, sizeof c);
+        V3 e = difference(b, a), f = difference(c, a), h = cross(ray, f);
+        float det = dot(e, h);
+        if (fabsf(det) < 1e-6f)
+            continue;
+        V3 t = difference(eye, a), q = cross(t, e);
+        float u = dot(t, h) / det, v = dot(ray, q) / det, d = dot(f, q) / det;
+        if (u >= 0 && v >= 0 && u + v <= 1 && d > .04f && d < limit)
+            limit = d;
+    }
+    SDL_free(data);
+    return limit;
+}
 WorldHit world_point(const Sim *s, V3 eye, V3 ray, int aboard) {
     float length = sqrtf(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z);
     WorldHit best = {.place = -1, .distance = 1100};
@@ -28,7 +62,7 @@ WorldHit world_point(const Sim *s, V3 eye, V3 ray, int aboard) {
     }
     for (int i = 0; i < s->places; i++) {
         const Place *row = &s->place[i];
-        if (i == aboard || !strcmp(row->model, s->terrain))
+        if (!strcmp(row->model, s->terrain))
             continue;
         V3 origin;
         if (!world_object(s, i, &origin))
@@ -50,7 +84,11 @@ WorldHit world_point(const Sim *s, V3 eye, V3 ray, int aboard) {
         float near = 0, far = best.distance;
         if (!slab(p.x, v.x, -sh.w * .5f, sh.w * .5f, &near, &far) ||
             !slab(p.z, v.z, -sh.d * .5f, sh.d * .5f, &near, &far) ||
-            !slab(p.y, v.y, 0, sh.h, &near, &far) || near <= .04f || near >= best.distance)
+            !slab(p.y, v.y, 0, sh.h, &near, &far) || near >= best.distance)
+            continue;
+        if (sh.boardable || row->station || i == aboard)
+            near = surface(s, row, p, v, best.distance);
+        if (near <= .04f || near >= best.distance)
             continue;
         best =
             (WorldHit){.place = i,
@@ -65,6 +103,10 @@ bool app_mark(App *a, V3 eye, V3 direction) {
     WorldHit hit = world_point(&a->sim, eye, direction, a->camera.aboard);
     if (hit.place < 0 && !hit.ground)
         return false;
+    if (hit.place >= 0 && a->sim.place[hit.place].parent &&
+        (!strcmp(a->sim.place[hit.place].family, "operator") ||
+         !strcmp(a->sim.place[hit.place].family, "fixture")))
+        hit.place = a->sim.place[hit.place].parent - 1;
     if (a->aiming) {
         a->ground_target[0] = 0;
         if (hit.place >= 0)
@@ -81,9 +123,6 @@ bool app_mark(App *a, V3 eye, V3 direction) {
         return false;
     const Place *p = &a->sim.place[hit.place];
     int recipient = hit.place;
-    if (p->parent &&
-        (p->family[0] && (!strcmp(p->family, "fixture") || !strcmp(p->family, "operator"))))
-        recipient = p->parent - 1;
     for (int m = 0; m < a->sim.crew_count; m++)
         if (a->sim.roster[m] == recipient) {
             a->member = m;
@@ -94,6 +133,10 @@ bool app_mark(App *a, V3 eye, V3 direction) {
         }
     if (p->key[0]) {
         snprintf(a->message, sizeof a->message, "%s / %s", p->name[0] ? p->name : p->key, p->owner);
+        char site[100];
+        sim_inspect(&a->sim, p->key, site, sizeof site);
+        if (*site)
+            snprintf(a->message, sizeof a->message, "%s", site);
         a->message_ticks = 120;
         return true;
     }

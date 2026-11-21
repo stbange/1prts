@@ -1,0 +1,10 @@
+# Walk from the Kestrel boarding apron through the Shore Depot and up its gantry.
+hold S 293
+hold A 164
+hold W 136
+hold A 30
+hold W 65
+checkpoint gantry
+expect height 4
+look 1030 45
+shot depot-dispatch

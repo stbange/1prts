@@ -4,6 +4,8 @@ These implementation milestones take the Orra Basin campaign from a ground battl
 
 The campaign and its ordinary-input replays ship together. The two outstanding checks require observations from a first-time player and a physical headset. [Evidence and playtest protocol](../../../docs/playtests/campaign/README.md)
 
+The follow-on plan covers the remaining game systems and schedules those two observations. [Full campaign implementation checklist](../complete-basin-campaign/tasks.md)
+
 ## 1. Boot the portable runtime
 
 - [x] 1.1 Create CMake targets for the C11/SDL3/OpenGL host, the headless simulation, Lua 5.4 and the Emscripten port.

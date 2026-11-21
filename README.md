@@ -33,6 +33,8 @@ In WebXR, the left stick walks and the right stick snap-turns. The left trigger 
 
 The six named missions contain **39 unit types, 27 base facilities, three objective structures, six factions and six mission upgrades**. The Compact also has a playable alternate operation at Gate Six. Unit tests check the scene placements against the catalog. [Complete roster](docs/roster.md)
 
+The implementation plan covers repeatable army production, contested resources, crewed interiors across the roster, world targeting and campaign saves. [Implementation checklist](openspec/changes/complete-basin-campaign/tasks.md) · [Milestones and playable acceptance tests](openspec/changes/complete-basin-campaign/design.md)
+
 | Operation | Commander's assignment |
 | --- | --- |
 | Gate Six | Commission the Plate Mill, haul plate and raise both infantry and armor. Hold the switch room for 60 uninterrupted seconds. The Compact builds its own base and can take the gate. |

@@ -51,9 +51,10 @@ static void interval(App *a, int ticks, int rate, bool present) {
             app_advance(a, 1.0 / rate);
     }
 }
-static void checkpoint(const App *a, const char *name) {
+static void checkpoint(App *a, const char *name) {
     const Sim *s = &a->sim;
-    uint32_t hash = 2166136261u;
+    uint32_t hash = sim_digest(&a->sim);
+    printf("state %s %u\n", name, hash);
     const unsigned char *sides[] = {(const unsigned char *)&s->blue, (const unsigned char *)&s->red};
     for (int j = 0; j < 2; j++)
         for (size_t i = 0; i < sizeof(Side); i++)

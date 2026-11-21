@@ -211,6 +211,8 @@ def main():
     target=OUT.parent/"mods"/"long-watch";target.mkdir(parents=True,exist_ok=True)
     for name,dest in [("lintel","oxide"),("kestrel","harbor")]:
         repaint(name,target/(dest+".mesh"))
+    from rooms_art import main as build_rooms
+    build_rooms()
     # The add-on acknowledgment is a shorter, falling version of the dispatch signal.
     import wave
     with wave.open(str(OUT/"sounds"/"blocked.wav")) as source:

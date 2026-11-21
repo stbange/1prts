@@ -72,7 +72,7 @@ return function(text)
         elseif text:sub(at, at) == '"' then
             return string_value()
         end
-        local token = text:match("^([%w%.%-]+)", at) or ""
+        local token = text:match("^([%w%.%+%-]+)", at) or ""
         at = at + #token
         if token == "true" then
             return true

@@ -1,0 +1,41 @@
+seed,result,first_mill_tick,accepted,rejected,first_rejection
+42,defeat,-1,22,25,Commission mill first.
+43,defeat,-1,19,28,Required first: Plate Mill
+44,active,-1,27,40,Field crews are already home.
+45,defeat,333,10,32,Commission mill first.
+46,defeat,-1,15,31,Required first: Plate Mill
+47,defeat,313,16,28,Field crews are already home.
+48,defeat,4910,13,31,Crew unavailable. Produce the unit first.
+49,defeat,-1,20,25,Required first: Plate Mill
+50,defeat,-1,16,31,Reserve unavailable.
+51,defeat,333,22,25,Crew unavailable. Produce the unit first.
+52,defeat,-1,16,27,Required first: Plate Mill
+53,defeat,-1,10,36,Reserve unavailable.
+54,defeat,963,16,26,Crew unavailable. Produce the unit first.
+55,active,-1,26,36,Required first: Plate Mill
+56,defeat,-1,23,24,Crew unavailable. Produce the unit first.
+57,defeat,-1,12,31,Crew unavailable. Produce the unit first.
+58,defeat,295,14,29,Required first: Plate Mill
+59,defeat,-1,18,22,Crew unavailable. Produce the unit first.
+60,defeat,335,12,30,Crew unavailable. Produce the unit first.
+61,defeat,92,14,31,Already commissioned: Plate Mill
+1042,defeat,-1,14,28,Field crews are already home.
+1043,defeat,-1,20,23,Hauler busy or lot empty.
+1044,defeat,-1,18,27,Required first: Plate Mill
+1045,defeat,1037,21,21,Required first: Motor Hall
+1046,defeat,574,14,29,No outstanding order.
+1047,defeat,58,11,32,Crew unavailable. Produce the unit first.
+1048,active,-1,22,43,Crew unavailable. Produce the unit first.
+1049,defeat,-1,15,24,Crew unavailable. Produce the unit first.
+1050,defeat,31,14,32,Crew unavailable. Produce the unit first.
+1051,defeat,2798,17,27,Crew unavailable. Produce the unit first.
+1052,defeat,-1,17,31,Required first: Plate Mill
+1053,defeat,4,12,34,Crew unavailable. Produce the unit first.
+1054,defeat,154,15,29,Crew unavailable. Produce the unit first.
+1055,defeat,-1,19,24,More alloy needed. Dispatch the hauler.
+1056,defeat,97,19,28,Crew unavailable. Produce the unit first.
+1057,defeat,91,10,33,Crew unavailable. Produce the unit first.
+1058,defeat,-1,17,28,Field crews are already home.
+1059,defeat,368,22,25,Crew unavailable. Produce the unit first.
+1060,active,148,27,37,Crew unavailable. Produce the unit first.
+1061,defeat,-1,16,27,No outstanding order.

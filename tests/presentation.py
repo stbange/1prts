@@ -35,6 +35,16 @@ with tempfile.TemporaryDirectory() as directory:
         checks=[line for line in p.stdout.splitlines() if line.startswith("checkpoint")]
         assert checks and "victory" in checks[-1],checks
         return checks,output
+    # Compare the Lua state after orders delivered through the two public hosts.
+    orders = ["order mill","order harvest","wait 300","order motor","wait 300","order armor","wait 300","order armor","wait 150","checkpoint second"]
+    controls = ["key 2","key 1","wait 300","key 4","wait 300","key 6","wait 300","key 6","wait 150","checkpoint second"]
+    headless = binary.with_name("orra-sim"+binary.suffix)
+    reference = subprocess.check_output([headless,"--replay","-"],input="\n".join(orders),text=True)
+    for rate in (30,90):
+        route=temp/"second.route"
+        route.write_text("\n".join(["rate "+str(rate)]+controls))
+        result=subprocess.check_output([binary,"--replay",route],env=dict(os.environ,ORRA_COMPACT_REPLAY="1"),text=True)
+        assert next(v for v in result.splitlines() if v.startswith("state ")) == reference.splitlines()[0]
     executable=checksum(binary)
     base_frame=None
     for sector in ("gate-six","tide-window"):

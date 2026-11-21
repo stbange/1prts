@@ -45,7 +45,7 @@ watch            hall         14 6.6 10 shared muster
 motor            works        21 8.2 14 shared produce
 post             tower        10 9 11 shared lookout
 flight           hangar       34 12 40 shared service
-depot            works        25 8 21 shared freight
+depot            works        25 11 65 shared freight
 relay            tower        16 12 14 shared install
 pump             plant        13 8 16 shared drain
 stores           hall         18 7 20 shared supplies

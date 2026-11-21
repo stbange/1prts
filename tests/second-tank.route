@@ -1,0 +1,22 @@
+# Dispatch two distinct drivers. Walk to the second hatch from the commander's start.
+key 2
+key 1
+wait 300
+key 4
+wait 300
+key 6
+wait 300
+key 6
+wait 300
+key 3
+wait 100
+key 5
+wait 95
+expect section 1
+hold S 20
+hold A 96
+key E
+expect vessel lintel-2
+key 8
+shot second-lintel
+checkpoint second-aboard

@@ -107,6 +107,9 @@ static void art_errors(App *a, const char *root) {
     copy_asset(root, "assets/shaders/world.frag.glsl");
     put("assets/models/terrain.mesh", "ORRAinvalid");
     bad_render(&s, "mesh header");
+    Place invalid = s.place[0];
+    s.place = &invalid;
+    s.places = 1;
     snprintf(s.place[0].model, sizeof s.place[0].model, "does-not-exist");
     bad_render(&s, "missing mesh");
     s.places = 0;

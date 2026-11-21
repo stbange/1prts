@@ -56,7 +56,15 @@ local plans = {
             { "mail-1", "Fly bag 1 by courier", "tern", 26, "clear", { 8, 0, -152 }, "apron" },
             { "mail-2", "Fly bag 2 by tiltrotor", "kite", 34, "clear", { -19, 0, -153 }, "apron" },
             { "escort", "Bring observation crew home", "rook", 20, "patrol", { 25, 0, -45 }, "apron" },
-            { "mail-3", "Land the last mailbag", "kite", 32, "mail-1 mail-2 escort", { 13, 0, -158 }, "apron" },
+            {
+                "mail-3",
+                "Land the last mailbag",
+                "kite",
+                32,
+                "mail-1 mail-2 escort",
+                { 13, 0, -158 },
+                "apron",
+            },
         },
     },
     ["high-water"] = {
@@ -73,7 +81,14 @@ local plans = {
             { "transfer", "Transfer pressure module", "spindle", 25, "dock", { 6, 84, -315 } },
             { "watch", "Deliver the station watch", "loom", 24, "dock", { 0, 84, -277 } },
             { "repair", "Seal the transfer joint", "rivet", 16, "transfer", { 8, 84, -279 } },
-            { "traffic", "Reopen station traffic", "collar-watch", 12, "watch repair supply", { 0, 84, -300 } },
+            {
+                "traffic",
+                "Reopen station traffic",
+                "collar-watch",
+                12,
+                "watch repair supply",
+                { 0, 84, -300 },
+            },
         },
     },
 }
@@ -91,6 +106,13 @@ return function(id, ctx)
     end
     for _, cmd in ipairs({ { "cancel", "Cancel latest crew order" }, { "report", "Request shift report" } }) do
         rules.actions[#rules.actions + 1] = cmd
+    end
+    if ctx.freight and ctx.freight.checkpoint then
+        rules.actions[#rules.actions + 1] =
+            { "passage", "Close or open " .. ctx.freight.checkpoint, ctx.freight.checkpoint }
+    end
+    if id == "night-mail" then
+        rules.actions[#rules.actions + 1] = { "handoff", "Load bag two at Shore Depot", "depot" }
     end
     local function advise(s)
         s.advice = nil
@@ -153,6 +175,9 @@ return function(id, ctx)
         if s.result ~= "active" then
             return false
         end
+        if order == "passage" then
+            return ctx.freight.control(s)
+        end
         if order == "report" then
             report(s, s.objective)
             return true
@@ -180,6 +205,14 @@ return function(id, ctx)
             report(s, "Dispatch canceled " .. selected.id .. ".")
             return true
         end
+        if order == "handoff" and id == "night-mail" then
+            if s.handoff or s.done["mail-2"] then
+                return false
+            end
+            s.handoff = s.tick + (s.linked_hoist and 5 or 20) * 30
+            report(s, "Shore Depot loading the second bag.")
+            return true
+        end
         local job = by_id[order]
         if not job then
             return false
@@ -204,7 +237,7 @@ return function(id, ctx)
             report(s, "Insufficient available alloy.")
             return false
         end
-        if s.service and s.service[job[3]] then
+        if s.service and s.service[job[3]] or s.tactical and s.tactical.orders[job[3]] then
             report(s, "Crew is on a field shift.")
             return false
         end
@@ -215,6 +248,9 @@ return function(id, ctx)
             end
         end
         local seconds = job[4]
+        if order == "mail-2" and s.handoff and s.tick >= s.handoff then
+            seconds = seconds - 9
+        end
         if
             s.done.heater and order == "switch"
             or s.done.shoes and (order == "sample" or order == "assay-load")
@@ -275,7 +311,8 @@ return function(id, ctx)
             local key, actor, bay = job[1], job[3], job[7]
             local work = s.jobs[key]
             if work then
-                local paused = (owners[bay] and owners[bay] ~= work.serial)
+                local paused = ctx.freight and ctx.freight.waits(s, key)
+                    or (owners[bay] and owners[bay] ~= work.serial)
                     or (key == "repair" and s.jobs.tow)
                 if bay == "workshop" and not s.blue.power then
                     if s.reserve and not s.priority then
@@ -286,6 +323,9 @@ return function(id, ctx)
                 if not paused then
                     if not work.started then
                         work.started = true
+                        if ctx.freight then
+                            ctx.freight.take(s, key)
+                        end
                         s.reserved = s.reserved - work.cost
                     end
                     work.elapsed = work.elapsed + 1
@@ -306,7 +346,7 @@ return function(id, ctx)
                             s.frames[ctx.index["channel-section"]] = { 0, 0.84, 1, 0, ctx.index.wake }
                         end
                     end
-                    if t == 1 then
+                    if t == 1 and (not ctx.freight or ctx.freight.deliver(s, key)) then
                         finished = true
                         s.jobs[key] = nil
                         s.done[key] = true
@@ -324,7 +364,7 @@ return function(id, ctx)
                         end
                         report(s, actor .. " reports " .. key .. " complete.")
                         ctx.emit("complete", s, key)
-                        if key == plan.goal then
+                        if key == plan.goal and (not ctx.freight or ctx.freight.goal(s)) then
                             s.result = "victory"
                             s.objective = job[2] .. " complete"
                         end

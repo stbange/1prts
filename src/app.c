@@ -16,27 +16,32 @@ static void enter_sector(App *a) {
     camera_reset(&a->camera);
     a->camera.pos = a->sim.spawn;
     a->camera.yaw = a->sim.spawn_yaw;
+    if (!strcmp(a->sim.mission,"compact-bank")) {
+        for (int i=0;i<a->sim.places;i++) if (!strcmp(a->sim.place[i].key,"shed")) {
+            a->camera.aboard=i;a->camera.local=(V3){0,.84f,5};break;
+        }
+    }
     a->panel = FIELD;
     a->selected = a->listing = a->category = a->item = a->message_ticks = 0;
     a->stride_x = a->stride_y = a->stick_x = a->stick_y = 0;
     a->left_down = a->right_down = false;
     memset(a->keys, 0, sizeof a->keys);
-    a->crew_count = 0;
+    a->member = a->destination = 0;
+    a->aiming=a->pointed=false;
+    a->ground_target[0]=0;
     a->voice_at = -1000;
-    for (int i = 0; i < a->sim.places; i++)
-        if (a->sim.place[i].role[0])
-            a->roster[a->crew_count++] = i;
+}
+void app_adopt(App *a,Sim *s,Renderer *r) {
+    sim_close(&a->sim); render_close(&a->renderer);
+    a->sim=*s; a->renderer=*r;
+    enter_sector(a);
 }
 bool app_mission(App *a, const char *id) {
     Sim *next = calloc(1, sizeof *next);
     Renderer *view = calloc(1, sizeof *view);
     bool ok = next && view && sim_open_mission(next, a->sim.root, id) && render_open(view, next);
     if (ok) {
-        sim_close(&a->sim);
-        render_close(&a->renderer);
-        a->sim = *next;
-        a->renderer = *view;
-        enter_sector(a);
+        app_adopt(a,next,view);
     } else {
         tell(a, next && next->error[0]   ? next->error
                 : view && view->error[0] ? view->error
@@ -51,47 +56,89 @@ bool app_mission(App *a, const char *id) {
     return ok;
 }
 const Order *app_crew_order(const App *a, int choice) {
-    const char *key = a->sim.place[a->roster[a->member]].key;
+    const char *key = a->sim.place[a->sim.roster[a->member]].key;
     for (int i = 0; i < a->sim.order_count; i++)
         if (!strcmp(a->sim.orders[i].actor, key) && choice-- == 0)
             return &a->sim.orders[i];
     return NULL;
 }
+static int assigned_count(const App *a) {
+    int n = 0;
+    while (app_crew_order(a,n)) n++;
+    return n;
+}
+static const char *field_choices[][2] = {
+    {"point","Point at a world destination"}, {"group","Add or remove from group"}, {"move","Move to target"}, {"scout","Scout and report"},
+    {"escort","Escort moving crew"}, {"engage","Engage reported contact"}, {"hold","Hold position"},
+    {"withdraw","Withdraw to target"}, {"support","Support or recover target"},
+    {"bay:armor","Produce another armored crew"}, {"bay:section","Muster another section"},
+    {"bay:priority","Assign this bay reserve power"}, {"bay:power","Switch this bay grid feed"},
+};
+const char *app_field_choice(const App *a,int listing,bool label) {
+    int i=listing-3-assigned_count(a);
+    return i>=0 && i<(int)(sizeof field_choices/sizeof field_choices[0]) ? field_choices[i][label ? 1 : 0] : NULL;
+}
 int app_list_count(const App *a) {
     if (a->panel == CREW_JOB) {
-        int n = 0;
-        while (app_crew_order(a, n))
-            n++;
-        return n + 3;
+        const Place *p=&a->sim.place[a->sim.roster[a->member]];
+        bool bay=!strcmp(a->sim.mission,"gate-six") && (!strcmp(p->type,"watch") || !strcmp(p->type,"motor"));
+        return assigned_count(a)+3+(bay ? 13 : 9);
     }
-    return a->panel == OPERATIONS ? a->sim.operation_count
-           : a->panel == CREWS    ? a->crew_count
+    return a->panel == OPERATIONS ? a->sim.operation_count+4
+           : a->panel == CREWS    ? a->sim.crew_count
                                   : a->sim.order_count;
 }
 void app_target(App *a, int direction) {
+    a->ground_target[0]=0;a->pointed=false;
     for (int i = 0; i < a->sim.places; i++) {
         a->destination = (a->destination + direction + a->sim.places) % a->sim.places;
         const Place *p = &a->sim.place[a->destination];
-        if (p->key[0] && (!strcmp(p->key, "rival-wake") || p->role[0]))
+        if (p->key[0] && (!strcmp(p->owner, "rival") || !strcmp(p->family,"marker") || p->role[0]))
             return;
     }
 }
 static void crew_card(App *a, int member) {
+    a->pointed=false;a->ground_target[0]=0;
     a->member = member;
     a->listing = 0;
-    a->destination = a->roster[member];
+    a->destination = a->sim.roster[member];
     a->panel = CREW_JOB;
 }
 void app_choose(App *a) {
     if (a->panel == OPERATIONS && a->listing < a->sim.operation_count)
         app_mission(a, a->sim.operations[a->listing].id);
-    else if (a->panel == CREWS && a->listing < a->crew_count)
+    else if (a->panel==OPERATIONS) {
+        switch (a->listing-a->sim.operation_count) {
+            case 0: app_save(a);break;
+            case 1: app_resume(a);break;
+            case 2: { char *ledger=sim_text(&a->sim,"ledger");sim_reset(&a->sim);enter_sector(a);
+                if (ledger) {sim_import(&a->sim,"enter",ledger);free(ledger);}break; }
+            case 3: app_continue(a);break;
+        }
+    } else if (a->panel == CREWS && a->listing < a->sim.crew_count)
         crew_card(a, a->listing);
     else if (a->panel == CREW_JOB) {
-        const char *key = a->sim.place[a->roster[a->member]].key;
+        const char *key = a->sim.place[a->sim.roster[a->member]].key;
         const Order *job = app_crew_order(a, a->listing - 3);
-        char order[100];
-        if (job)
+        char order[160];
+        const char *field=app_field_choice(a,a->listing,false);
+        const char *target=*a->ground_target ? a->ground_target : a->sim.place[a->destination].key;
+        if (field && !strcmp(field,"point")) {
+            a->aiming=true; a->pointed=false; a->listing+=2; a->panel=FIELD;
+            tell(a,"Point at a crew, work site or ground. Click or tap to mark.");
+            return;
+        }
+        V3 location;
+        if (a->pointed && !*a->ground_target && !world_object(&a->sim,a->destination,&location)) {
+            tell(a,"Target has left the sector. Mark a new destination.");return;
+        }
+        if (field && !strcmp(field,"group"))
+            snprintf(order,sizeof order,"group:%s",key);
+        else if (field && !strncmp(field,"bay:",4))
+            snprintf(order,sizeof order,"%s@%s",field,key);
+        else if (field)
+            snprintf(order,sizeof order,"%s:%s@%s",field,key,target);
+        else if (job)
             snprintf(order, sizeof order, "%s", job->id);
         else if (a->listing == 1)
             snprintf(order, sizeof order, "release:%s", key);
@@ -99,7 +146,7 @@ void app_choose(App *a) {
             snprintf(order, sizeof order, a->listing == 2 ? "work:%s@%s" : "crew:%s@%s", key,
                      a->sim.place[a->destination].key);
         if (!sim_order(&a->sim, order))
-            tell(a, "Crew unavailable for that assignment.");
+            tell(a, a->sim.report[0] ? a->sim.report : "Crew unavailable for that assignment.");
         else
             a->message_ticks = 0;
     } else if (a->panel == SLATE)
@@ -154,14 +201,17 @@ bool app_open(App *a, const char *root, bool hidden) {
                 a->audio =
                     SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
         }
-        if (a->audio)
+        if (a->audio) {
             SDL_ResumeAudioStreamDevice(a->audio);
+            sound_open(a);
+        }
     }
     enter_sector(a);
     a->running = true;
     return true;
 }
 void app_close(App *a) {
+    sound_close(a);
     if (a->audio)
         SDL_DestroyAudioStream(a->audio);
     for (int i = 0; i < 8; i++)
@@ -193,19 +243,37 @@ void app_action(App *a, int index) {
         a->observe_order(a->sim.tick, index, accepted);
     a->message_ticks = 0;
 }
+bool app_lift(App *a,bool activate) {
+    Camera *c=&a->camera;
+    if (c->aboard<0 || strcmp(a->sim.place[c->aboard].type,"station") ||
+        fabsf(c->local.x+4)>2.1f || fabsf(c->local.z-326)>3.1f) return false;
+    for (int i=0;i<a->sim.places;i++) {
+        const Place *car=&a->sim.place[i];
+        if (strcmp(car->type,"lift-car")) continue;
+        if (!activate) return true;
+        bool inside=fabsf(c->local.x+4)<1.6f && fabsf(c->local.z-326)<1.8f;
+        int level=inside && fabsf(c->local.y-car->current.y)<.2f ? car->current.y<3 : c->local.y>=3;
+        sim_order(&a->sim,level ? "lift-call-1" : "lift-call-0");
+        return true;
+    }
+    return false;
+}
 void app_key(App *a, SDL_Scancode k) {
+    if (k==SDL_SCANCODE_F5) {app_save(a);return;}
+    if (k==SDL_SCANCODE_F9) {app_resume(a);return;}
+    if (a->aiming && k==SDL_SCANCODE_ESCAPE) {a->aiming=false;a->panel=CREW_JOB;return;}
     if (k == SDL_SCANCODE_L) {
         a->panel = a->panel == RADIO ? FIELD : RADIO;
         capture_mouse(a, false);
         return;
     }
-    if (k == SDL_SCANCODE_V && a->crew_count) {
+    if (k == SDL_SCANCODE_V && a->sim.crew_count) {
         V3 eye = camera_eye(&a->camera, &a->sim);
         int best = -1;
         float distance = 450;
-        for (int j = 0; j < a->crew_count; j++) {
+        for (int j = 0; j < a->sim.crew_count; j++) {
             V3 p;
-            int i = a->roster[j];
+            int i = a->sim.roster[j];
             if (!world_object(&a->sim, i, &p))
                 continue;
             V3 v = to_local(p, eye, a->camera.yaw);
@@ -287,6 +355,7 @@ void app_key(App *a, SDL_Scancode k) {
         return;
     }
     if (k == SDL_SCANCODE_E) {
+        if (app_lift(a,true)) return;
         bool boarded = world_interact(&a->sim, &a->camera);
         if (boarded)
             a->stride_x = a->stride_y = 0;
@@ -360,8 +429,9 @@ void app_event(App *a, const SDL_Event *e) {
             int w, h;
             SDL_GetWindowSize(a->window, &w, &h);
             ui_tap(a, e->button.x / w, e->button.y / h);
-        } else
-            capture_mouse(a, true);
+        } else if (a->captured && e->button.button==SDL_BUTTON_LEFT)
+            app_screen_point(a,.5f,.5f);
+        else capture_mouse(a,true);
         break;
     case SDL_EVENT_MOUSE_MOTION:
         if (a->captured && a->panel == FIELD)
@@ -381,6 +451,7 @@ void app_event(App *a, const SDL_Event *e) {
             a->left_x = x;
             a->left_y = y;
         } else {
+            a->touch_motion=0;
             a->right_down = true;
             a->right_id = e->tfinger.fingerID;
         }
@@ -390,8 +461,10 @@ void app_event(App *a, const SDL_Event *e) {
         if (a->left_down && a->left_id == e->tfinger.fingerID) {
             a->stick_x = (e->tfinger.x - a->left_x) * 9;
             a->stick_y = (a->left_y - e->tfinger.y) * 9;
-        } else if (a->right_down && a->right_id == e->tfinger.fingerID)
+        } else if (a->right_down && a->right_id == e->tfinger.fingerID) {
+            a->touch_motion+=fabsf(e->tfinger.dx)+fabsf(e->tfinger.dy);
             camera_look(&a->camera, e->tfinger.dx * 3.2f, -e->tfinger.dy * 2.6f);
+        }
         break;
     case SDL_EVENT_FINGER_UP:
     case SDL_EVENT_FINGER_CANCELED:
@@ -399,8 +472,10 @@ void app_event(App *a, const SDL_Event *e) {
             a->left_down = false;
             a->stick_x = a->stick_y = 0;
         }
-        if (a->right_down && a->right_id == e->tfinger.fingerID)
+        if (a->right_down && a->right_id == e->tfinger.fingerID) {
+            if (e->type==SDL_EVENT_FINGER_UP && a->touch_motion<.015f) app_screen_point(a,e->tfinger.x,e->tfinger.y);
             a->right_down = false;
+        }
         break;
     default:
         break;
@@ -428,6 +503,11 @@ void app_tick(App *a) {
     }
     int previous_jobs = finished(&a->sim.blue), warning = a->sim.relief_at;
     bool active = !strcmp(a->sim.result, "active");
+    int riding=-1;
+    if (a->camera.aboard>=0 && !strcmp(a->sim.place[a->camera.aboard].type,"station") &&
+        fabsf(a->camera.local.x+4)<1.6f && fabsf(a->camera.local.z-326)<1.8f)
+        for (int i=0;i<a->sim.places;i++)
+            if (!strcmp(a->sim.place[i].type,"lift-car") && fabsf(a->sim.place[i].current.y-a->camera.local.y)<.08f) riding=i;
     float old_yaw = world_angle(&a->sim, a->camera.aboard);
     if (!sim_step(&a->sim, 1)) {
         SDL_Log("Mission error: %s", a->sim.error);
@@ -438,6 +518,8 @@ void app_tick(App *a) {
         play_cue(a, 1);
     else if (previous_jobs < finished(&a->sim.blue))
         play_cue(a, 0);
+    if (a->sim.tick%15==0) sound_tick(a);
+    if (riding>=0) a->camera.local.y=a->sim.place[riding].current.y;
     a->camera.yaw += world_angle(&a->sim, a->camera.aboard) - old_yaw;
 }
 void app_draw(App *a) {

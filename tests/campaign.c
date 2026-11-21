@@ -167,7 +167,7 @@ void campaign_cases(App *a) {
     app_key(a, SDL_SCANCODE_ESCAPE);
     a->camera.yaw = 0;
     a->camera.pos = (V3){0, 0, 0};
-    REQUIRE(!orra_xr_mark(0, 1.72f, 0, 1, 0, 0));
+    REQUIRE(!orra_xr_mark(0, 1.72f, 0, 0, 1, 0));
     REQUIRE(orra_xr_mark(0, 1.72f, 0, 0, 0, -1));
     app_key(a, SDL_SCANCODE_TAB);
     Mat projection = mat_projection(1, 1), view = mat_view((V3){0, 1.7f, 0}, 0, 0);

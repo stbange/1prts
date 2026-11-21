@@ -30,6 +30,11 @@
     X(void, GenVertexArrays, (GLsizei, GLuint *)) \
     X(void, BindVertexArray, (GLuint)) \
     X(void, DeleteVertexArrays, (GLsizei, const GLuint *)) \
+    X(void, GenTextures, (GLsizei, GLuint *)) \
+    X(void, BindTexture, (GLenum, GLuint)) \
+    X(void, DeleteTextures, (GLsizei, const GLuint *)) \
+    X(void, TexParameteri, (GLenum, GLenum, GLint)) \
+    X(void, TexImage2D, (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *)) \
     X(void, GenBuffers, (GLsizei, GLuint *)) \
     X(void, BindBuffer, (GLenum, GLuint)) \
     X(void, BufferData, (GLenum, GLsizeiptr, const void *, GLenum)) \
@@ -140,7 +145,14 @@ static bool load_mesh(Renderer *r, const char *root, const Place *place) {
         SDL_free(bytes);
         return problem(r, path, "invalid mesh header or length");
     }
+    if (r->mesh_count>=r->mesh_capacity) {
+        int capacity=r->mesh_capacity ? 2*r->mesh_capacity : 16;
+        Mesh *space=realloc(r->meshes,(size_t)capacity*sizeof *space);
+        if (!space) {SDL_free(bytes);return problem(r,path,"mesh allocation failed");}
+        r->meshes=space;r->mesh_capacity=capacity;
+    }
     Mesh *m = &r->meshes[r->mesh_count++];
+    memset(m,0,sizeof *m);
     snprintf(m->name, sizeof m->name, "%s", name);
     m->count = (int)count;
     float squared = 0;
@@ -221,6 +233,29 @@ bool render_open(Renderer *r, const Sim *g) {
             return false;
     if (!find(r, g->terrain))
         return problem(r, "site", "terrain model is required");
+    r->loaded_places=g->places;
+    if (find(r,"worker")) {
+        const char *poses[]={"operator-side","operator-work"};
+        for (int n=0;n<2;n++) {
+            Place sprite={0};
+            snprintf(sprite.model,sizeof sprite.model,"%s",poses[n]);
+            if (!load_mesh(r,g->root,&sprite)) return false;
+        }
+    }
+    char tile_path[1350];
+    snprintf(tile_path,sizeof tile_path,"%s/assets/surface.txt",g->root);
+    char *tile=SDL_LoadFile(tile_path,NULL);
+    if (!tile) return problem(r,tile_path,"missing surface tile");
+    unsigned char pixels[256];
+    int count=0;
+    for (const char *q=tile;*q && count<256;q++) if (*q>='0' && *q<='9') pixels[count++]=(unsigned char)((*q-'0')*28);
+    SDL_free(tile);
+    if (count!=256) return problem(r,tile_path,"expected a 16 by 16 surface tile");
+    fGenTextures(1,&r->surface);
+    fBindTexture(GL_TEXTURE_2D,r->surface);
+    fTexImage2D(GL_TEXTURE_2D,0,GL_R8,16,16,0,GL_RED,GL_UNSIGNED_BYTE,pixels);
+    fTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    fTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     attributes(&r->ui_array, &r->ui_buffer);
     fEnableVertexAttribArray(0);
     fVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiVertex), NULL);
@@ -250,12 +285,16 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fViewport(x, y, w, h);
     fDisable(GL_BLEND);
     fEnable(GL_DEPTH_TEST);
+    for (int i=r->loaded_places;i<g->places;i++)
+        if (!find(r,g->place[i].model) && !load_mesh(r,g->root,&g->place[i])) return;
+    r->loaded_places=g->places;
     /* A stereo compositor may use both eyes' depth after this frame. */
     fEnable(GL_SCISSOR_TEST);
     fScissor(x, y, w, h);
     fClear(GL_DEPTH_BUFFER_BIT);
     fDisable(GL_SCISSOR_TEST);
     fUseProgram(r->scene);
+    fBindTexture(GL_TEXTURE_2D,r->surface);
     fUniformMatrix4fv(r->vp, 1, GL_FALSE, vp.v);
     fUniform3f(r->eye, eye.x, eye.y, eye.z);
     fUniform1i(r->night_light, !strcmp(g->terrain, "orbit") ? 2 : !strcmp(g->terrain, "airfield"));
@@ -281,16 +320,25 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
             if (!world_object(g, i, &p))
                 continue;
             Place const *o = &g->place[i];
+            if ((!strcmp(o->family,"fixture") || !strcmp(o->family,"operator")) &&
+                (p.x-eye.x)*(p.x-eye.x)+(p.y-eye.y)*(p.y-eye.y)+(p.z-eye.z)*(p.z-eye.z)>100*100)
+                continue;
             Mesh *m = find(r, o->model);
+            if (!m) continue;
             float radius = m->radius + 2.3f;
             V3 center = pass ? (V3){p.x + .62f * p.y, .073f, p.z - .32f * p.y} : p;
             if (!visible(planes, center, radius * (pass ? 1.28f : 1.f)))
                 continue;
-            fUniform1i(r->livery, !strncmp(o->condition, "red", 3));
+            fUniform1i(r->livery, !strcmp(o->owner,"rival"));
             bool squad = strstr(o->model, "section") != NULL;
             bool sprite = squad || !strcmp(o->model, "worker") || !strcmp(o->family, "people") ||
                           !strcmp(o->family, "sprite");
             float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : world_angle(g, i);
+            if (!strcmp(o->family,"operator") && find(r,"operator-side")) {
+                float relative=world_angle(g,i)-a;
+                if (fabsf(sinf(relative))>.68f) m=find(r,"operator-side");
+                else if (((g->tick/38+i)%3)==1) m=find(r,"operator-work");
+            }
             if (!squad)
                 draw(r, m, p, a);
             else
@@ -402,6 +450,8 @@ void render_close(Renderer *r) {
         fDeleteProgram(r->sky);
     if (r->panel)
         fDeleteProgram(r->panel);
+    if (r->surface) fDeleteTextures(1,&r->surface);
+    free(r->meshes);
     free(r->ui);
     memset(r, 0, sizeof *r);
 }

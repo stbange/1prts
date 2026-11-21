@@ -1,6 +1,7 @@
 /* Loose assets are fetched relative to this deployment, including subpaths. */
 var Module = {
   canvas: document.getElementById("canvas"),
+  persistSlots: function () { Module._orra_saved(0); },
   printErr: function (text) {
     console.error(text);
     if (String(text).startsWith("Startup:")) {
@@ -19,6 +20,7 @@ var Module = {
       return response[mode]();
     }
     (async function () {
+      if (typeof indexedDB !== "undefined") await prepareSaves(Module,indexedDB);
       const manifest = await read("content.json", "json");
       Module.FS.writeFile("content.json", JSON.stringify(manifest));
       const paths = new Set(manifest.files);
@@ -44,6 +46,47 @@ var Module = {
   }
 };
 
+async function prepareSaves(runtime, database) {
+  const folder="/orra-saves", keys=["command.sav","previous.sav"];
+  const fs=runtime.FS;
+  fs.mkdirTree(folder);
+  runtime.persistSlots=()=>runtime._orra_saved(0);
+  function open() {
+    return new Promise((resolve,reject)=>{
+      const request=database.open("orra-basin-campaign",1);
+      request.onupgradeneeded=()=>request.result.createObjectStore("slots");
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+      request.onblocked=()=>reject(Error("Save database is open in another version."));
+    });
+  }
+  try {
+    const db=await open();
+    const load=()=>new Promise((resolve,reject)=>{
+      const tx=db.transaction("slots","readonly");
+      for (const key of keys) {
+        const req=tx.objectStore("slots").get(key);
+        req.onsuccess=()=>{
+          if (req.result) fs.writeFile(folder+"/"+key,req.result);
+          else if (fs.analyzePath(folder+"/"+key).exists) fs.unlink(folder+"/"+key);
+        };
+      }
+      tx.oncomplete=resolve;tx.onerror=tx.onabort=reject;
+    });
+    await load();
+    runtime.persistSlots=()=>{
+      try {
+        const tx=db.transaction("slots","readwrite");
+        for (const key of keys) {
+          const path=folder+"/"+key;
+          if (fs.analyzePath(path).exists) tx.objectStore("slots").put(fs.readFile(path),key);
+        }
+        tx.oncomplete=()=>runtime._orra_saved(1);
+        tx.onabort=()=>load().finally(()=>runtime._orra_saved(0));
+      } catch (_) { runtime._orra_saved(0); }
+    };
+  } catch (_) { /* Flat play is available when browser storage is disabled. */ }
+}
 async function configureXR(runtime, xr, button) {
   if (!xr || !await xr.isSessionSupported("immersive-vr").catch(() => false)) return;
   button.hidden = false;
@@ -79,7 +122,7 @@ async function configureXR(runtime, xr, button) {
       function frame(time, xrFrame) {
         session.requestAnimationFrame(frame);
         const pose = xrFrame.getViewerPose(space);
-        if (!pose) return;
+        if (!pose) { aim = pointer = null; runtime._orra_xr_wrist(0); return; }
         let move = 0, strafe = 0, turn = 0, wrist = null, ray = null;
         pointer = null;
         for (const input of session.inputSources) {
@@ -144,5 +187,5 @@ function slatePoint(slate, ray) {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { Module, configureXR, slatePoint };
+  module.exports = { Module, configureXR, slatePoint, prepareSaves };
 }

@@ -48,6 +48,20 @@ with tempfile.TemporaryDirectory() as folder:
     base=json.loads((binary.parent/"content.json").read_text())
     base["packs"]=["mods/long-watch"]
     (root/"content.json").write_text(json.dumps(base))
+    stress=temp/"large"
+    stress.mkdir()
+    for name in ("assets","scripts","mods"): shutil.copytree(root/name,stress/name)
+    extension=stress/"mods"/"yard"
+    extension.mkdir()
+    (extension/"pack.json").write_text(json.dumps({"api":1,"entry":"yard.lua","files":["yard.lua"]}))
+    (extension/"yard.lua").write_text("""local api=...
+for i=1,90 do api.job("shift-"..i,"Shift "..i,function(s) s.blue.alloy=s.blue.alloy+1 return true end) end
+api.mission{id="large-yard",name="Large yard",sector="westbound",build=function(ctx)
+ for i=1,100 do ctx.add_entity("spare-"..i,"dray",{i*22,0,110}) end
+ return {hold_ticks=30,actions={{"base","Base"}},new=function() return {tick=0,blue={queues={},alloy=8},red={queues={}},result="active",report="Ready"} end,step=function(s) s.tick=s.tick+1 end,command=function() return false end}
+end}""")
+    (stress/"content.json").write_text(json.dumps(dict(base,packs=["mods/yard"])))
+    call("--data",stress,"--mission","large-yard","--replay","-",route="order shift-90\nalloy 9\norder crew:spare-100@spare-99\nwait 150\ncheckpoint large")
     assert "hold=2700" in call("--data",root)
     assert "hold=27000" in call("--data",root,"--mission","tide-window")
     call("--data",root,"--replay","-",route="order mill\nalloy 4\norder cancel\nalloy 8")

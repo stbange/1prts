@@ -26,7 +26,7 @@ assert(manifest.version == 1, "unsupported base content version " .. tostring(ma
 local catalog, scenes = script("catalog"), script("scenes")
 local fleet = scenes.fleet(read)
 local missions, overrides, listeners, extra_jobs = {}, {}, {}, {}
-local operations = {}
+local operations, sectors, packages, links = {}, {}, {}, {}
 for _, m in ipairs(catalog.missions) do
     missions[m.id] = m
     operations[#operations + 1] = m
@@ -48,6 +48,8 @@ for _, directory in ipairs(manifest.packs or {}) do
     local success, err = pcall(function()
         local pack = decode(read(directory .. "/pack.json"))
         assert(pack.api == 1, "unsupported API " .. tostring(pack.api))
+        assert(not packages[directory], "duplicate pack " .. directory)
+        packages[directory] = tostring(pack.version or pack.api)
         local declared = {}
         for _, key in ipairs(pack.overrides or {}) do
             declared[key] = true
@@ -81,6 +83,36 @@ for _, directory in ipairs(manifest.packs or {}) do
             operations[#operations + 1] = v
             catalog.missions[#catalog.missions + 1] = v
         end
+        function api.link(from, to)
+            assert(not links[from] and type(to) == "string", "duplicate campaign link")
+            links[from] = to
+        end
+        function api.sector(v)
+            assert(
+                type(v.id) == "string" and v.id:match("^[%w-]+$") and not sectors[v.id] and not missions[v.id],
+                "duplicate or invalid sector"
+            )
+            assert(
+                v.owner and v.terrain and type(v.units) == "string" and type(v.buildings) == "string",
+                "incomplete sector"
+            )
+            local file = assert(io.open(path(root, "assets/models/" .. v.terrain .. ".mesh"), "rb"))
+            file:close()
+            if v.routes then
+                assert(v.routes.road and #v.routes.road > 0, "sector needs road junctions")
+                for _, lane in pairs(v.routes) do
+                    if type(lane) == "table" then
+                        for _, node in ipairs(lane) do
+                            assert(
+                                type(node) == "table" and tonumber(node[1]) and tonumber(node[2]),
+                                "invalid route junction"
+                            )
+                        end
+                    end
+                end
+            end
+            sectors[v.id] = v
+        end
         function api.unit(v)
             assert(v.id and v.name and v.role and v.family and v.w and v.h and v.d, "invalid pack unit")
             assert(not fleet[v.id], "duplicate unit " .. v.id)
@@ -88,6 +120,10 @@ for _, directory in ipairs(manifest.packs or {}) do
                 v.asset = directory .. "/" .. v.asset
                 local file = assert(io.open(path(root, v.asset), "rb"))
                 file:close()
+            end
+            if v.interior then
+                local parent = assert(fleet[v.interior], "unknown interior")
+                v.room, v.room_model = parent.room, v.interior
             end
             fleet[v.id] = v
             catalog.units[#catalog.units + 1] = v
@@ -105,16 +141,23 @@ for _, directory in ipairs(manifest.packs or {}) do
     end)
     assert(success, directory .. ": " .. tostring(err))
 end
+for from, to in pairs(links) do
+    assert(missions[from] and missions[to], "unknown linked operation")
+    missions[from].next = to
+end
 local id = requested or "gate-six"
 local mission = assert(missions[id], "unknown mission " .. id)
 local sector = mission.sector or id
-local ctx = scenes.make(sector, catalog, fleet, script("site"))
+local ctx = scenes.make(sector, catalog, fleet, script("site"), sectors)
 ctx.emit = emit
+ctx.freight = script("freight")(ctx)
+ctx.packages = packages
 local rules
 if mission.build then
     rules = mission.build(ctx)
 elseif id == "gate-six" then
     rules = script("gate_six")
+    rules.army = script("army")(ctx, rules)
 elseif id == "tide-window" then
     rules = script("tide_window")(ctx)
 else
@@ -138,6 +181,10 @@ if id == "gate-six" then
         { "staff", "Change production shift" },
         { "reserve", "Charge gallery / 2 alloy" },
         { "priority", "Assign reserve priority" },
+        { "common", "Salvage the shared plate lot", "mole" },
+        { "build:motor@west-pad", "Build Motor Hall / west pad", "fitters" },
+        { "build:watch@east-pad", "Build Watch House / east pad", "fitters" },
+        { "build:mill@bank-pad", "Build Plate Mill / bank pad", "fitters" },
     }) do
         rules.actions[#rules.actions + 1] = action
     end
@@ -186,10 +233,31 @@ end
 for _, v in ipairs(ctx.site) do
     v.asset = overrides[v[1] .. ".mesh"] or v.asset
 end
+local records = script("records")
+local initial_places = #ctx.site
+local archive = script("archive")(ctx, rules, records, decode, mission, initial_places)
+rules.save, rules.restore, rules.ledger, rules.enter, rules.next =
+    archive.save, archive.restore, archive.ledger, archive.enter, archive.next
+local navigation = script("routes")
+ctx.army = rules.army
+ctx.position = function(s, key)
+    return navigation.position(ctx, s, key)
+end
+local lift = script("lift")(ctx)
+local tactics = script("tactics")(ctx, navigation)
+rules.tactics = tactics
+local workshops = script("workshops")(ctx)
+ctx.navigation = navigation
 local fieldwork = script("fieldwork")(ctx)
 local original_new, original_command, original_step = rules.new, rules.command, rules.step
 function rules.new()
+    ctx.truncate(initial_places)
     local s = original_new()
+    s.spawned = {}
+    s.sequence = 0
+    s.instances = {}
+    ctx.register(s, 1)
+    ctx.freight.new(s)
     s.frames = s.frames or {}
     s.service = {}
     s.roster = {}
@@ -199,11 +267,21 @@ function rules.new()
     s.contacts = {}
     s.log = {}
     s.watchposts = {}
+    if rules.army then
+        rules.army.new(s)
+    end
+    archive.new(s)
+    workshops.new(s)
+    tactics.new(s)
+    lift.new(s)
     if id == "gate-six" and rules.hold_ticks ~= 1800 then
         s.report = mission.role
     end
     if s.report then
         s.log[1] = { tick = 0, text = s.report }
+    end
+    if rules.advise then
+        rules.advise(s)
     end
     return s
 end
@@ -217,9 +295,32 @@ function rules.command(s, order)
     if s.result ~= "active" then
         return false
     end
+    local landing = order:match("^lift%-call%-(%d)$")
+    if landing then
+        return lift.call(s, tonumber(landing))
+    end
+    local ground = order:match("@(g%-%d+%-%d+)$")
+    local previous = #ctx.site
+    if ground and not ctx.index[ground] and not ctx.ground(ground) then
+        return false
+    end
+    local field = tactics.command(s, order)
+    if #ctx.site > previous then
+        if field then
+            ctx.register(s, previous + 1)
+            s.spawned[#s.spawned + 1] = { key = ground, unit = "ground" }
+        else
+            ctx.truncate(previous)
+        end
+    end
+    if field ~= nil then
+        s.report_at = s.tick
+        record(s, s.report)
+        return field
+    end
     local worker, place = order:match("^work:([%w-]+)@([%w-]+)$")
     if worker then
-        if not fieldwork.start(s, worker, place) then
+        if not workshops.ready(s, worker, place) or not fieldwork.start(s, worker, place) then
             return false
         end
         s.report = ctx.site[ctx.index[worker]].name .. " / " .. s.service[worker].role .. " at " .. place
@@ -231,7 +332,7 @@ function rules.command(s, order)
     local release = order:match("^release:(.+)$")
     if release then
         if not s.service[release] then
-            return false
+            return tactics.release(s, release)
         end
         s.service[release] = nil
         s.report = ctx.site[ctx.index[release]].name .. " / duty released."
@@ -271,7 +372,9 @@ function rules.command(s, order)
         return true
     end
     local accepted
-    if extra_jobs[order] then
+    if rules.army and (order == "common" or order:match("^build:") or order:match("^bay:")) then
+        accepted = rules.army.command(s, order)
+    elseif extra_jobs[order] then
         accepted = extra_jobs[order].run(s, ctx)
     else
         accepted = original_command(s, order)
@@ -280,6 +383,9 @@ function rules.command(s, order)
     record(s, s.report)
     if id == "gate-six" then
         s.reserved = s.blue.reserved
+    end
+    if rules.advise then
+        rules.advise(s)
     end
     if accepted then
         emit("order", s, order)
@@ -297,6 +403,11 @@ function rules.step(s)
         s.blue.away = false
     end
     original_step(s)
+    tactics.tick(s)
+    lift.tick(s)
+    if rules.advise and s.result == "active" then
+        rules.advise(s)
+    end
     if id == "gate-six" then
         s.reserved = s.blue.reserved
     end
@@ -313,6 +424,12 @@ function rules.step(s)
                 s.service[key] = nil
                 s.roster[key] = (s.roster[key] or 0) + 1
                 local result = fieldwork.finish(s, key, job)
+                if job.kind == "field" then
+                    local receipt = workshops.finish(s, key, job.target)
+                    if receipt then
+                        result = result .. " / " .. receipt
+                    end
+                end
                 s.reports[key] = s.tick
                 s.report = ctx.site[ctx.index[key]].name .. " / " .. job.target .. " / " .. result .. "."
                 emit("crew", s, key)
@@ -324,8 +441,26 @@ function rules.step(s)
         record(s, s.report)
     end
     if s.result ~= "active" then
+        archive.finish(s)
         emit("result", s, s.result)
     end
+end
+function rules.inspect(s, key)
+    local t = s.tactical
+    local job = t.orders[key] or t.posted[key]
+    if job then
+        return ("%s / %s / %s"):format(t.group[key] and "GROUP" or key, job.verb, job.target)
+    end
+    if s.works.receipts[key] then
+        return s.works.receipts[key].message
+    end
+    if t.group[key] then
+        return "GROUP / standing by"
+    end
+    return rules.army and rules.army.status(s, key) or ""
+end
+function rules.record(s)
+    return records.encode(s)
 end
 return {
     catalog = catalog,

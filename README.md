@@ -71,3 +71,11 @@ Set `ORRA_CAPTURE_DIR` to an existing directory, then run `1stprts --mission tid
 ## Licenses
 
 Code, including C, Lua, shaders and build scripts, uses the MIT License. Original models, sprites, textures, bitmap lettering, sound and screenshots use CC BY 4.0. Bundled third-party components retain their notices. [MIT](LICENSE) · [CC BY 4.0](LICENSES/CC-BY-4.0.txt) · [Art credits](assets/CREDITS.md)
+
+## Factory yards, field orders and saved operations
+
+At Gate Six, use the command slate to commission the Plate Mill, dispatch the Mole and build a Motor Hall. Each additional armored crew costs four alloy. Move the previous rollout clear of the hatch before the next one leaves. The first tank and its successors appear separately in Crew Dispatch. The salvage lot on the central road is shared by both commanders.
+
+Open **Crew Dispatch** with **C**, select a crew, and choose a field order. Use the target arrows or choose **Point at a world destination**, aim from the commander's eyes and click, tap or use the controller trigger. Review the recipient and target on the slate, then confirm the order. **Add or remove from group** lets multiple selected crews take the same assignment. Crew work and the simulation continue while the slate is open.
+
+Open **Operations** with **M** for Save, Resume, Retry and Continue. **F5** saves and **F9** resumes. Native saves live in the user's SDL preference directory. Browser saves persist in IndexedDB for the site's origin. Continue carries eligible crews and equipment forward after a victory. Selecting an operation by name starts it with its authored budget. [Automated playtest and controls](docs/playtests/basin-release/README.md) · [Adding a sector](docs/modding.md)

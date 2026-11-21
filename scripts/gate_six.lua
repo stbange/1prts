@@ -69,6 +69,9 @@ local function order(s, a, id)
     end
     local job = game.jobs[id]
     if job then
+        if game.army and a[id] and (id == "section" or id == "armor") then
+            return game.army.queue(s, a, id)
+        end
         if a[id] then
             report(s, a, "Already commissioned: " .. job.label)
             return false
@@ -77,7 +80,8 @@ local function order(s, a, id)
             report(s, a, "Required first: " .. game.jobs[job.needs].label)
             return false
         end
-        if a.queues[job.bay] then
+        local bay = (a == s.red and "rival-" or "") .. job.bay
+        if a.queues[job.bay] or game.army and s.army.bays[bay] then
             report(s, a, "Crew occupied. Wait for the current job.")
             return false
         end
@@ -86,7 +90,8 @@ local function order(s, a, id)
             return false
         end
         a.alloy = a.alloy - job.cost
-        a.serial = a.serial + 1
+        s.sequence = (s.sequence or 0) + 1
+        a.serial = s.sequence
         a.reserved = a.reserved + job.cost
         a.queues[job.bay] = { id = id, left = job.duration, serial = a.serial, cost = job.cost }
         report(s, a, job.label .. " queued. Crew assigned.")
@@ -101,6 +106,9 @@ local function order(s, a, id)
             if not newest or q.serial > newest.serial then
                 newest, bay = q, name
             end
+        end
+        if game.army and game.army.cancel(s, a, newest and newest.serial) then
+            return true
         end
         if not newest then
             report(s, a, "No outstanding order.")
@@ -199,6 +207,47 @@ function game.command(s, id)
     end
     return order(s, a, id)
 end
+function game.advise(s)
+    local a = s.blue
+    local advice = not a.mill and not a.queues.fit and "mill"
+        or not a.harvesting and a.loads > 0 and "harvest"
+        or not a.power and "power"
+        or not a.staffed and "staff"
+    if not advice then
+        for _, id in ipairs({ "watch", "section", "motor", "armor" }) do
+            local job = game.jobs[id]
+            if
+                not a[id]
+                and not a.queues[job.bay]
+                and (not job.needs or a[job.needs])
+                and a.alloy >= job.cost
+            then
+                advice = id
+                break
+            end
+        end
+    end
+    advice = advice or a.armor and not a.guard and "guard" or a.section and not a.advance and "advance" or nil
+    s.advice = advice
+    if advice then
+        for i, action in ipairs(game.actions) do
+            if action[1] == advice then
+                s.objective = "[" .. i .. "] " .. action[2]
+                return
+            end
+        end
+    end
+    for _, bay in ipairs({ "fit", "motor", "watch" }) do
+        local q = a.queues[bay]
+        if q then
+            s.objective = game.jobs[q.id].label .. " / " .. math.ceil(q.left / 30) .. "s to handover"
+            return
+        end
+    end
+    s.objective = a.walk == 300 and "Hold Gate Six / keep the switch room clear"
+        or a.advance and "Section moving / cover the gate yard"
+        or "Await the next Mole delivery"
+end
 local function handover(s)
     local a = s.blue
     local pending = a.pending
@@ -239,11 +288,19 @@ local function shift(s, a)
                 a[q.id] = true
                 a.draw = a.draw + (job.draw or 0)
                 a.queues[bay] = nil
-                report(s, a, job.label .. " ready for orders.")
+                report(
+                    s,
+                    a,
+                    q.id == "armor"
+                            and (a == s.blue and "Lintel driver ready. Rear hatch at the Motor Hall exit." or "Wake driver ready at motor exit.")
+                        or job.label .. " ready for orders."
+                )
             end
         end
     end
-    if a.harvesting and (a.loads > 0 or a.haul > 0) then
+    if game.army then
+        game.army.haul(s, a)
+    elseif a.harvesting and (a.loads > 0 or a.haul > 0) then
         if a.haul < 299 then
             a.haul = a.haul + 1
             if a.haul == 150 then
@@ -263,19 +320,41 @@ local function shift(s, a)
 end
 local function rival(s)
     local a = s.red
+    if game.army and s.blue.lot == "common-lot" and s.army.lots["common-lot"] > 0 and a.haul == 0 then
+        game.army.lot(s, a, "common-lot")
+    end
     if not a.harvesting then
         order(s, a, "harvest")
     end
-    if not a.mill then
-        order(s, a, "mill")
-    elseif not a.watch then
-        order(s, a, "watch")
-    elseif not a.section then
-        order(s, a, "section")
-    elseif not a.motor then
-        order(s, a, "motor")
-    elseif not a.armor then
-        order(s, a, "armor")
+    if game.tactics then
+        game.tactics.reinforcement(s)
+    end
+    -- A staffed opening normally favors the switch crew. A reported armored
+    -- incursion makes the motor hall and its own relief convoy more urgent.
+    local pressure = false
+    for _, contact in pairs(s.tactical and s.tactical.intel or {}) do
+        if s.tick - contact.tick <= 240 then
+            pressure = true
+        end
+    end
+    local weights = pressure and { mill = 100, motor = 90, armor = 80, watch = 60, section = 50 }
+        or { mill = 100, watch = 90, section = 80, motor = 60, armor = 50 }
+    local best, score
+    for _, id in ipairs({ "mill", "watch", "section", "motor", "armor" }) do
+        local job = game.jobs[id]
+        if
+            not a[id]
+            and (not job.needs or a[job.needs])
+            and not a.queues[job.bay]
+            and a.staffed
+            and a.alloy >= job.cost
+            and (not score or weights[id] > score)
+        then
+            best, score = id, weights[id]
+        end
+    end
+    if best then
+        order(s, a, best)
     end
     if a.section and s.relief_at and s.tick >= s.relief_at then
         order(s, a, "advance")
@@ -298,6 +377,9 @@ function game.step(s)
     end
     shift(s, s.blue)
     shift(s, s.red)
+    if game.army then
+        game.army.tick(s)
+    end
     local b, r = s.blue, s.red
     if b.drive == 210 and r.drive == 210 then
         r.readiness = r.readiness - 1
@@ -315,8 +397,15 @@ function game.step(s)
         b.advance = false
         b.walk = 0
     end
+    local forces = game.tactics and game.tactics.yard(s)
     local function claim(a, other)
-        if a.walk == 300 and other.walk < 300 and other.drive < 210 then
+        local own = (a == b and "home" or "rival")
+        local foe = (a == b and "rival" or "home")
+        local taking, blocked = a.walk == 300, other.walk == 300 or other.drive == 210
+        if forces then
+            taking, blocked = forces[own].occupy, forces[foe].occupy or forces[foe].guard
+        end
+        if taking and not blocked then
             a.hold = a.hold + 1
         else
             a.hold = 0

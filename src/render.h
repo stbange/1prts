@@ -13,11 +13,11 @@ typedef struct {
     float radius;
 } Mesh;
 typedef struct {
-    unsigned scene, sky, panel, empty, ui_buffer, ui_array;
+    unsigned surface,scene, sky, panel, empty, ui_buffer, ui_array;
     int vp, pose, eye, shadow, livery, inverse, sky_eye, orbit, night_light, extent, tracked,
         wrist_projection;
-    Mesh meshes[MAX_SITE];
-    int mesh_count;
+    Mesh *meshes;
+    int mesh_count,mesh_capacity,loaded_places;
     char portrait[18][20];
     unsigned char glyph[128][7];
     UiVertex *ui;

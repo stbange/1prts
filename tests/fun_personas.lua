@@ -1,5 +1,6 @@
 -- Run against the same mission module the C engine loads. All clocks are simulation ticks.
-local rules = dofile(assert(arg[1], "mission directory") .. "/scripts/gate_six.lua")
+local root=assert(arg[1],"mission directory")
+local rules=assert(loadfile(root.."/scripts/runtime.lua"))(root,"gate-six").gate_six
 local episodes = tonumber(arg[2]) or 20
 local first_seed = tonumber(arg[3]) or 42
 local trace = arg[4] and assert(io.open(arg[4], "w"))

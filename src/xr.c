@@ -14,7 +14,7 @@ const char *orra_status(void) {
     static char status[560];
     if (!game)
         return "loading";
-    snprintf(status, sizeof status, "%s|%s|%d|%d|%s|%d|%d|%s|%d|%d|%.3f|%.3f|%.3f|%d|%d|%d|%d|%d",
+    snprintf(status, sizeof status, "%s|%s|%d|%d|%s|%d|%d|%s|%d|%d|%.3f|%.3f|%.3f|%d|%d|%d|%d|%d|%d|%d|%s|%s|%s",
              game->sim.result,
              game->panel == FIELD        ? "field"
              : game->panel == SLATE      ? "orders"
@@ -26,8 +26,16 @@ const char *orra_status(void) {
              game->sim.blue.alloy, game->sim.tick, game->sim.report, game->touch, game->selected,
              game->sim.mission, game->camera.aboard, game->sim.progress, game->camera.pos.x,
              game->camera.pos.z, game->camera.yaw, game->left_down, game->right_down,
-             game->sim.hold_ticks, game->member, game->destination);
+             game->sim.hold_ticks, game->member, game->destination, game->sim.order_count, game->save_pending,
+             game->sim.crew_count ? game->sim.place[game->sim.roster[game->member]].key : "",
+             *game->ground_target ? game->ground_target : game->sim.place[game->destination].key, game->message);
     return status;
+}
+void orra_saved(int success) {
+    if (!game) return;
+    game->save_pending=false;
+    snprintf(game->message,sizeof game->message,"%s",success ? "Operation saved in this browser." : "Storage write failed. Check free space or browser permissions.");
+    game->message_ticks=180;
 }
 void orra_clock(int ticks) {
     if (!game || !game->manual_clock || ticks < 0 || ticks > 108000)
@@ -78,23 +86,10 @@ int orra_xr_pick(float x, float y) {
     return 1;
 }
 int orra_xr_mark(float x, float y, float z, float dx, float dy, float dz) {
-    if (game->panel != FIELD || strcmp(game->sim.mission, "gate-six"))
-        return 0;
-    V3 anchor = camera_eye(&game->camera, &game->sim);
-    anchor.y -= 1.72f;
-    V3 origin = to_world((V3){x, y, z}, anchor, game->camera.yaw);
-    V3 ray = to_world((V3){dx, dy, dz}, (V3){0}, game->camera.yaw);
-    V3 to = {-origin.x, 1.72f - origin.y, -66 - origin.z};
-    float distance = to.x * ray.x + to.y * ray.y + to.z * ray.z;
-    if (distance <= 0 || hypotf(hypotf(to.x - distance * ray.x, to.z - distance * ray.z),
-                                to.y - distance * ray.y) > 4.5f)
-        return 0;
-    for (int i = 0; i < game->sim.order_count; i++)
-        if (!strcmp(game->sim.orders[i].id, "advance")) {
-            app_action(game, i);
-            return 1;
-        }
-    return 0;
+    V3 base=camera_eye(&game->camera,&game->sim);
+    base.y-=1.72f;
+    return app_mark(game,to_world((V3){x,y,z},base,game->camera.yaw),
+                    to_world((V3){dx,dy,dz},(V3){0},game->camera.yaw));
 }
 void orra_xr_eye(const float *projection, const float *view, int x, int y, int w, int h, float ox,
                  float oy, float oz) {

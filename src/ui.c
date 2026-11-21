@@ -117,7 +117,7 @@ static void order_panel(App *a, int w, int h) {
         }
         return;
     }
-    const char *title = a->panel == CREW_JOB     ? a->sim.place[a->roster[a->member]].name
+    const char *title = a->panel == CREW_JOB     ? a->sim.place[a->sim.roster[a->member]].name
                         : a->panel == OPERATIONS ? "OPERATIONS"
                         : a->panel == CREWS      ? "CREW DISPATCH"
                                                  : "COMMAND SLATE";
@@ -135,15 +135,17 @@ static void order_panel(App *a, int w, int h) {
         char idx[3];
         snprintf(idx, sizeof idx, "%d", (i + 1) % 10);
         T(x + 17, yy + 8, 1.2f, idx, AMBER);
-        const char *label = a->panel == OPERATIONS ? a->sim.operations[i].name
-                            : a->panel == CREWS    ? a->sim.place[a->roster[i]].name
-                                                   : a->sim.orders[i].label;
+        static const char *options[]={"Save operation","Resume saved operation","Retry this operation","Continue campaign"};
+        const char *label = a->panel == OPERATIONS ? (i<a->sim.operation_count ? a->sim.operations[i].name : options[i-a->sim.operation_count])
+                            : a->panel == CREWS    ? a->sim.place[a->sim.roster[i]].name
+                                                   : a->panel == SLATE ? a->sim.orders[i].label : "";
         if (a->panel == CREW_JOB) {
             const Order *order = app_crew_order(a, i - 3);
-            label = order    ? order->label
+            const char *field = app_field_choice(a,i,true);
+            label = field ? field : order    ? order->label
                     : i == 0 ? "Report on selected target"
                     : i == 1 ? "Release field assignment"
-                             : a->sim.place[a->roster[a->member]].role;
+                             : a->sim.place[a->sim.roster[a->member]].role;
         }
         if (a->panel == SLATE && !strcmp(a->sim.orders[i].id, a->sim.advice))
             T(x + panel - 25, yy + 7, 1.35f, ">", AMBER);
@@ -151,7 +153,7 @@ static void order_panel(App *a, int w, int h) {
     }
     char detail[100] = "ARROWS SELECT   ENTER DISPATCH";
     if (a->panel == CREWS && count) {
-        const Place *crew = &a->sim.place[a->roster[selected]];
+        const Place *crew = &a->sim.place[a->sim.roster[selected]];
         int age, state = sim_crew_status(&a->sim, crew->key, &age);
         snprintf(detail, sizeof detail, "%s / %s / %dS", crew->role,
                  state == 1   ? "ON SHIFT"
@@ -159,9 +161,10 @@ static void order_panel(App *a, int w, int h) {
                               : "READY",
                  age / 30);
     } else if (a->panel == CREW_JOB) {
-        snprintf(detail, sizeof detail, "< TARGET  %s  >", a->sim.place[a->destination].name);
+        snprintf(detail, sizeof detail, "< TARGET  %s  >", *a->ground_target ? a->ground_target : a->sim.place[a->destination].name);
         char report[110];
-        sim_crew_report(&a->sim, a->sim.place[a->roster[a->member]].key, report, sizeof report);
+        sim_crew_report(&a->sim, a->sim.place[a->sim.roster[a->member]].key, report, sizeof report);
+        if (!*report) sim_inspect(&a->sim,a->sim.place[a->sim.roster[a->member]].key,report,sizeof report);
         T(x + 15, y + 282, 1.1f, report, BLUE);
     } else if (a->panel == SLATE && !strcmp(a->sim.mission, "tide-window")) {
         snprintf(detail, sizeof detail, "PILOT / RIVAL QUAY 05:00 - 08:00");
@@ -241,6 +244,11 @@ void ui_draw(App *a, int w, int h) {
     T(183, 38, 1.05f, "[C] CREWS", BLUE);
     if (w > 700)
         T(258, 38, 1.05f, "[L] LOG", MUTE);
+    if (a->camera.aboard>=0 && a->panel==FIELD) {
+        const Place *p=&g->place[a->camera.aboard];
+        snprintf(line,sizeof line,"ABOARD %s",p->name[0]?p->name:p->key);
+        T(23,118,1.12f,line,PAPER);
+    }
     if (a->panel == FIELD && !strcmp(g->result, "active")) {
         const char *objective = g->objective[0] ? g->objective : field_objective(g);
         int ow = (int)strlen(objective) * 7 + 19;
@@ -280,7 +288,8 @@ void ui_draw(App *a, int w, int h) {
         R(cx, cy - 6, 1, 3, 0xf0e6bfd9);
         R(cx, cy + 4, 1, 3, 0xf0e6bfd9);
         int near = world_nearest(g, &a->camera);
-        if (near >= 0) {
+        if (app_lift(a,false)) T(cx-62,cy+25,1.1f,"[E] CALL / RIDE LIFT",PAPER);
+        else if (near >= 0) {
             snprintf(line, sizeof line, "[E] %s %s", near != a->camera.aboard ? "BOARD" : "LEAVE",
                      g->place[near].model);
             int ww = (int)strlen(line) * 7 + 18;

@@ -186,7 +186,9 @@ static bool passable(const Sim *g, V3 p) {
         if (a.y < -1.8f || a.y > sh.h + 1)
             continue;
         float x = fabsf(a.x), z = a.z;
-        if (sh.boardable) {
+        if (!strcmp(place->family,"fixture")) {
+            if (x<sh.w*.5f+.2f && fabsf(z)<sh.d*.5f+.2f && a.y<sh.h) return false;
+        } else if (sh.boardable) {
             if (x < sh.w * (place->hull ? .49f : .81f) + .16f && fabsf(z) < sh.d * .5f + .18f)
                 return false;
         } else if (!strcmp(place->model, "gate")) {
@@ -205,11 +207,23 @@ static bool passable(const Sim *g, V3 p) {
     }
     return true;
 }
+bool world_ground(const Sim *g,V3 p) { return passable(g,p); }
 static float pavement_height(V3 p) {
     if (p.x >= -23.4f && p.x <= -15.6f && p.z >= 0 && p.z <= 7)
         return 5.8f;
     if (fabsf(p.x + 19.5f) <= 2.2f && p.z > 7 && p.z < 20)
         return ceilf((20 - p.z) / .65f) * .29f;
+    return 0;
+}
+static float depot_floor(const Sim *g,V3 p,float previous) {
+    for (int i=0;i<g->places;i++) {
+        const Place *host=&g->place[i];
+        if (strcmp(host->type,"depot")) continue;
+        V3 q=to_local(p,host->pos,host->yaw);
+        if (fabsf(q.x+6)<1.2f && q.z<6.3f && q.z>-2.3f)
+            return .25f*clamp(1+floorf((6.22f-q.z)/.52f),1,16);
+        if (previous>3.5f && fabsf(q.x+6)<2.05f && q.z<=-2 && q.z>-15.7f) return 4;
+    }
     return 0;
 }
 static float ramp_floor(float z, float length, float reach) {
@@ -218,6 +232,12 @@ static float ramp_floor(float z, float length, float reach) {
 static bool occupied(const Sim *g, int aboard, V3 p) {
     for (int i = 0; i < g->places; i++) {
         const Place *seat = &g->place[i];
+        if (seat->parent==aboard+1 && !strcmp(seat->type,"lift-door") &&
+            fabsf(p.x-seat->current.x)<.84f && fabsf(p.z-seat->current.z)<.22f &&
+            fabsf(p.y-seat->current.y)<1.5f) return true;
+        if (seat->parent == aboard+1 && !strcmp(seat->family,"fixture") &&
+            fabsf(p.x-seat->pos.x)<seat->size.x*.5f+.2f && fabsf(p.z-seat->pos.z)<seat->size.z*.5f+.2f &&
+            p.y<seat->pos.y+seat->size.y && p.y>seat->pos.y-1.5f) return true;
         if (seat->parent == aboard + 1 && !strcmp(seat->family, "operator") &&
             fabsf(p.y - seat->pos.y) < 1.2f && hypotf(p.x - seat->pos.x, p.z - seat->pos.z) < .39f)
             return true;
@@ -259,7 +279,9 @@ void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec
             if (fabsf(c->local.x + sh.w * .29f) < 1.3f && c->local.z <= sh.d * .08f &&
                 c->local.z >= sh.d * .08f - 14.3f)
                 c->local.y = .84f + bridge * clamp((sh.d * .08f - c->local.z) / 13.44f, 0, 1);
-            else if ((c->local.z > sh.d * .08f && c->local.z < sh.d * .45f) ||
+            else if (!strcmp(hull->family,"station") && fabsf(c->local.x+4)<2.5f && fabsf(c->local.z-325)<4.4f) {
+                /* Lift car and upper landing retain the rider's current deck. */
+            } else if ((c->local.z > sh.d * .08f && c->local.z < sh.d * .45f) ||
                      c->local.z < -sh.d * .405f)
                 c->local.y = .84f;
         }
@@ -273,16 +295,16 @@ void camera_move(Camera *c, const Sim *g, float strafe, float forward, float sec
     } else {
         V3 next = c->pos;
         next.x += delta.x;
-        next.y = !strcmp(g->terrain, "terrain") ? pavement_height(next) : 0;
-        if (c->pos.y > 0 && strcmp(g->terrain, "terrain"))
+        next.y = fmaxf(!strcmp(g->terrain, "terrain") ? pavement_height(next) : 0, depot_floor(g,next,c->pos.y));
+        if (next.y == 0 && c->pos.y > 0 && strcmp(g->terrain, "terrain"))
             next.y = fmaxf(0, c->pos.y - .35f * speed);
         if (fabsf(next.y - c->pos.y) < .47f && passable(g, next))
             c->pos = next;
         V3 before = c->pos;
         next = c->pos;
         next.z += delta.z;
-        next.y = !strcmp(g->terrain, "terrain") ? pavement_height(next) : 0;
-        if (c->pos.y > 0 && strcmp(g->terrain, "terrain"))
+        next.y = fmaxf(!strcmp(g->terrain, "terrain") ? pavement_height(next) : 0, depot_floor(g,next,c->pos.y));
+        if (next.y == 0 && c->pos.y > 0 && strcmp(g->terrain, "terrain"))
             next.y = fmaxf(0, c->pos.y - .35f * speed);
         if (fabsf(next.y - c->pos.y) < .47f && passable(g, next))
             c->pos = next;

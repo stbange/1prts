@@ -27,6 +27,9 @@ static bool replay(Sim *g, FILE *in) {
             char *end;
             long ticks = strtol(value, &end, 10);
             ok = !*end && ticks >= 0 && ticks <= 108000 && sim_step(g, (int)ticks);
+        } else if (n == 2 && !strcmp(verb, "checkpoint")) {
+            printf("state %s %u\n", value, sim_digest(g));
+            ok = true;
         } else if (n == 2 && !strcmp(verb, "result"))
             ok = !strcmp(value, g->result);
         else if (n == 2 && !strcmp(verb, "alloy"))

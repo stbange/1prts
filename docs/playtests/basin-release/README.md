@@ -1,0 +1,13 @@
+# Basin campaign verification
+
+At the start of this change, all 17 tests at `daea77b` passed. That run included seven operations, both Gate Six opening builds, the idle commander's defeat, the standard and upgraded ferry landings, the Long Watch art and rule overrides, and the 30 and 90 Hz checkpoints. Independent unit coverage measured 1,942 of 2,019 native C lines, 1,596 of 1,622 shipped Lua lines and 100% of the handwritten browser JavaScript lines.
+
+The second-tank replay walks from the initial position to the factory's second Lintel and boards by the rear hatch. The yard tests reserve four alloy out of six, hold a third rollout until the exit clears, and put two haulers on the same last load. The presentation test compares the complete Lua state reached through the graphical controls at 30 and 90 Hz with the headless simulator. [Rendered input](../../../tests/second-tank.route) · [Yard assertions](../../../tests/yard_rules.lua) · [Host comparison](../../../tests/presentation.py)
+
+A roster walk starts at the entrance of each craft or facility, traverses its aisle to the fitted work area and returns outside. The Crown walk starts on the docked tender and returns to it. The campaign state tests dispatch the advertised field shift for every catalog ID and check the receiving workplace's receipt. The tests also restore the commander on a moving crawler and recover the previous save after an interrupted write. [Interior walks](../../../tests/rooms.c) · [Field shifts and transfers](../../../tests/campaign_state.lua) · [Save and lift tests](../../../tests/dispatch_state.c)
+
+## Gate Six onboarding
+
+A simulated first-time reader glances at the command slate every 1.5 to 6.2 seconds and sometimes follows an order at random. With the same policy and the same 40 seeds, highlighting an affordable next order and showing the bay's time to handover raised wins from 0 to 27. Thirteen runs still had an active mission at the four-minute observation limit. Median first mill acceptance fell from 313 to 77 simulation ticks among runs that ordered a mill. The CSVs give individual results and the first rejection reason. The original noise, timed dispatcher and planner policies are measured separately. [Reader policy](../../../tests/read_slate.lua) · [Before](reader-before.csv) · [After](reader-after.csv)
+
+First-time human observations and physical-headset observations remain open. The device test covers perceived scale, motion during a crossing and lift ride, wrist readability and return to flat play. Human factory feedback includes what the player understood about acceptance, delay and rollout, and whether they could issue an order aboard their tank. [Observation protocol](../campaign/README.md#two-observations-still-needed)

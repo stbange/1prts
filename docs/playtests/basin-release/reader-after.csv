@@ -1,0 +1,41 @@
+seed,result,first_mill_tick,accepted,rejected,first_rejection
+42,active,103,41,24,Required first: Motor Hall
+43,active,14,42,25,More alloy needed.
+44,victory,45,24,11,Required first: Motor Hall
+45,victory,227,24,18,Field crews are already home.
+46,victory,107,16,11,Hauler busy or lot empty.
+47,active,18,39,23,Already commissioned: Plate Mill
+48,victory,49,28,22,Required first: Motor Hall
+49,victory,258,20,9,Field crews are already home.
+50,victory,111,35,15,Field crews are already home.
+51,active,22,44,20,Already commissioned: Plate Mill
+52,victory,53,34,22,Crew unavailable. Produce the unit first.
+53,victory,84,29,21,No outstanding order.
+54,victory,203,24,29,Required first: Watch House
+55,victory,26,35,17,Already commissioned: Watch House
+56,active,57,39,26,Hauler busy or lot empty.
+57,active,88,33,28,Already commissioned: Plate Mill
+58,victory,119,20,4,Bay is already working.
+59,victory,30,19,8,Reserve unavailable.
+60,victory,61,19,12,Required first: Plate Mill
+61,victory,287,36,28,Crew unavailable. Produce the unit first.
+1042,victory,23,18,14,Crew unavailable. Produce the unit first.
+1043,victory,54,38,22,No outstanding order.
+1044,victory,85,33,18,Commission mill first.
+1045,victory,116,18,11,Required first: Watch House
+1046,victory,91,24,7,Already commissioned: Plate Mill
+1047,victory,58,17,14,No outstanding order.
+1048,active,173,33,29,Crew unavailable. Produce the unit first.
+1049,victory,120,29,17,Required first: Watch House
+1050,victory,31,33,17,Crew unavailable. Produce the unit first.
+1051,active,62,39,20,Required first: Watch House
+1052,victory,93,34,19,Required first: Plate Mill
+1053,active,125,30,31,Commission mill first.
+1054,active,35,46,17,Crew unavailable. Produce the unit first.
+1055,victory,66,35,15,Hauler busy or lot empty.
+1056,active,97,38,20,More alloy needed. Dispatch the hauler.
+1057,victory,8,30,22,Required first: Motor Hall
+1058,active,210,43,18,Crew unavailable. Produce the unit first.
+1059,active,70,32,29,Hauler busy or lot empty.
+1060,victory,101,35,17,Already commissioned: Plate Mill
+1061,victory,12,34,14,Survey pad occupied.

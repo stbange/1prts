@@ -6,11 +6,9 @@
 #include <lua.h>
 
 #define ORRA_PI 3.14159265f
-#define MAX_SITE 192
 #define MAX_CATALOG 64
 #define CATEGORY_COUNT 5
 #define ORDER_COUNT 10
-#define MAX_ORDERS 40
 typedef struct {
     float x, y, z;
 } V3;
@@ -25,10 +23,10 @@ typedef struct {
     int count;
 } Catalog;
 typedef struct {
-    char id[24], label[44], actor[32];
+    char id[80], label[64], actor[64];
 } Order;
 typedef struct {
-    char model[24], condition[24], key[32], name[50], family[20], role[24], asset[180];
+    char type[32], owner[24], model[24], condition[24], key[64], name[50], family[20], role[24], asset[180];
     V3 pos, size, current;
     float yaw, facing;
     int parent, linked, berth;
@@ -47,8 +45,9 @@ typedef struct {
     int tick, hold_ticks, relief_at;
     Side blue, red;
     Catalog cats[CATEGORY_COUNT];
-    Order orders[MAX_ORDERS];
-    Place place[MAX_SITE];
+    Order *orders;
+    Place *place;
+    int *roster, crew_count, capacity, site_ref;
     int places, order_count, operation_count, clock, progress, reserved, report_at;
     char sounds[8][180];
     char mission[32], title[48], faction[48], terrain[24], objective[104], stage[32], advice[24];
@@ -62,6 +61,9 @@ typedef struct {
     int aboard;
     V3 local;
 } Camera;
+typedef struct { int place; bool ground; float distance; V3 point; } WorldHit;
+bool world_ground(const Sim *, V3);
+WorldHit world_point(const Sim *, V3, V3, int);
 typedef struct {
     float w, h, d;
     bool boardable;
@@ -71,12 +73,16 @@ bool sim_open(Sim *, const char *);
 bool sim_open_mission(Sim *, const char *, const char *);
 bool sim_order(Sim *, const char *);
 void sim_crew_report(const Sim *, const char *, char *, size_t);
+void sim_inspect(Sim *, const char *, char *, size_t);
 void sim_log(const Sim *, int, char *, size_t);
 int sim_crew_status(const Sim *, const char *, int *);
 float world_angle(const Sim *, int);
 Shape world_asset_shape(const Sim *, int);
 void sim_close(Sim *);
 bool sim_reset(Sim *);
+uint32_t sim_digest(Sim *);
+char *sim_text(Sim *,const char *);
+bool sim_import(Sim *,const char *,const char *);
 bool sim_step(Sim *, int);
 bool sim_command(Sim *, int);
 bool sim_snapshot(Sim *);

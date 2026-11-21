@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import math
 import functools
 import http.server
 import threading
@@ -20,9 +21,10 @@ Object.defineProperty(navigator, 'xr', {value: {
   requestSession:async()=>{
     const s=window.testSession=new EventTarget();
     s.inputSources=[{handedness:"left",gamepad:{axes:[0,0],buttons:[]}},
-                    {handedness:"right",gamepad:{axes:[0,0],buttons:[]}}];s.updateRenderState=()=>{};
+                    {handedness:"right",targetRaySpace:"hand",gamepad:{axes:[0,0],buttons:[]}}];s.updateRenderState=()=>{};
     s.requestReferenceSpace=async()=>({});
     s.requestAnimationFrame=callback=>requestAnimationFrame(t=>{if(!s.ended)callback(t,{
+      getPose:which=>which==="hand" && window.testRay ? {transform:{matrix:new Float32Array(testRay)}} : null,
       getViewerPose:()=>({views:[-.032,.032].map(x=>({
         projectionMatrix:new Float32Array([1,0,0,0,0,1,0,0,0,0,-1,-1,0,0,-.2,0]),
         transform:{inverse:{matrix:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,-x,-1.72,0,1])},position:{x,y:1.72,z:0}}
@@ -58,7 +60,7 @@ def exercise(browser, url, layout, pack=False):
         def enable(route):
             source=route.fetch()
             manifest=source.json()
-            manifest["packs"]=["mods/long-watch"]
+            manifest["packs"]=["mods/long-watch","mods/wire-quay"]
             route.fulfill(response=source,json=manifest)
         page.route("**/content.json",enable)
     def status(): return page.evaluate(STATUS)
@@ -79,7 +81,7 @@ def exercise(browser, url, layout, pack=False):
         history.append(["order",index])
         if layout=="touch": touch(715,134+24*(index-1))
         elif layout=="xr":
-            for _ in range((index-1-int(status()[6])) % 14): xr_event("squeezestart","left")
+            for _ in range((index-1-int(status()[6])) % int(status()[18])): xr_event("squeezestart","left")
             xr_event("selectstart","right")
         else: page.keyboard.press(str(index))
         advance(0)
@@ -137,6 +139,14 @@ def exercise(browser, url, layout, pack=False):
             page.keyboard.press("e");advance(0)
             assert int(status()[8])>=0,status()
             frame=page.locator("canvas").screenshot()
+            if not pack:
+                saved=status()
+                page.keyboard.press("F5");advance(0)
+                page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('saved in this browser')")
+                page.reload();page.wait_for_function(READY)
+                page.keyboard.press("F9");advance(0)
+                restored=status()
+                assert (restored[3],restored[7],restored[8])==(saved[3],saved[7],saved[8]),restored
         if layout=="xr":
             def stick(x,y,ticks):
                 eyes=page.evaluate("window.xrEyes")
@@ -153,6 +163,27 @@ def exercise(browser, url, layout, pack=False):
             advance(3500)
         assert status()[0]=="victory",status()
         if layout=="xr":
+            assert int(status()[8])>=0
+            targets=[("gate-six","mole",-8,1,2),("tide-window","kestrel",0,3,0),
+                     ("westbound","shunter",0,2,-3),("white-mile","barrow",0,2,-3),
+                     ("night-mail","kite",0,3,-10),("high-water","lark",0,3,0),
+                     ("compact-bank","hinge",-27,2,5)]
+            for index,(sector,crew,x,y,z) in enumerate(targets):
+                page.keyboard.press("m");advance(0);page.keyboard.press(str(index+1));advance(0)
+                state=status();assert state[7]==sector,state
+                cx,cz,yaw=float(state[10]),float(state[11]),float(state[12])
+                cy=1.72
+                if sector=="compact-bank":cx,cy,cz=-25,2.56,-22
+                vx,vy,vz=x-cx,y-cy,z-cz
+                norm=math.sqrt(vx*vx+vy*vy+vz*vz)
+                vx,vy,vz=(vx*math.cos(yaw)+vz*math.sin(yaw))/norm,vy/norm,(-vx*math.sin(yaw)+vz*math.cos(yaw))/norm
+                ray=[1,0,0,0,0,1,0,0,-vx,-vy,-vz,0,0,1.72,0,1]
+                old=page.evaluate("xrEyes")
+                page.evaluate("ray=>window.testRay=ray",ray)
+                page.wait_for_function("old=>xrEyes>old+2",arg=old)
+                xr_event("selectstart","right");advance(0)
+                assert status()[1]=="assignment" and status()[20]==crew,(sector,status())
+                page.keyboard.press("Escape");page.keyboard.press("Escape");advance(0)
             page.evaluate("()=>testSession.end()")
             page.keyboard.press("Escape");advance(0)
             assert status()[1]=="field"

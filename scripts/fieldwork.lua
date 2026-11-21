@@ -4,6 +4,10 @@ local observers = { survey = true, lookout = true, relay = true, guide = true, s
 local watch = { guard = true, support = true, occupy = true, patrol = true }
 return function(ctx)
     local function position(s, key)
+        if ctx.position then
+            local p = ctx.position(s, key)
+            return p[1], p[2], p[3]
+        end
         local i = ctx.index[key]
         local row = ctx.site[i]
         local frame = s.frames[i]
@@ -22,7 +26,8 @@ return function(ctx)
         end
         local node = ctx.site[i]
         if
-            not node.role or node[6] and node[6] ~= "fitters" and node[6] ~= "haul" and not s.blue[node[6]]
+            not node.role
+            or node[6] and node[6] ~= "fitters" and node[6] ~= "haul" and not s.blue[node[6]]
         then
             return false
         end
@@ -59,9 +64,13 @@ return function(ctx)
         local moves = node.hull and not node[6] and i ~= j and not (s.frames[i] and s.frames[i][5] > 0)
         local distance = math.sqrt((tx - x) ^ 2 + (tz - z) ^ 2)
         local seconds = moves and math.min(60, math.max(7, distance / (aircraft and 16 or 6))) or 5
-        local job =
-            { kind = "field", target = target, role = node.role, begin = s.tick, finish = s.tick
-                + math.ceil(seconds * 30) }
+        local job = {
+            kind = "field",
+            target = target,
+            role = node.role,
+            begin = s.tick,
+            finish = s.tick + math.ceil(seconds * 30),
+        }
         if moves then
             local offset = (dest.size and dest.size[1] or 2) * 0.5
                 + (node.size and node.size[1] or 2) * 0.5
@@ -69,6 +78,11 @@ return function(ctx)
             job.origin = { x, y, z }
             job.destination = { tx + offset, ty, tz }
             job.air = aircraft
+            local route = ctx.navigation.plan(ctx, s, key, target)
+            if not route then
+                return false
+            end
+            job.route = route
         end
         s.service[key] = job
         return true
@@ -79,6 +93,13 @@ return function(ctx)
         end
         local t = math.min(1, (s.tick - job.begin) / (job.finish - job.begin))
         local p, q = job.origin, job.destination
+        if job.route then
+            local span = #job.route
+            local part = math.min(span - 1, math.floor(t * span))
+            p = part > 0 and job.route[part] or p
+            q = job.route[part + 1]
+            t = t == 1 and 1 or t * span - part
+        end
         s.frames[ctx.index[key]] = {
             p[1] + (q[1] - p[1]) * t,
             p[2] + (q[2] - p[2]) * t + (job.air and 20 * math.sin(math.pi * t) or 0),

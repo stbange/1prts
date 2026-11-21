@@ -95,3 +95,36 @@ test('tracked controller ray intersects a physical slate',()=>{
   ray[12]=1;assert.equal(slatePoint(slate,ray),null);ray[14]=-1;assert.equal(slatePoint(slate,ray),null);
   ray[10]=0;assert.equal(slatePoint(slate,ray),null);
 });
+
+test("browser save transaction restores both generations and rolls back on quota failure",async()=>{
+  const {prepareSaves}=require("../web/boot.js");
+  const disk=new Map([["command.sav",new Uint8Array([1])]]);
+  const files=new Map([["/orra-saves/previous.sav",new Uint8Array([9])]]);
+  const callbacks=[];
+  const host={FS:{mkdirTree(){},analyzePath:path=>({exists:files.has(path)}),unlink:path=>files.delete(path),
+    writeFile:(path,value)=>files.set(path,value),readFile:path=>files.get(path)},_orra_saved:v=>callbacks.push(v)};
+  let blocked=false,quota=false;
+  const db={createObjectStore(){},transaction(store,mode){
+    const jobs=[];
+    const tx={objectStore(){return {
+      get(key){const req={};jobs.push(()=>{req.result=disk.get(key);req.onsuccess();});return req;},
+      put(value,key){jobs.push(()=>disk.set(key,value));}
+    };}};
+    setImmediate(()=>{if (quota && mode==="readwrite") tx.onabort();else {jobs.forEach(fn=>fn());tx.oncomplete();}});
+    return tx;
+  }};
+  const factory={open(){
+    const request={result:db};
+    setImmediate(()=>{if(blocked)request.onblocked();else{request.onupgradeneeded();request.onsuccess();}});
+    return request;
+  }};
+  await prepareSaves(host,factory);
+  assert.deepEqual(files.get("/orra-saves/command.sav"),new Uint8Array([1]));
+  assert.ok(!files.has("/orra-saves/previous.sav"));
+  files.set("/orra-saves/command.sav",new Uint8Array([2]));files.set("/orra-saves/previous.sav",new Uint8Array([1]));
+  host.persistSlots();await flush();assert.equal(callbacks.pop(),1);
+  quota=true;files.set("/orra-saves/command.sav",new Uint8Array([3]));
+  host.persistSlots();await flush();await flush();await flush();
+  assert.equal(callbacks.pop(),0);assert.equal(files.get("/orra-saves/command.sav")[0],2);
+  blocked=true;await prepareSaves(host,factory);host.persistSlots();assert.equal(callbacks.pop(),0);
+});

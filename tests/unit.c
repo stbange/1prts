@@ -248,6 +248,10 @@ int main(int argc, char **argv) {
     dispatch_cases(a);
     component_tests(a, argv[1]);
     campaign_cases(a);
+    void dispatch_state_test(App *);
+    dispatch_state_test(a);
+    void rooms_test(const char *);
+    rooms_test(argv[1]);
     CHECK(!render_capture(&a->renderer, "/missing-orra-directory/a.ppm"));
     app_close(a);
     free(a);

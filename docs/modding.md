@@ -50,3 +50,11 @@ alloy 2
 ```
 
 Use this sequence with `orra-sim --mission tide-window --replay route.txt`. The normal quay-hoist route takes 7:15. For visual input and camera paths, the native game accepts recorded keyboard and mouse actions. [Example ferry crossing](../tests/tide-window.route) · [Working pack](../mods/long-watch/pack.json)
+
+## Sector and campaign extensions
+
+Add `mods/wire-quay` to the `packs` array in the distributed `content.json` to play Wire Quay and Wire Quay / Return. It can share that array with `mods/long-watch`. Choose Wire Quay from Operations. Dispatch the Wire Courier's freight assignment to Stores, stamp the receipt on the slate, and continue to the return shift.
+
+`api.sector` registers a named sector, owner, terrain, units, buildings, spawn, positions and route junctions in metres. `api.unit` accepts a loose mesh, an existing interior template and a field-work role. `api.link` connects two registered operations. A mission also accepts a `next` ID. Read the sample entry and its attribution beside the asset. [Wire Quay](../mods/wire-quay/init.lua) · [Pack manifest](../mods/wire-quay/pack.json)
+
+The base interior register places a named machine in each crewed asset. Positions use fractions of beam and length. The station and lift fittings, 16-pixel surface tile, music and ambient loops all ship as ordinary files. [Room register](../assets/rooms.txt) · [Mesh authoring](../tools/rooms_art.py) · [Audio authoring](../tools/basin_music.py)

@@ -1,0 +1,13 @@
+shot 11-compact-bank
+key 1
+key 2
+key 5
+wait 365
+key 6
+key 3
+wait 1150
+key 4
+wait 820
+key 8
+wait 490
+expect result victory

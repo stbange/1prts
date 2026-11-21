@@ -346,27 +346,31 @@ def sprite(name,rows,colors,px):
             quad((x,y,0),(x+px,y,0),(x+px,y+px,0),(x,y+px,0),colors[ch])
     write(name)
 
-ground(); floodgate()
-for args in (("survey","SURVEY HALL","DISPATCH",18,7.1,13,"blue"),("dynamo","DYNAMO 02","GRID 02",16,8.2,13,"wall"),
-             ("mill","PLATE MILL","BATCH 04",17,8.6,12,"blue"),("watch","WATCH HOUSE","MUSTER",14,6.6,10,"wall"),
-             ("motor","MOTOR HALL","LINE 01",21,8.2,14,"blue")):
-    facility(*args)
-vehicle("mole","orange",2.13,False);vehicle("lintel","blue",1.04,True);vehicle("wake","plum",1.73,False)
-person=[
-    "       hhhh       ","     hhhhhhhh     ","    hhHHHHHHhh    ","    hhhhhhhhhh    ",
-    "    bbbhhhhbbbb   ","     fFffFff      ","     fbbffbb      ","     fFfffFf      ",
-    "      fffcf       ","      cfffc       ","    jjjccjjjj     ","   jjjwjjwwjjj    ",
-    "   jjjwwwwjjrj    ","   jjwwjjwwjrj    ","   jsjjjjjjjsj    ","   csjbwwbjjsf    ",
-    "   fsjbbbbjjff    ","     ppppppp      ","     pppbbpp      ","     ppb  pp      ",
-    "     ppp  pp      ","     bpp  pb      ","     ppb  pp      ","     bbb  bbb     ","    bbbb  bbbb    "]
-for name,jacket,hat in (("worker","orange","lamp"),("section","teal","light"),("enemysection","plum","rose")):
-    colors=dict(h=hat,H="edge",f="skin",F="white",c="copper",j=jacket,w="paint",s="skin",
-                p="shadow",b="black",r="tread")
-    if name=="enemysection":
-        colors.update(h="f0ce91", H="fff2ba", j="362234", w="ffe8a8", p="20262a", b="161b20")
-    sprite(name,person,colors,.077)
-for name,hz in (("ack",482),("blocked",185)):
-    with wave.open(str(OUT/"sounds"/(name+".wav")),"wb") as wav:
-        wav.setparams((1,2,22050,0,"NONE","not compressed"))
-        signal=[int(4500*math.exp(-i/780)*math.sin(i*hz*2*math.pi/22050)) for i in range(3300)]
-        wav.writeframes(struct.pack("<"+"h"*len(signal),*signal))
+def build_original():
+    ground(); floodgate()
+    for args in (("survey","SURVEY HALL","DISPATCH",18,7.1,13,"blue"),("dynamo","DYNAMO 02","GRID 02",16,8.2,13,"wall"),
+                 ("mill","PLATE MILL","BATCH 04",17,8.6,12,"blue"),("watch","WATCH HOUSE","MUSTER",14,6.6,10,"wall"),
+                 ("motor","MOTOR HALL","LINE 01",21,8.2,14,"blue")):
+        facility(*args)
+    vehicle("mole","orange",2.13,False);vehicle("lintel","blue",1.04,True);vehicle("wake","plum",1.73,False)
+    person=[
+        "       hhhh       ","     hhhhhhhh     ","    hhHHHHHHhh    ","    hhhhhhhhhh    ",
+        "    bbbhhhhbbbb   ","     fFffFff      ","     fbbffbb      ","     fFfffFf      ",
+        "      fffcf       ","      cfffc       ","    jjjccjjjj     ","   jjjwjjwwjjj    ",
+        "   jjjwwwwjjrj    ","   jjwwjjwwjrj    ","   jsjjjjjjjsj    ","   csjbwwbjjsf    ",
+        "   fsjbbbbjjff    ","     ppppppp      ","     pppbbpp      ","     ppb  pp      ",
+        "     ppp  pp      ","     bpp  pb      ","     ppb  pp      ","     bbb  bbb     ","    bbbb  bbbb    "]
+    for name,jacket,hat in (("worker","orange","lamp"),("section","teal","light"),("enemysection","plum","rose")):
+        colors=dict(h=hat,H="edge",f="skin",F="white",c="copper",j=jacket,w="paint",s="skin",
+                    p="shadow",b="black",r="tread")
+        if name=="enemysection":
+            colors.update(h="f0ce91", H="fff2ba", j="362234", w="ffe8a8", p="20262a", b="161b20")
+        sprite(name,person,colors,.077)
+    for name,hz in (("ack",482),("blocked",185)):
+        with wave.open(str(OUT/"sounds"/(name+".wav")),"wb") as wav:
+            wav.setparams((1,2,22050,0,"NONE","not compressed"))
+            signal=[int(4500*math.exp(-i/780)*math.sin(i*hz*2*math.pi/22050)) for i in range(3300)]
+            wav.writeframes(struct.pack("<"+"h"*len(signal),*signal))
+
+if __name__ == "__main__":
+    build_original()

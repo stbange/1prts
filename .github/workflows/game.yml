@@ -26,17 +26,44 @@ jobs:
       - name: Configure native
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DORRA_COVERAGE=${{ runner.os == 'Linux' && 'ON' || 'OFF' }}
       - run: cmake --build build --config Release --parallel 4
-      - name: Linux runtime and rendered replays
-        if: runner.os == 'Linux'
+      - name: Prepare software OpenGL on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
+          $archive = "$env:RUNNER_TEMP/mesa.7z"
+          $download = "https://github.com/pal1000/mesa-dist-win/releases/download/26.3.0/mesa3d-26.3.0-release-msvc.7z"
+          Invoke-WebRequest -Uri $download -OutFile $archive
+          if ((Get-FileHash $archive).Hash.ToLower() -ne "c505fcc77e8f63a09d7ddac086591d2f542c0698d37fc9e3094685a34d0d9991") { throw "Mesa checksum mismatch" }
+          7z x $archive "-o$env:RUNNER_TEMP/mesa" -y | Out-Null
+          $driver = Get-ChildItem "$env:RUNNER_TEMP/mesa" -Recurse -Filter opengl32.dll | Where-Object { $_.Directory.Name -eq 'x64' } | Select-Object -First 1
+          if (!$driver) { throw "x64 OpenGL loader missing" }
+          $driver.DirectoryName >> $env:GITHUB_PATH
+          "SDL_OPENGL_LIBRARY=$($driver.FullName)" >> $env:GITHUB_ENV
+          "GALLIUM_DRIVER=llvmpipe" >> $env:GITHUB_ENV
+      - name: Exercise native rendering, simulation and content
+        env:
+          SDL_AUDIODRIVER: dummy
+          ORRA_FAILURE_DIR: ${{ github.workspace }}/failures
+        run: |
+          cmake -E make_directory failures
           ctest --test-dir build -C Release --output-on-failure
+      - name: Independent unit coverage and strict OpenSpec
+        if: runner.os == 'Linux'
+        env:
+          OPENSPEC_TELEMETRY: '0'
+        run: |
           python3 tools/coverage.py build
-      - name: Native launch and Lua unit checks
-        if: runner.os != 'Linux'
-        run: ctest --test-dir build -C Release -R "^(cli|lua)_units$" --output-on-failure
+          npx --yes --package @fission-ai/openspec@2.1.1 openspec validate --all --strict
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-${{ runner.os }}
+          path: |
+            failures/
+            build/Testing/Temporary/LastTest.log
       - uses: actions/upload-artifact@v4
         with:
-          name: Gate-Six-${{ runner.os }}
+          name: Orra-Basin-${{ runner.os }}
           path: build/bin/
   web:
     runs-on: ubuntu-24.04
@@ -53,11 +80,18 @@ jobs:
           emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
           cmake --build build-web --parallel 4
       - name: Exercise browser inputs
+        env:
+          ORRA_FAILURE_DIR: browser-failures
         run: |
           python3 -m pip install playwright
           python3 -m playwright install --with-deps chromium
           python3 tests/browser.py build-web/bin
       - uses: actions/upload-artifact@v4
         with:
-          name: Gate-Six-Web
+          name: Orra-Basin-Web
           path: build-web/bin/
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-Web
+          path: browser-failures/

@@ -18,7 +18,15 @@ var Module = {
     }
     (async function () {
       const manifest = await read("content.json", "json");
-      await Promise.all(manifest.files.map(async function (path) {
+      Module.FS.writeFile("content.json", JSON.stringify(manifest));
+      const paths = new Set(manifest.files);
+      for (const directory of manifest.packs || []) {
+        const pack = await read(directory + "/pack.json", "json");
+        Module.FS.mkdirTree(directory);
+        Module.FS.writeFile(directory + "/pack.json", JSON.stringify(pack));
+        for (const child of [pack.entry, ...pack.files]) paths.add(directory + "/" + child);
+      }
+      await Promise.all([...paths].map(async function (path) {
         const bytes = await read(path, "arrayBuffer");
         const slash = path.lastIndexOf("/");
         if (slash >= 0) Module.FS.mkdirTree(path.slice(0, slash));
@@ -70,14 +78,17 @@ async function configureXR(runtime, xr, button) {
           const pad = input.gamepad;
           if (!pad) continue;
           const axes = pad.axes.slice(-2);
-          if (input.handedness === "left") { strafe = axes[0] || 0; move = -(axes[1] || 0); }
+          const left = input.handedness === "left";
+          const bindings = left ? [4, 5] : [1, 7];
+          const mask = (pad.buttons[4]?.pressed ? 1 : 0) | (pad.buttons[5]?.pressed ? 2 : 0);
+          for (let i = 0; i < bindings.length; i++)
+            if ((mask & (1 << i)) && !((held.get(input) || 0) & (1 << i))) runtime._orra_xr_action(bindings[i]);
+          held.set(input, mask);
+          if (left) { strafe = axes[0] || 0; move = -(axes[1] || 0); }
           else {
             const horizontal = axes[0] || 0;
             if (!snap && Math.abs(horizontal) > .65) turn = Math.sign(horizontal) * Math.PI / 6;
             snap = Math.abs(horizontal) > .4;
-            const pressed = !!(pad.buttons[4] && pad.buttons[4].pressed);
-            if (pressed && !held.get(input)) runtime._orra_xr_action(1);
-            held.set(input, pressed);
           }
         }
         runtime._orra_xr_tick(last ? (time - last) / 1000 : 0, move, strafe, turn);

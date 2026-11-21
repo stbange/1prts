@@ -2,7 +2,9 @@
 shot 01-gate-six
 key 2
 key 1
-wait 130
+rate 30
+frames 12
+wait 118
 key 3
 wait 180
 key 5

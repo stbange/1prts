@@ -185,6 +185,8 @@ void host_tests(const char *root) {
     put("parser.route", "expect alloy 8");
     char *route[] = {"orra", "--data", (char *)root, "--replay", "orra-unit-files/parser.route", NULL};
     CHECK(orra_run(5, route) == 0);
+    char *campaign[]={"orra","--data",(char *)root,"--mission","white-mile","--replay","orra-unit-files/parser.route",NULL};
+    CHECK(orra_run(7,campaign)==0);campaign[4]="missing";CHECK(orra_run(7,campaign)==1);
     char *normal[] = {"orra", "--data", (char *)root, NULL};
     SDL_Thread *thread = SDL_CreateThread(quit_later, "quit", NULL);
     CHECK(thread);

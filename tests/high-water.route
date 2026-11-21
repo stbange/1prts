@@ -1,0 +1,24 @@
+key E
+expect vessel lark
+key 1
+key 3
+wait 541
+key 4
+hold W 925
+key 5
+wait 911
+key 6
+wait 662
+hold W 230
+key E
+expect vessel station
+shot 15-crown-station
+key 7
+key 8
+wait 760
+key 9
+wait 485
+key 0
+wait 365
+expect result victory
+expect vessel station

@@ -230,6 +230,7 @@ static void dispatch_cases(App *a) {
     for (int i = 0; i < 8; i++) app_tick(a);
     CHECK(a->stride_y == 0);
 }
+void campaign_cases(App *a);
 int main(int argc, char **argv) {
     CHECK(argc == 2);
     math_cases();
@@ -246,6 +247,7 @@ int main(int argc, char **argv) {
     inputs(a);
     dispatch_cases(a);
     component_tests(a, argv[1]);
+    campaign_cases(a);
     CHECK(!render_capture(&a->renderer, "/missing-orra-directory/a.ppm"));
     app_close(a);
     free(a);

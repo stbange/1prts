@@ -1,0 +1,15 @@
+shot 12-west-exchange
+key 1
+key 2
+key 3
+wait 490
+key 8
+key 4
+wait 725
+key 8
+key 5
+key 6
+wait 610
+key 7
+wait 1205
+expect result victory

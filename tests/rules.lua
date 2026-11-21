@@ -81,6 +81,8 @@ jobs.armor.needs="motor"
 local ending=G.new();ending.blue.advance=true;ending.blue.walk=300;ending.blue.hold=1799
 ending.blue.pending={id="watch",expires=2}
 G.step(ending);assert(ending.result=="victory" and not ending.blue.pending)
+local here=debug.getinfo(1,"S").source:sub(2):match("^(.*[/\\\\])") or ""
+assert(loadfile(here.."campaign_rules.lua"))(root)
 debug.sethook()
 -- luac -l lists even portions whose enclosing function never executes. The
 -- separate coverage runner supplies that complete denominator for each file.

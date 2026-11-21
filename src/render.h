@@ -13,7 +13,7 @@ typedef struct {
 } Mesh;
 typedef struct {
     unsigned scene, sky, panel, empty, ui_buffer, ui_array;
-    int vp, pose, eye, shadow, livery, inverse, sky_eye, extent;
+    int vp, pose, eye, shadow, livery, inverse, sky_eye, orbit, extent;
     Mesh meshes[MAX_SITE];
     int mesh_count;
     char portrait[18][20];

@@ -59,7 +59,7 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory(prefix="orra-unit-") as folder:
         temp=Path(folder)
         env=dict(os.environ,GCOV_PREFIX=str(temp),GCOV_PREFIX_STRIP="0",ORRA_LUA_HITS=str(temp/"lua.hits"))
-        run(["ctest","--test-dir",str(args.build.resolve()),"-R","^(cli|engine|lua)_units$","--output-on-failure"],env=env)
+        run(["ctest","--test-dir",str(args.build.resolve()),"-R","^(cli|engine|lua|headless)_units$","--output-on-failure"],env=env)
         threshold("First-party C (compiled native configuration)",native_coverage(args.build.resolve(),temp))
         threshold("Shipped Lua",lua_coverage(args.luac,temp/"lua.hits"))
     run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",

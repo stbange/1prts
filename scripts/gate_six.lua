@@ -17,7 +17,7 @@ game.actions = {
 local function side()
     return {alloy=8, loads=8, haul=0, harvesting=false, stock=0, draw=0, power=true,
             mill=false, watch=false, motor=false, section=false, armor=false, queues={},
-            rollout=0, advance=false, guard=false, walk=0, drive=0, hold=0, readiness=180}
+            reserved=0, serial=0, staffed=true, reserve=0, priority="motor", rollout=0, advance=false, guard=false, walk=0, drive=0, hold=0, readiness=180}
 end
 function game.new()
     return {blue=side(), red=side(), tick=0, result="active", report="Survey ready. Commission a Plate Mill."}
@@ -34,8 +34,23 @@ local function order(s,a,id)
         if a.queues[job.bay] then report(s,a,"Crew occupied. Wait for the current job.") return false end
         if a.alloy < job.cost then report(s,a,"More alloy needed. Dispatch the hauler.") return false end
         a.alloy=a.alloy-job.cost
-        a.queues[job.bay]={id=id,left=job.duration}
+        a.serial=a.serial+1; a.reserved=a.reserved+job.cost
+        a.queues[job.bay]={id=id,left=job.duration,serial=a.serial,cost=job.cost}
         report(s,a,job.label.." queued. Crew assigned.")
+    elseif id=="cancel" then
+        if a.pending then a.pending=nil;report(s,a,"Handover canceled.");return true end
+        local newest,bay
+        for name,q in pairs(a.queues) do if not newest or q.serial>newest.serial then newest,bay=q,name end end
+        if not newest then report(s,a,"No outstanding order.");return false end
+        if not newest.started then a.alloy=a.alloy+newest.cost;a.reserved=a.reserved-newest.cost end
+        a.queues[bay]=nil;report(s,a,newest.started and "Crew stood down. Used stock recorded." or "Crew released. Stock returned.")
+    elseif id=="staff" then
+        a.staffed=not a.staffed;report(s,a,a.staffed and "Bay watch back on shift." or "Bay watch stood down. Work held.")
+    elseif id=="reserve" then
+        if a.reserve>0 or not a.power or a.alloy<2 then report(s,a,"Reserve unavailable.");return false end
+        a.alloy=a.alloy-2;a.reserve=150;report(s,a,"Gallery charged for one vehicle shift.")
+    elseif id=="priority" then
+        a.priority=a.priority=="motor" and "watch" or "motor";report(s,a,"Reserve feed: "..a.priority)
     elseif id=="harvest" then
         a.harvesting=not a.harvesting
         report(s,a,a.harvesting and "Mole dispatched to the steel yard." or "Mole holding its present load.")
@@ -94,7 +109,9 @@ end
 local function shift(s,a)
     for _,bay in ipairs({"fit","watch","motor"}) do
         local q=a.queues[bay]
-        if q and (bay=="fit" or a.power) then
+        if q and a.staffed and (bay=="fit" or a.power or (bay==a.priority and a.reserve>0)) then
+            if not q.started then q.started=true;a.reserved=a.reserved-(q.cost or 0) end
+            if bay~="fit" and not a.power then a.reserve=a.reserve-1 end
             q.left=q.left-1
             if q.left==0 then
                 local job=game.jobs[q.id]

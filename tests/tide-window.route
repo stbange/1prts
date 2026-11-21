@@ -1,0 +1,21 @@
+shot 07-tide-window
+key E
+expect vessel kestrel
+key 2
+key 5
+key 6
+wait 5550
+expect stage crossing
+hold W 238
+key E
+expect vessel mole
+wait 1800
+look 520 -48
+shot 08-crawler-at-sea
+look -520 48
+key Tab
+shot 09-ferry-orders
+key Tab
+wait 10000
+expect result victory
+shot 10-island-relay

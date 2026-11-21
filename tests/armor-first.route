@@ -1,6 +1,8 @@
 key 2
 key 1
-wait 300
+rate 90
+frames 36
+wait 288
 key 4
 wait 310
 key 6

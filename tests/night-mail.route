@@ -1,0 +1,21 @@
+key E
+expect vessel kite
+key 2
+wait 363
+key 4
+key 3
+wait 363
+key 6
+wait 720
+look 315 -47
+shot 14-night-flight
+look -315 47
+key 1
+wait 1050
+key 5
+key 7
+wait 800
+key 8
+wait 970
+expect result victory
+expect aboard 1

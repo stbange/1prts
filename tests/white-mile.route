@@ -1,0 +1,14 @@
+shot 13-white-mile
+key 1
+key 3
+wait 365
+key 2
+key 4
+wait 782
+key 5
+wait 572
+key 6
+wait 602
+key 7
+wait 543
+expect result victory

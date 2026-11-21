@@ -3,3 +3,4 @@ build*/
 *.gcno
 *.gcov
 .DS_Store
+__pycache__/

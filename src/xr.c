@@ -10,15 +10,21 @@ void xr_attach(App *a) {
 }
 /* Read-only status also makes the canvas operation available to assistive tools. */
 const char *orra_status(void) {
-    static char status[340];
+    static char status[560];
     if (!game)
         return "loading";
-    snprintf(status, sizeof status, "%s|%s|%d|%d|%s|%d|%d", game->sim.result,
+    snprintf(status, sizeof status, "%s|%s|%d|%d|%s|%d|%d|%s|%d|%d|%.3f|%.3f|%.3f|%d|%d|%d", game->sim.result,
              game->panel == FIELD   ? "field"
              : game->panel == SLATE ? "orders"
-                                    : "guide",
-             game->sim.blue.alloy, game->sim.tick, game->sim.report, game->touch, game->selected);
+                                    : game->panel==OPERATIONS ? "operations" : game->panel==CREWS ? "crews" : "guide",
+             game->sim.blue.alloy, game->sim.tick, game->sim.report, game->touch, game->selected,game->sim.mission,game->camera.aboard,game->sim.progress,game->camera.pos.x,game->camera.pos.z,game->camera.yaw,game->left_down,game->right_down,game->sim.hold_ticks);
     return status;
+}
+void orra_clock(int ticks) {
+    if(!game || !game->manual_clock || ticks<0 || ticks>108000)return;
+    SDL_Event event;
+    while(SDL_PollEvent(&event))app_event(game,&event);
+    for(int i=0;i<ticks;i++)app_tick(game);
 }
 void orra_xr_mode(int on) {
     game->xr = on != 0;
@@ -58,7 +64,7 @@ void orra_xr_eye(const float *projection, const float *view, int x, int y, int w
 }
 void orra_xr_action(int action) {
     const SDL_Scancode actions[] = {SDL_SCANCODE_TAB, SDL_SCANCODE_DOWN, SDL_SCANCODE_RETURN,
-                                    SDL_SCANCODE_E};
-    if (action >= 0 && action < 4)
+                                    SDL_SCANCODE_E,SDL_SCANCODE_M,SDL_SCANCODE_C,SDL_SCANCODE_ESCAPE,SDL_SCANCODE_R};
+    if (action >= 0 && action < 8)
         app_key(game, actions[action]);
 }

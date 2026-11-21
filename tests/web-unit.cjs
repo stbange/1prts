@@ -16,9 +16,9 @@ test('load individual files under a prefix and report failed assets', async () =
   runtime.removeRunDependency = () => {finished = true;};
   global.fetch = async url => {
     assert.match(url.pathname, /^\/builds\/game\//);
-    return { ok:true, json:async()=>({files:['scripts/game.lua','flag']}), arrayBuffer:async()=>new ArrayBuffer(4) };
+    return { ok:true, json:async()=>(url.pathname.endsWith('pack.json') ? {entry:'change.lua',files:['livery.mesh']} : {files:['scripts/game.lua','flag'],packs:['mods/repaint']}), arrayBuffer:async()=>new ArrayBuffer(4) };
   };
-  runtime.preRun[0]();await flush();assert.ok(finished);assert.equal(writes.length,2);
+  runtime.preRun[0]();await flush();assert.ok(finished);assert.equal(writes.length,6);
   global.fetch=async()=>({ok:false,status:404});runtime.preRun[0]();await flush();
   assert.match(status.textContent,/content.json returned 404/);
   runtime.onRuntimeInitialized();assert.ok(status.hidden);

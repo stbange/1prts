@@ -120,9 +120,11 @@ static Mesh *find(Renderer *r, const char *id) {
             return &r->meshes[i];
     return NULL;
 }
-static bool load_mesh(Renderer *r, const char *root, const char *name) {
+static bool load_mesh(Renderer *r, const char *root, const Place *place) {
+    const char *name=place->model;
     char path[1400];
-    snprintf(path, sizeof path, "%s/assets/models/%s.mesh", root, name);
+    if(place->asset[0]) snprintf(path,sizeof path,"%s/%s",root,place->asset);
+    else snprintf(path, sizeof path, "%s/assets/models/%s.mesh", root, name);
     size_t size = 0;
     unsigned char *bytes = SDL_LoadFile(path, &size);
     if (!bytes)
@@ -198,13 +200,14 @@ bool render_open(Renderer *r, const Sim *g) {
     r->shadow = fGetUniformLocation(r->scene, "shadowPass");
     r->eye = fGetUniformLocation(r->scene, "eye");
     r->inverse = fGetUniformLocation(r->sky, "sceneVP");
+    r->orbit = fGetUniformLocation(r->sky,"nightSky");
     r->sky_eye = fGetUniformLocation(r->sky, "eye");
     r->extent = fGetUniformLocation(r->panel, "extent");
     fGenVertexArrays(1, &r->empty);
     for (int i = 0; i < g->places; i++)
-        if (!find(r, g->place[i].model) && !load_mesh(r, g->root, g->place[i].model))
+        if (!find(r, g->place[i].model) && !load_mesh(r, g->root, &g->place[i]))
             return false;
-    if (!find(r, "terrain"))
+    if (!find(r, g->terrain))
         return problem(r, "site", "terrain model is required");
     attributes(&r->ui_array, &r->ui_buffer);
     fEnableVertexAttribArray(0);
@@ -218,6 +221,14 @@ static void draw(Renderer *r, Mesh *m, V3 p, float angle) {
     fBindVertexArray(m->array);
     fDrawArrays(GL_TRIANGLES, 0, m->count);
 }
+/* Test world-space bounds against the six homogeneous clip planes, including projected shadows. */
+static bool visible(const float planes[6][4],V3 center,float radius) {
+    for(int i=0;i<6;i++){
+        const float *p=planes[i];
+        if(p[0]*center.x+p[1]*center.y+p[2]*center.z+p[3] < -radius)return false;
+    }
+    return true;
+}
 void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int x, int y, int w,
                  int h) {
     (void)c;
@@ -230,6 +241,7 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fBindVertexArray(r->empty);
     fUniformMatrix4fv(r->inverse, 1, GL_FALSE, vp.v);
     fUniform3f(r->sky_eye, eye.x, eye.y, eye.z);
+    fUniform1i(r->orbit, !strcmp(g->terrain,"orbit") ? 2 : !strcmp(g->terrain,"airfield"));
     fDrawArrays(GL_TRIANGLES, 0, 3);
     fEnable(GL_DEPTH_TEST);
     /* A stereo compositor may use both eyes' depth after this frame. */
@@ -242,21 +254,31 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fUniform3f(r->eye, eye.x, eye.y, eye.z);
     fUniform1i(r->shadow, 0);
     fUniform1i(r->livery, 0);
-    draw(r, find(r, "terrain"), (V3){0, 0, 0}, 0);
+    draw(r, find(r, g->terrain), (V3){0, 0, 0}, 0);
+    float planes[6][4];
+    for(int i=0;i<6;i++){
+        float *plane=planes[i];
+        for(int j=0;j<4;j++)plane[j]=vp.v[j*4+3]+(i%2?-1:1)*vp.v[j*4+i/2];
+        float norm=sqrtf(plane[0]*plane[0]+plane[1]*plane[1]+plane[2]*plane[2]);
+        if(norm>0)for(int j=0;j<4;j++)plane[j]/=norm;
+    }
     for (int pass = 1; pass >= 0; pass--) {
         fUniform1i(r->shadow, pass);
         for (int i = 0; i < g->places; i++) {
-            if (!strcmp(g->place[i].model, "terrain"))
+            if (!strcmp(g->place[i].model, g->terrain))
                 continue;
             V3 p;
             if (!world_object(g, i, &p))
                 continue;
             Place const *o = &g->place[i];
+            Shape bounds=world_asset_shape(g,i);
+            float radius= fmaxf(4.f,bounds.d*.62f+bounds.w*1.85f+bounds.h+2);
+            if(!visible(planes,p,radius+(pass?fabsf(p.y)*2:0)))continue;
             fUniform1i(r->livery, !strncmp(o->condition, "red", 3));
             Mesh *m = find(r, o->model);
             bool squad = strstr(o->model, "section") != NULL;
-            bool sprite = squad || !strcmp(o->model, "worker");
-            float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : o->yaw;
+            bool sprite = squad || !strcmp(o->model, "worker") || !strcmp(o->family,"people");
+            float a = sprite ? atan2f(p.x - eye.x, eye.z - p.z) : world_angle(g,i);
             if (!squad)
                 draw(r, m, p, a);
             else

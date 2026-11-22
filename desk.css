@@ -12,3 +12,9 @@ button:hover,button:focus-visible{background:#36504c;border-color:var(--amber)}b
 .release{height:auto;background:#192d2e}.release main{max-width:54rem;margin:auto;padding:clamp(1.4rem,5vw,4rem)}.release img{width:100%;height:auto;border:1px solid var(--line)}.release figure{margin:1.4rem 0}.release figcaption,small{color:var(--muted)}.release a{color:var(--amber)}
 
 #profile{position:fixed;z-index:3;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));background:var(--ink);border:1px solid var(--line);padding:.6rem;max-height:85dvh;max-width:min(25rem,90vw);overflow:auto}#profile label{display:grid;margin:.55rem 0}#profile pre{white-space:pre-wrap;overflow-wrap:anywhere}#profile summary{cursor:pointer}
+
+body.play{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.play canvas{flex:1 1 0;min-height:0}
+#field-controls:not(.assistive){position:static;flex:none;grid-template-columns:repeat(4,minmax(0,1fr));max-width:none;padding:4px max(6px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));border-top:1px solid var(--line);background:var(--ink)}
+#field-controls:not(.assistive) button{text-align:center;overflow-wrap:anywhere}
+@media(min-width:700px){#field-controls:not(.assistive){grid-template-columns:repeat(8,minmax(0,1fr))}}

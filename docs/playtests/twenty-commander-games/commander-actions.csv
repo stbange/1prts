@@ -1,0 +1,196 @@
+game,mission,action_no,route_line,tick,mission_time,through_tick,input,action,order_id,crew,order_result,panel_before,panel_after,aboard_before,aboard_after,alloy_before,alloy_after,radio_text,radio_changed
+01,gate-six,1,5,0,0:00.00,0,key 2,Commission Plate Mill,mill,fitters,accepted,field,field,on foot,on foot,8,4,Plate Mill queued. Crew assigned.,yes
+01,gate-six,2,6,0,0:00.00,0,key 1,Cycle salvage hauler,harvest,mole,accepted,field,field,on foot,on foot,4,4,Mole dispatched to the steel yard.,yes
+01,gate-six,3,10,130,0:04.33,130,key 3,Build Watch House,watch,fitters,accepted,field,field,on foot,on foot,4,1,Watch House queued. Crew assigned.,yes
+01,gate-six,4,12,310,0:10.33,310,key 5,Muster line infantry,section,watch,accepted,field,field,on foot,on foot,5,3,Line section queued. Crew assigned.,yes
+01,gate-six,5,14,620,0:20.67,620,key 4,Build Motor Hall,motor,fitters,accepted,field,field,on foot,on foot,7,1,Motor Hall queued. Crew assigned.,yes
+01,gate-six,6,16,780,0:26.00,780,key Tab,Open the orders panel,,,,field,orders,on foot,on foot,1,1,,
+01,gate-six,7,18,780,0:26.00,780,key Tab,Close the orders panel,,,,orders,field,on foot,on foot,1,1,,
+01,gate-six,8,20,920,0:30.67,920,key 6,Produce armor,armor,motor,accepted,field,field,on foot,on foot,5,1,Armored crew queued. Crew assigned.,yes
+01,gate-six,9,24,1210,0:40.33,1210,look 125 14,"Look by (125, 14)",,,,field,field,on foot,on foot,5,5,,
+01,gate-six,10,26,1210,0:40.33,1210,look -125 -14,"Look by (-125, -14)",,,,field,field,on foot,on foot,5,5,,
+01,gate-six,11,28,1210,0:40.33,1238,hold D 28,Move right for 28 ticks,,,,field,field,on foot,on foot,5,5,,
+01,gate-six,12,29,1238,0:41.27,1295,hold W 57,Move forward for 57 ticks,,,,field,field,on foot,on foot,5,5,,
+01,gate-six,13,30,1295,0:43.17,1295,key E,Board Lintel,,,,field,field,on foot,lintel,5,5,,
+01,gate-six,14,32,1295,0:43.17,1295,key 8,Send armor to yard,guard,lintel,accepted,field,field,lintel,lintel,5,5,Lintel moving to the gate yard.,yes
+01,gate-six,15,33,1295,0:43.17,1295,key 7,Send section to gate,advance,gate-section,accepted,field,field,lintel,lintel,5,5,Gate Section moving to the switch room.,yes
+02,gate-six,1,3,0,0:00.00,0,key 2,Commission Plate Mill,mill,fitters,accepted,field,field,on foot,on foot,8,4,Plate Mill queued. Crew assigned.,yes
+02,gate-six,2,4,0,0:00.00,0,key 1,Cycle salvage hauler,harvest,mole,accepted,field,field,on foot,on foot,4,4,Mole dispatched to the steel yard.,yes
+02,gate-six,3,8,300,0:10.00,300,key 4,Build Motor Hall,motor,fitters,accepted,field,field,on foot,on foot,8,2,Motor Hall queued. Crew assigned.,yes
+02,gate-six,4,10,610,0:20.33,610,key 6,Produce armor,armor,motor,accepted,field,field,on foot,on foot,6,2,Armored crew queued. Crew assigned.,yes
+02,gate-six,5,12,920,0:30.67,920,key 3,Build Watch House,watch,fitters,accepted,field,field,on foot,on foot,6,3,Watch House queued. Crew assigned.,yes
+02,gate-six,6,14,1015,0:33.83,1015,key 5,Muster line infantry,section,watch,accepted,field,field,on foot,on foot,3,1,Line section queued. Crew assigned.,yes
+02,gate-six,7,18,1107,0:36.90,1107,key 8,Send armor to yard,guard,lintel,accepted,field,field,on foot,on foot,1,1,Lintel moving to the gate yard.,yes
+02,gate-six,8,19,1107,0:36.90,1107,key 7,Send section to gate,advance,gate-section,accepted,field,field,on foot,on foot,1,1,Gate Section moving to the switch room.,yes
+03,gate-six,1,4,0,0:00.00,0,key 2,Commission Plate Mill,mill,fitters,accepted,field,field,on foot,on foot,8,4,Plate Mill queued. Crew assigned.,yes
+03,gate-six,2,5,0,0:00.00,0,key 1,Cycle salvage hauler,harvest,mole,accepted,field,field,on foot,on foot,4,4,Mole dispatched to the steel yard.,yes
+03,gate-six,3,7,300,0:10.00,300,key 4,Build Motor Hall,motor,fitters,accepted,field,field,on foot,on foot,8,2,Motor Hall queued. Crew assigned.,yes
+03,gate-six,4,9,600,0:20.00,600,key 6,Produce armor,armor,motor,accepted,field,field,on foot,on foot,6,2,Armored crew queued. Crew assigned.,yes
+03,gate-six,5,11,900,0:30.00,900,key 6,Produce armor,armor,motor,accepted,field,field,on foot,on foot,6,2,motor-steward accepted Armored crew at motor.,yes
+03,gate-six,6,13,1200,0:40.00,1200,key 3,Build Watch House,watch,fitters,accepted,field,field,on foot,on foot,6,3,Watch House queued. Crew assigned.,yes
+03,gate-six,7,15,1300,0:43.33,1300,key 5,Muster line infantry,section,watch,accepted,field,field,on foot,on foot,3,1,Line section queued. Crew assigned.,yes
+03,gate-six,8,18,1395,0:46.50,1415,hold S 20,Move backward for 20 ticks,,,,field,field,on foot,on foot,1,1,,
+03,gate-six,9,19,1415,0:47.17,1511,hold A 96,Move left for 96 ticks,,,,field,field,on foot,on foot,1,5,,
+03,gate-six,10,20,1511,0:50.37,1511,key E,Board second Lintel,,,,field,field,on foot,lintel-2,5,5,,
+03,gate-six,11,22,1511,0:50.37,1511,key 8,Send armor to yard,guard,lintel,accepted,field,field,lintel-2,lintel-2,5,5,Lintel moving to the gate yard.,yes
+03,gate-six,12,26,1511,0:50.37,1511,key C,Open the crew register panel,,,,field,crew register,lintel-2,lintel-2,5,5,,
+03,gate-six,13,27,1511,0:50.37,1511,key PageDown,Page through the crew register,,,,crew register,crew register,lintel-2,lintel-2,5,5,,
+03,gate-six,14,28,1511,0:50.37,1511,key PageDown,Page through the crew register,,,,crew register,crew register,lintel-2,lintel-2,5,5,,
+03,gate-six,15,29,1511,0:50.37,1511,key PageDown,Page through the crew register,,,,crew register,crew register,lintel-2,lintel-2,5,5,,
+03,gate-six,16,30,1511,0:50.37,1511,key 5,Open the selected crew's assignments,,,,crew register,crew assignment,lintel-2,lintel-2,5,5,,
+03,gate-six,17,31,1511,0:50.37,1511,key Right,Select the next crew target,,,,crew assignment,crew assignment,lintel-2,lintel-2,5,5,,
+03,gate-six,18,32,1511,0:50.37,1511,key 6,Dispatch the second Lintel to the gate,move:lintel-2@gate,lintel-2,accepted,crew assignment,crew assignment,lintel-2,lintel-2,5,5,lintel-2 acknowledged move / gate.,yes
+03,gate-six,19,33,1511,0:50.37,1511,key Escape,Return to the crew register,,,,crew assignment,crew register,lintel-2,lintel-2,5,5,,
+03,gate-six,20,34,1511,0:50.37,1511,key Escape,Close the crew register panel,,,,crew register,field,lintel-2,lintel-2,5,5,,
+03,gate-six,21,40,1576,0:52.53,1576,key 7,Send section to gate,advance,gate-section,accepted,field,field,lintel-2,lintel-2,5,5,Gate Section moving to the switch room.,yes
+04,gate-six,1,3,0,0:00.00,0,key 2,Commission Plate Mill,mill,fitters,accepted,field,field,on foot,on foot,8,4,Plate Mill queued. Crew assigned.,yes
+04,gate-six,2,4,0,0:00.00,0,key 1,Cycle salvage hauler,harvest,mole,accepted,field,field,on foot,on foot,4,4,Mole dispatched to the steel yard.,yes
+04,gate-six,3,6,300,0:10.00,300,key 4,Build Motor Hall,motor,fitters,accepted,field,field,on foot,on foot,8,2,Motor Hall queued. Crew assigned.,yes
+04,gate-six,4,8,630,0:21.00,630,key 6,Produce armor,armor,motor,accepted,field,field,on foot,on foot,6,2,Armored crew queued. Crew assigned.,yes
+04,gate-six,5,10,960,0:32.00,960,key 7,Send section to gate,advance,gate-section,refused,field,field,on foot,on foot,6,6,Crew unavailable. Produce the unit first.,yes
+04,gate-six,6,11,960,0:32.00,960,key Tab,Open the orders panel,,,,field,orders,on foot,on foot,6,6,,
+04,gate-six,7,12,960,0:32.00,960,key Tab,Close the orders panel,,,,orders,field,on foot,on foot,6,6,,
+05,tide-window,1,3,0,0:00.00,0,key 3,Load cores by crawler,load,mole,accepted,field,field,on foot,on foot,8,8,Crawler crew loading both cores.,yes
+05,tide-window,2,4,0,0:00.00,0,key 4,Sail to public quay,quay,kestrel,accepted,field,field,on foot,on foot,8,8,Pilot acknowledges quay landing.,yes
+05,tide-window,3,5,0,0:00.00,0,key 6,Assign relay technicians,install,relay,accepted,field,field,on foot,on foot,8,8,Relay technicians assigned to both cores.,yes
+05,tide-window,4,7,5000,2:46.67,5000,key 9,Request pilot report,report,kestrel,accepted,field,field,on foot,on foot,8,8,Pilot: embark. Cores aboard 2.,yes
+06,tide-window,1,3,0,0:00.00,0,key E,Board Kestrel,,,,field,field,on foot,kestrel,8,8,,
+06,tide-window,2,4,0,0:00.00,0,key 1,Commission quay hoist / 6,hoist,fitters,accepted,field,field,kestrel,kestrel,8,2,Depot fitters reserved. Six alloy committed.,yes
+06,tide-window,3,5,0,0:00.00,0,key 4,Sail to public quay,quay,kestrel,accepted,field,field,kestrel,kestrel,2,2,Pilot acknowledges quay landing.,yes
+06,tide-window,4,6,0,0:00.00,0,key 6,Assign relay technicians,install,relay,accepted,field,field,kestrel,kestrel,2,2,Relay technicians assigned to both cores.,yes
+06,tide-window,5,8,5000,2:46.67,5000,key 9,Request pilot report,report,kestrel,accepted,field,field,kestrel,kestrel,2,2,Pilot: crossing. Cores aboard 2.,yes
+07,tide-window,1,4,0,0:00.00,0,key E,Board Kestrel,,,,field,field,on foot,kestrel,8,8,,
+07,tide-window,2,6,0,0:00.00,0,key 2,Fit extended ramp / 6,ramp,fitters,accepted,field,field,kestrel,kestrel,8,2,Depot fitters reserved. Six alloy committed.,yes
+07,tide-window,3,7,0,0:00.00,0,key 5,Sail to gravel slip,slip,kestrel,accepted,field,field,kestrel,kestrel,2,2,Pilot acknowledges slip landing.,yes
+07,tide-window,4,8,0,0:00.00,0,key 6,Assign relay technicians,install,relay,accepted,field,field,kestrel,kestrel,2,2,Relay technicians assigned to both cores.,yes
+07,tide-window,5,11,5550,3:05.00,5788,hold W 238,Move forward for 238 ticks,,,,field,field,kestrel,kestrel,2,2,,
+07,tide-window,6,12,5788,3:12.93,5788,key E,Transfer from Kestrel to Mole,,,,field,field,kestrel,mole,2,2,,
+07,tide-window,7,15,7588,4:12.93,7588,look 520 -48,"Look by (520, -48)",,,,field,field,mole,mole,2,2,,
+07,tide-window,8,17,7588,4:12.93,7588,look -520 48,"Look by (-520, 48)",,,,field,field,mole,mole,2,2,,
+07,tide-window,9,18,7588,4:12.93,7588,key Tab,Open the orders panel,,,,field,orders,mole,mole,2,2,,
+07,tide-window,10,20,7588,4:12.93,7588,key Tab,Close the orders panel,,,,orders,field,mole,mole,2,2,,
+08,compact-bank,1,5,0,0:00.00,0,key 1,Sound the shallow lane,sound,reed,accepted,field,field,shed,shed,8,8,reed acknowledges: Sound the shallow lane,yes
+08,compact-bank,2,6,0,0:00.00,0,key 2,Embark Channel Section,embark,channel-section,accepted,field,field,shed,shed,8,8,channel-section acknowledges: Embark Channel Section,yes
+08,compact-bank,3,7,0,0:00.00,0,key 5,Begin repair at Slip Shed,repair,shed,accepted,field,field,shed,shed,8,8,shed acknowledges: Begin repair at Slip Shed,yes
+08,compact-bank,4,9,365,0:12.17,365,key 6,Tow shed to north mooring,tow,hinge,accepted,field,field,shed,shed,8,8,hinge acknowledges: Tow shed to north mooring,yes
+08,compact-bank,5,10,365,0:12.17,365,key 3,Cross the marked shallows,cross,wake,accepted,field,field,shed,shed,8,8,wake acknowledges: Cross the marked shallows,yes
+08,compact-bank,6,12,1515,0:50.50,1515,key 4,Land the Channel Section,land,channel-section,accepted,field,field,shed,shed,8,8,channel-section acknowledges: Land the Channel Section,yes
+08,compact-bank,7,14,2335,1:17.83,2335,key 8,Restore harbor watch,restore,fitters,accepted,field,field,shed,shed,8,8,fitters acknowledges: Restore harbor watch,yes
+09,compact-bank,1,3,0,0:00.00,0,key 6,Tow shed to north mooring,tow,hinge,refused,field,field,shed,shed,8,8,Required first: Sound the shallow lane,yes
+09,compact-bank,2,4,0,0:00.00,0,key 7,Dispatch a patrol sortie,patrol,crossbill,accepted,field,field,shed,shed,8,8,crossbill acknowledges: Dispatch a patrol sortie,yes
+09,compact-bank,3,5,0,0:00.00,0,key 1,Sound the shallow lane,sound,reed,accepted,field,field,shed,shed,8,8,reed acknowledges: Sound the shallow lane,yes
+09,compact-bank,4,6,0,0:00.00,0,key 2,Embark Channel Section,embark,channel-section,accepted,field,field,shed,shed,8,8,channel-section acknowledges: Embark Channel Section,yes
+09,compact-bank,5,8,365,0:12.17,365,key 6,Tow shed to north mooring,tow,hinge,accepted,field,field,shed,shed,8,8,hinge acknowledges: Tow shed to north mooring,yes
+09,compact-bank,6,9,365,0:12.17,365,key 3,Cross the marked shallows,cross,wake,accepted,field,field,shed,shed,8,8,wake acknowledges: Cross the marked shallows,yes
+09,compact-bank,7,10,365,0:12.17,365,key 5,Begin repair at Slip Shed,repair,shed,accepted,field,field,shed,shed,8,8,shed acknowledges: Begin repair at Slip Shed,yes
+09,compact-bank,8,11,365,0:12.17,365,key 8,Restore harbor watch,restore,fitters,refused,field,field,shed,shed,8,8,Required first: Land the Channel Section,yes
+09,compact-bank,9,13,1515,0:50.50,1515,key 4,Land the Channel Section,land,channel-section,accepted,field,field,shed,shed,8,8,channel-section acknowledges: Land the Channel Section,yes
+09,compact-bank,10,15,2345,1:18.17,2345,key 8,Restore harbor watch,restore,fitters,accepted,field,field,shed,shed,8,8,fitters acknowledges: Restore harbor watch,yes
+10,westbound,1,4,0,0:00.00,82,hold W 82,Move forward for 82 ticks and walk aboard the shunter,,,,field,field,on foot,shunter,8,8,,
+10,westbound,2,5,82,0:02.73,82,key E,Interact aboard the shunter,,,,field,field,shunter,shunter,8,8,,
+10,westbound,3,7,82,0:02.73,82,key 1,Inspect the frostbound line,survey,whistle,accepted,field,field,shunter,shunter,8,8,whistle acknowledges: Inspect the frostbound line,yes
+10,westbound,4,8,82,0:02.73,82,key 2,Fit Points Heater / 4,heater,roundhouse,accepted,field,field,shunter,shunter,8,4,roundhouse acknowledges: Fit Points Heater / 4,yes
+10,westbound,5,9,82,0:02.73,82,key 3,Charge gallery reserve,reserve,gallery,accepted,field,field,shunter,shunter,4,4,gallery acknowledges: Charge gallery reserve,yes
+10,westbound,6,11,572,0:19.07,572,key 8,Switch workshop grid,power,dynamo,accepted,field,field,shunter,shunter,4,4,Workshop on reserve.,yes
+10,westbound,7,12,572,0:19.07,572,key 4,Replace damaged track,track,sleeper,accepted,field,field,shunter,shunter,4,4,sleeper acknowledges: Replace damaged track,yes
+10,westbound,8,14,1297,0:43.23,1297,key 8,Switch workshop grid,power,dynamo,accepted,field,field,shunter,shunter,4,4,Workshop grid restored.,yes
+10,westbound,9,15,1297,0:43.23,1297,key 5,Set the exchange points,switch,points,accepted,field,field,shunter,shunter,4,4,points acknowledges: Set the exchange points,yes
+10,westbound,10,16,1297,0:43.23,1297,key 6,Hold the exchange siding,guard,anvil,accepted,field,field,shunter,shunter,4,4,anvil acknowledges: Hold the exchange siding,yes
+10,westbound,11,18,1907,1:03.57,1907,key 7,Dispatch winter freight,freight,shunter,accepted,field,field,shunter,shunter,4,4,shunter acknowledges: Dispatch winter freight,yes
+11,westbound,1,3,0,0:00.00,0,key 1,Inspect the frostbound line,survey,whistle,accepted,field,field,on foot,on foot,8,8,whistle acknowledges: Inspect the frostbound line,yes
+11,westbound,2,4,0,0:00.00,0,key 3,Charge gallery reserve,reserve,gallery,accepted,field,field,on foot,on foot,8,8,gallery acknowledges: Charge gallery reserve,yes
+11,westbound,3,5,0,0:00.00,0,key 6,Hold the exchange siding,guard,anvil,accepted,field,field,on foot,on foot,8,8,anvil acknowledges: Hold the exchange siding,yes
+11,westbound,4,7,500,0:16.67,500,key 4,Replace damaged track,track,sleeper,accepted,field,field,on foot,on foot,8,8,sleeper acknowledges: Replace damaged track,yes
+11,westbound,5,9,1270,0:42.33,1270,key 5,Set the exchange points,switch,points,accepted,field,field,on foot,on foot,8,8,points acknowledges: Set the exchange points,yes
+11,westbound,6,11,2020,1:07.33,2020,key 7,Dispatch winter freight,freight,shunter,accepted,field,field,on foot,on foot,8,8,shunter acknowledges: Dispatch winter freight,yes
+12,westbound,1,3,0,0:00.00,0,key 1,Inspect the frostbound line,survey,whistle,accepted,field,field,on foot,on foot,8,8,whistle acknowledges: Inspect the frostbound line,yes
+12,westbound,2,4,0,0:00.00,0,key 2,Fit Points Heater / 4,heater,roundhouse,accepted,field,field,on foot,on foot,8,4,roundhouse acknowledges: Fit Points Heater / 4,yes
+12,westbound,3,5,0,0:00.00,0,key 6,Hold the exchange siding,guard,anvil,accepted,field,field,on foot,on foot,4,4,anvil acknowledges: Hold the exchange siding,yes
+12,westbound,4,7,600,0:20.00,600,key 4,Replace damaged track,track,sleeper,accepted,field,field,on foot,on foot,4,4,sleeper acknowledges: Replace damaged track,yes
+12,westbound,5,9,1320,0:44.00,1320,key 5,Set the exchange points,switch,points,accepted,field,field,on foot,on foot,4,4,points acknowledges: Set the exchange points,yes
+12,westbound,6,11,1720,0:57.33,1720,key B,Open the chart panel,,,,field,chart,on foot,on foot,4,4,,
+12,westbound,7,13,6870,3:49.00,6870,key B,Close the chart panel,,,,chart,field,on foot,on foot,4,4,,
+12,westbound,8,14,6870,3:49.00,6870,key 7,Dispatch winter freight,freight,shunter,accepted,field,field,on foot,on foot,4,4,shunter acknowledges: Dispatch winter freight,yes
+13,white-mile,1,4,0,0:00.00,82,hold W 82,Move forward for 82 ticks and walk aboard the Barrow,,,,field,field,on foot,barrow,8,8,,
+13,white-mile,2,5,82,0:02.73,82,key E,Interact aboard the Barrow,,,,field,field,barrow,barrow,8,8,,
+13,white-mile,3,7,82,0:02.73,82,key 1,Mark control points,scout,chain-crew,accepted,field,field,barrow,barrow,8,8,chain-crew acknowledges: Mark control points,yes
+13,white-mile,4,8,82,0:02.73,82,key 3,Fit Wide Shoes / 4,shoes,shoe,accepted,field,field,barrow,barrow,8,4,shoe acknowledges: Fit Wide Shoes / 4,yes
+13,white-mile,5,10,447,0:14.90,447,key 2,Drain the camp entrance,drain,sump,accepted,field,field,barrow,barrow,4,4,sump acknowledges: Drain the camp entrance,yes
+13,white-mile,6,11,447,0:14.90,447,key 4,Relay the survey bearing,chart,prism,accepted,field,field,barrow,barrow,4,4,prism acknowledges: Relay the survey bearing,yes
+13,white-mile,7,13,1229,0:40.97,1229,key 5,Collect the assay load,sample,barrow,accepted,field,field,barrow,barrow,4,4,barrow acknowledges: Collect the assay load,yes
+13,white-mile,8,15,1801,1:00.03,1801,key 6,Analyze the sample afloat,analyze,glint,accepted,field,field,barrow,barrow,4,4,glint acknowledges: Analyze the sample afloat,yes
+13,white-mile,9,17,2403,1:20.10,2403,key 7,Return load to assay office,assay-load,barrow,accepted,field,field,barrow,barrow,4,4,barrow acknowledges: Return load to assay office,yes
+14,white-mile,1,3,0,0:00.00,0,key 1,Mark control points,scout,chain-crew,accepted,field,field,on foot,on foot,8,8,chain-crew acknowledges: Mark control points,yes
+14,white-mile,2,5,365,0:12.17,365,key 2,Drain the camp entrance,drain,sump,accepted,field,field,on foot,on foot,8,8,sump acknowledges: Drain the camp entrance,yes
+14,white-mile,3,6,365,0:12.17,365,key 4,Relay the survey bearing,chart,prism,accepted,field,field,on foot,on foot,8,8,prism acknowledges: Relay the survey bearing,yes
+14,white-mile,4,8,1150,0:38.33,1150,key 5,Collect the assay load,sample,barrow,accepted,field,field,on foot,on foot,8,8,barrow acknowledges: Collect the assay load,yes
+14,white-mile,5,10,2150,1:11.67,2150,key 6,Analyze the sample afloat,analyze,glint,accepted,field,field,on foot,on foot,8,8,glint acknowledges: Analyze the sample afloat,yes
+14,white-mile,6,12,2755,1:31.83,2755,key 7,Return load to assay office,assay-load,barrow,accepted,field,field,on foot,on foot,8,8,barrow acknowledges: Return load to assay office,yes
+15,white-mile,1,3,0,0:00.00,0,key 5,Collect the assay load,sample,barrow,refused,field,field,on foot,on foot,8,8,Required first: Drain the camp entrance,yes
+15,white-mile,2,4,0,0:00.00,0,key 1,Mark control points,scout,chain-crew,accepted,field,field,on foot,on foot,8,8,chain-crew acknowledges: Mark control points,yes
+15,white-mile,3,5,0,0:00.00,0,key 3,Fit Wide Shoes / 4,shoes,shoe,accepted,field,field,on foot,on foot,8,4,shoe acknowledges: Fit Wide Shoes / 4,yes
+15,white-mile,4,7,365,0:12.17,365,key 2,Drain the camp entrance,drain,sump,accepted,field,field,on foot,on foot,4,4,sump acknowledges: Drain the camp entrance,yes
+15,white-mile,5,8,365,0:12.17,365,key 4,Relay the survey bearing,chart,prism,accepted,field,field,on foot,on foot,4,4,prism acknowledges: Relay the survey bearing,yes
+15,white-mile,6,10,1150,0:38.33,1150,key 0,Close or open pump,passage,pump,accepted,field,field,on foot,on foot,4,4,pump closed to traffic.,yes
+15,white-mile,7,11,1150,0:38.33,1150,key 5,Collect the assay load,sample,barrow,accepted,field,field,on foot,on foot,4,4,barrow acknowledges: Collect the assay load,yes
+15,white-mile,8,13,1600,0:53.33,1600,key 9,Request shift report,report,,accepted,field,field,on foot,on foot,4,4,barrow on shift / Collect the assay load,yes
+15,white-mile,9,14,1600,0:53.33,1600,key 0,Close or open pump,passage,pump,accepted,field,field,on foot,on foot,4,4,pump reopened to traffic.,yes
+15,white-mile,10,16,2160,1:12.00,2160,key 6,Analyze the sample afloat,analyze,glint,refused,field,field,on foot,on foot,4,4,Required first: Collect the assay load,yes
+15,white-mile,11,18,2765,1:32.17,2765,key 7,Return load to assay office,assay-load,barrow,refused,field,field,on foot,on foot,4,4,Required first: Analyze the sample afloat,yes
+16,night-mail,1,3,0,0:00.00,0,key E,Board Kite,,,,field,field,on foot,kite,8,8,,
+16,night-mail,2,5,0,0:00.00,0,key 2,Set approach beacon,beacon,gimbal,accepted,field,field,kite,kite,8,8,gimbal acknowledges: Set approach beacon,yes
+16,night-mail,3,7,363,0:12.10,363,key 4,Clear the landing office,clear,ground-watch,accepted,field,field,kite,kite,8,8,ground-watch acknowledges: Clear the landing office,yes
+16,night-mail,4,8,363,0:12.10,363,key 3,Launch observation patrol,patrol,crossbill,accepted,field,field,kite,kite,8,8,crossbill acknowledges: Launch observation patrol,yes
+16,night-mail,5,10,726,0:24.20,726,key 6,Fly bag 2 by tiltrotor,mail-2,kite,accepted,field,field,kite,kite,8,8,kite acknowledges: Fly bag 2 by tiltrotor,yes
+16,night-mail,6,11,726,0:24.20,916,hold W 190,Move forward for 190 ticks,,,,field,field,kite,kite,8,8,,
+16,night-mail,7,13,1451,0:48.37,1451,look 650 65,"Look by (650, 65)",,,,field,field,kite,kite,8,8,,
+16,night-mail,8,15,1451,0:48.37,1451,look -650 -65,"Look by (-650, -65)",,,,field,field,kite,kite,8,8,,
+16,night-mail,9,16,1451,0:48.37,1451,key 1,Install Night Board / 4,board,tower,accepted,field,field,kite,kite,8,4,tower acknowledges: Install Night Board / 4,yes
+16,night-mail,10,18,2501,1:23.37,2501,key 5,Fly bag 1 by courier,mail-1,tern,accepted,field,field,kite,kite,4,4,tern acknowledges: Fly bag 1 by courier,yes
+16,night-mail,11,19,2501,1:23.37,2501,key 7,Bring observation crew home,escort,rook,accepted,field,field,kite,kite,4,4,rook acknowledges: Bring observation crew home,yes
+16,night-mail,12,21,3301,1:50.03,3301,key 8,Land the last mailbag,mail-3,kite,accepted,field,field,kite,kite,4,4,kite acknowledges: Land the last mailbag,yes
+17,night-mail,1,3,0,0:00.00,0,key 2,Set approach beacon,beacon,gimbal,accepted,field,field,on foot,on foot,8,8,gimbal acknowledges: Set approach beacon,yes
+17,night-mail,2,5,365,0:12.17,365,key 4,Clear the landing office,clear,ground-watch,accepted,field,field,on foot,on foot,8,8,ground-watch acknowledges: Clear the landing office,yes
+17,night-mail,3,6,365,0:12.17,365,key 3,Launch observation patrol,patrol,crossbill,accepted,field,field,on foot,on foot,8,8,crossbill acknowledges: Launch observation patrol,yes
+17,night-mail,4,8,730,0:24.33,730,key 5,Fly bag 1 by courier,mail-1,tern,accepted,field,field,on foot,on foot,8,8,tern acknowledges: Fly bag 1 by courier,yes
+17,night-mail,5,9,730,0:24.33,730,key 6,Fly bag 2 by tiltrotor,mail-2,kite,accepted,field,field,on foot,on foot,8,8,kite acknowledges: Fly bag 2 by tiltrotor,yes
+17,night-mail,6,10,730,0:24.33,730,key 7,Bring observation crew home,escort,rook,refused,field,field,on foot,on foot,8,8,Required first: Launch observation patrol,yes
+17,night-mail,7,12,1780,0:59.33,1780,key 7,Bring observation crew home,escort,rook,accepted,field,field,on foot,on foot,8,8,rook acknowledges: Bring observation crew home,yes
+17,night-mail,8,14,4680,2:36.00,4680,key 8,Land the last mailbag,mail-3,kite,accepted,field,field,on foot,on foot,8,8,kite acknowledges: Land the last mailbag,yes
+18,high-water,1,3,0,0:00.00,0,key E,Board Lark,,,,field,field,on foot,lark,8,8,,
+18,high-water,2,5,0,0:00.00,0,key 1,Load the pressure module,module,dray,accepted,field,field,lark,lark,8,8,dray acknowledges: Load the pressure module,yes
+18,high-water,3,6,0,0:00.00,0,key 3,Service the occupied collar,service,cleat,accepted,field,field,lark,lark,8,8,cleat acknowledges: Service the occupied collar,yes
+18,high-water,4,8,541,0:18.03,541,key 4,Launch orbital tender,lift,lark,accepted,field,field,lark,lark,8,8,lark acknowledges: Launch orbital tender,yes
+18,high-water,5,9,541,0:18.03,1466,hold W 925,Move forward for 925 ticks,,,,field,field,lark,lark,8,8,,
+18,high-water,6,10,1466,0:48.87,1466,key 5,Run surface power service,supply,spaceport,accepted,field,field,lark,lark,8,8,spaceport acknowledges: Run surface power service,yes
+18,high-water,7,12,2377,1:19.23,2377,key 6,Dock at Crown Station,dock,lark,accepted,field,field,lark,lark,8,8,lark acknowledges: Dock at Crown Station,yes
+18,high-water,8,14,3039,1:41.30,3269,hold W 230,Move forward for 230 ticks,,,,field,field,lark,lark,8,8,,
+18,high-water,9,15,3269,1:48.97,3269,key E,Transfer from Lark to Crown Station,,,,field,field,lark,station,8,8,,
+18,high-water,10,18,3269,1:48.97,3269,key 7,Transfer pressure module,transfer,spindle,accepted,field,field,station,station,8,8,spindle acknowledges: Transfer pressure module,yes
+18,high-water,11,19,3269,1:48.97,3269,key 8,Deliver the station watch,watch,loom,accepted,field,field,station,station,8,8,loom acknowledges: Deliver the station watch,yes
+18,high-water,12,20,3269,1:48.97,3884,hold W 615,Move forward for 615 ticks,,,,field,field,station,station,8,8,,
+18,high-water,13,23,4029,2:14.30,4029,key 9,Seal the transfer joint,repair,rivet,accepted,field,field,station,station,8,8,rivet acknowledges: Seal the transfer joint,yes
+18,high-water,14,25,4514,2:30.47,4514,key 0,Reopen station traffic,traffic,collar-watch,accepted,field,field,station,station,8,8,collar-watch acknowledges: Reopen station traffic,yes
+19,high-water,1,3,0,0:00.00,0,key 1,Load the pressure module,module,dray,accepted,field,field,on foot,on foot,8,8,dray acknowledges: Load the pressure module,yes
+19,high-water,2,4,0,0:00.00,0,key 2,Commission Second Collar / 4,collar,cradle,accepted,field,field,on foot,on foot,8,4,cradle acknowledges: Commission Second Collar / 4,yes
+19,high-water,3,5,0,0:00.00,0,key 5,Run surface power service,supply,spaceport,accepted,field,field,on foot,on foot,4,4,spaceport acknowledges: Run surface power service,yes
+19,high-water,4,7,550,0:18.33,550,key 4,Launch orbital tender,lift,lark,accepted,field,field,on foot,on foot,4,4,lark acknowledges: Launch orbital tender,yes
+19,high-water,5,9,2230,1:14.33,2230,key 3,Service the occupied collar,service,cleat,accepted,field,field,on foot,on foot,4,4,cleat acknowledges: Service the occupied collar,yes
+19,high-water,6,11,2360,1:18.67,2360,key 6,Dock at Crown Station,dock,lark,accepted,field,field,on foot,on foot,4,4,lark acknowledges: Dock at Crown Station,yes
+19,high-water,7,13,3030,1:41.00,3030,key 7,Transfer pressure module,transfer,spindle,accepted,field,field,on foot,on foot,4,4,spindle acknowledges: Transfer pressure module,yes
+19,high-water,8,14,3030,1:41.00,3030,key 8,Deliver the station watch,watch,loom,accepted,field,field,on foot,on foot,4,4,loom acknowledges: Deliver the station watch,yes
+19,high-water,9,16,3790,2:06.33,3790,key 9,Seal the transfer joint,repair,rivet,accepted,field,field,on foot,on foot,4,4,rivet acknowledges: Seal the transfer joint,yes
+19,high-water,10,18,4280,2:22.67,4280,key 0,Reopen station traffic,traffic,collar-watch,accepted,field,field,on foot,on foot,4,4,collar-watch acknowledges: Reopen station traffic,yes
+20,high-water,1,3,0,0:00.00,0,key 1,Load the pressure module,module,dray,accepted,field,field,on foot,on foot,8,8,dray acknowledges: Load the pressure module,yes
+20,high-water,2,4,0,0:00.00,0,key 5,Run surface power service,supply,spaceport,accepted,field,field,on foot,on foot,8,8,spaceport acknowledges: Run surface power service,yes
+20,high-water,3,6,550,0:18.33,550,key 4,Launch orbital tender,lift,lark,accepted,field,field,on foot,on foot,8,8,lark acknowledges: Launch orbital tender,yes
+20,high-water,4,8,2230,1:14.33,2230,key 3,Service the occupied collar,service,cleat,accepted,field,field,on foot,on foot,8,8,cleat acknowledges: Service the occupied collar,yes
+20,high-water,5,10,2360,1:18.67,2360,key 6,Dock at Crown Station,dock,lark,accepted,field,field,on foot,on foot,8,8,lark acknowledges: Dock at Crown Station,yes
+20,high-water,6,12,3030,1:41.00,3030,key 7,Transfer pressure module,transfer,spindle,refused,field,field,on foot,on foot,8,8,Required first: Dock at Crown Station,yes
+20,high-water,7,13,3030,1:41.00,3030,key 8,Deliver the station watch,watch,loom,refused,field,field,on foot,on foot,8,8,Required first: Dock at Crown Station,no
+20,high-water,8,14,3030,1:41.00,3030,key L,Open the radio panel,,,,field,radio,on foot,on foot,8,8,,
+20,high-water,9,15,3030,1:41.00,3030,key L,Close the radio panel,,,,radio,field,on foot,on foot,8,8,,
+20,high-water,10,17,4580,2:32.67,4580,key 7,Transfer pressure module,transfer,spindle,accepted,field,field,on foot,on foot,8,8,spindle acknowledges: Transfer pressure module,yes
+20,high-water,11,18,4580,2:32.67,4580,key 8,Deliver the station watch,watch,loom,accepted,field,field,on foot,on foot,8,8,loom acknowledges: Deliver the station watch,yes
+20,high-water,12,20,5340,2:58.00,5340,key 9,Seal the transfer joint,repair,rivet,accepted,field,field,on foot,on foot,8,8,rivet acknowledges: Seal the transfer joint,yes
+20,high-water,13,22,5830,3:14.33,5830,key 0,Reopen station traffic,traffic,collar-watch,accepted,field,field,on foot,on foot,8,8,collar-watch acknowledges: Reopen station traffic,yes

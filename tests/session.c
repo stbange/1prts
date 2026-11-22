@@ -421,6 +421,14 @@ static void recovery_paths(App *a, const char *folder) {
     CHECK(!orra_menu_count());
     CHECK(*orra_field_label(SDL_SCANCODE_L) && *orra_field_label(SDL_SCANCODE_E) &&
           *orra_field_label(SDL_SCANCODE_H));
+    a->web_controls = true;
+    orra_device(1);
+    ui_draw(a, 390, 730);
+    a->renderer.ui_count = 0;
+    ui_tap(a, .97f, .95f);
+    CHECK(a->panel == FIELD);
+    orra_device(0);
+    a->web_controls = false;
     CHECK(session_key(a, SDL_SCANCODE_F12) == SDL_SCANCODE_F12);
     d->current.value[PREF_COMFORT] = 1;
     orra_xr_tick(0, 0, 0, .1f);

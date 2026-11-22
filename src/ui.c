@@ -307,7 +307,8 @@ void ui_draw(App *a, int w, int h) {
     if (g->clock)
         snprintf(line, sizeof line, "%d:%02d", g->clock / 1800, (g->clock / 30) % 60);
     T(w - 57, 36, 1.35f, line, AMBER);
-    int bottom = h - 16, radio_w = w < 625 ? 253 : 355;
+    bool touch_dock = a->web_controls && a->touch && !a->xr;
+    int bottom = h - 16, radio_w = touch_dock ? SDL_min(w - 30, 430) : w < 625 ? 253 : 355;
     R(15, bottom - 60, radio_w, 60, a->desk.current.value[PREF_BACKDROP] ? 0x101f21ff : INK);
     R(15, bottom - 48, radio_w, 1, LINE);
     R(21, bottom - 42, 40, 37, 0x4f6260ff);
@@ -349,17 +350,19 @@ void ui_draw(App *a, int w, int h) {
         order_panel(a, w, h);
     else
         guide_panel(a, w, h);
-    int by = bottom - 39;
-    R(w - 180, by, 165, 39, INK);
-    R(w - 180, by, 165, 1, LINE);
-    T(w - 171, by + 7, 1.25f,
-      a->touch ? "ORDERS    INTERACT"
-               : session_prompt(a, SDL_SCANCODE_TAB, "ui.orders", prompt, sizeof prompt),
-      PAPER);
-    T(w - 171, by + 24, 1.0f,
-      a->touch ? "GUIDE      LOOK / MOVE"
-               : session_prompt(a, SDL_SCANCODE_P, "ui.pause", prompt, sizeof prompt),
-      MUTE);
+    if (!touch_dock) {
+        int by = bottom - 39;
+        R(w - 180, by, 165, 39, INK);
+        R(w - 180, by, 165, 1, LINE);
+        T(w - 171, by + 7, 1.25f,
+          a->touch ? "ORDERS    INTERACT"
+                   : session_prompt(a, SDL_SCANCODE_TAB, "ui.orders", prompt, sizeof prompt),
+          PAPER);
+        T(w - 171, by + 24, 1.0f,
+          a->touch ? "GUIDE      LOOK / MOVE"
+                   : session_prompt(a, SDL_SCANCODE_P, "ui.pause", prompt, sizeof prompt),
+          MUTE);
+    }
     if (a->touch) {
         R(23, h - 144, 62, 63, 0x2336399c);
         R(38, h - 113, 32, 1, LINE);
@@ -434,7 +437,7 @@ void ui_tap(App *a, float fx, float fy) {
         app_key(a, (x >= 175 && y > 30) ? SDL_SCANCODE_C : SDL_SCANCODE_M);
         return;
     }
-    if (x > w - 183 && y > h - 59) {
+    if (x > w - 183 && y > h - 59 && !(a->web_controls && a->touch && !a->xr)) {
         if (y > h - 37)
             app_key(a, SDL_SCANCODE_F1);
         else if (a->touch && x > w - 96)

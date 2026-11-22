@@ -218,10 +218,12 @@ def exercise(browser, url, layout, pack=False):
             if status()[1]!="field": page.keyboard.press("Escape");advance(0)
             assert status()[1]=="field"
         if layout=="touch":
-            touch(450,270);advance(0)
+            view=page.locator("canvas").bounding_box()
+            center=(view["x"]+view["width"]/2,view["y"]+view["height"]/2)
+            touch(*center);advance(0)
             assert status()[0:2]==["victory","desk"]
             button("Cancel");assert status()[0]=="victory"
-            touch(450,270);advance(0);button("Confirm")
+            touch(*center);advance(0);button("Confirm")
             assert status()[0]=="active"
         assert not errors, errors
         return frame
@@ -252,6 +254,12 @@ def session_acceptance(browser,url):
         for target in page.locator("#rows button").all():
             b=target.bounding_box();assert b and b["height"]>=44 and b["width"]>=44,b
         tap("Start Gate Six");heading("Watch briefing");tap("Report for duty")
+        for width,height in ((360,640),(800,450),(360,640)):
+            page.set_viewport_size({"width":width,"height":height})
+            page.wait_for_function("""()=>{const view=document.querySelector("canvas").getBoundingClientRect();
+                const dock=document.getElementById("field-controls").getBoundingClientRect();
+                return view.height>150 && dock.height>=44 && view.bottom<=dock.top+1 &&
+                       dock.bottom<=innerHeight+1 && dock.width<=innerWidth;}""")
         tap("Orders");tap("Commission Plate Mill");tap("Close");ticks(45)
         original=state()
         tap("Operations");tap("Tide Window");heading("Confirm action");ticks(400)

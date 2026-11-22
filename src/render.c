@@ -215,6 +215,8 @@ bool render_open(Renderer *r, const Sim *g) {
     FILE *file = fopen(path, "r");
     if (!file)
         return problem(r, path, "missing font");
+    lang_open(&r->lang, g->root);
+    lang_add_list(&r->lang, sim_locales(g));
     char ch, hex[24];
     while (fscanf(file, " %c %23s", &ch, hex) == 2) {
         if (strlen(hex) != 14 || (unsigned char)ch >= 128) {
@@ -247,6 +249,8 @@ bool render_open(Renderer *r, const Sim *g) {
     r->shadow = fGetUniformLocation(r->scene, "shadowPass");
     r->eye = fGetUniformLocation(r->scene, "eye");
     r->inverse = fGetUniformLocation(r->sky, "sceneVP");
+    r->exposure = fGetUniformLocation(r->scene, "exposure");
+    r->sky_exposure = fGetUniformLocation(r->sky, "exposure");
     r->night_light = fGetUniformLocation(r->scene, "nightLight");
     r->orbit = fGetUniformLocation(r->sky, "nightSky");
     r->sky_eye = fGetUniformLocation(r->sky, "eye");
@@ -338,6 +342,7 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fBindTexture(GL_TEXTURE_2D,r->surface);
     fUniformMatrix4fv(r->vp, 1, GL_FALSE, vp.v);
     fUniform3f(r->eye, eye.x, eye.y, eye.z);
+    fUniform1i(r->exposure, (int)r->brightness);
     fUniform1i(r->night_light, !strcmp(g->terrain, "orbit") ? 2 : !strcmp(g->terrain, "airfield"));
     fUniform1i(r->shadow, 0);
     fUniform1i(r->livery, 0);
@@ -352,7 +357,7 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
             for (int j = 0; j < 4; j++)
                 plane[j] /= norm;
     }
-    for (int pass = 1; pass >= 0; pass--) {
+    for (int pass = r->quality ? 0 : 1; pass >= 0; pass--) {
         fUniform1i(r->shadow, pass);
         for (int i = 0; i < g->places; i++) {
             const RenderPlace *part = &r->places[i];
@@ -391,6 +396,7 @@ void render_view(Renderer *r, const Sim *g, const Camera *c, Mat vp, V3 eye, int
     fBindVertexArray(r->empty);
     fUniformMatrix4fv(r->inverse, 1, GL_FALSE, vp.v);
     fUniform3f(r->sky_eye, eye.x, eye.y, eye.z);
+    fUniform1i(r->sky_exposure, (int)r->brightness);
     fUniform1i(r->orbit, !strcmp(g->terrain, "orbit") ? 2 : !strcmp(g->terrain, "airfield"));
     fDrawArrays(GL_TRIANGLES, 0, 3);
 }
@@ -413,12 +419,16 @@ void render_rect(Renderer *r, float x, float y, float w, float h, uint32_t col) 
     }
 }
 void render_text(Renderer *r, float x, float y, float s, const char *t, uint32_t col) {
-    for (size_t i = 0; t[i]; i++) {
-        unsigned ch = (unsigned)toupper((unsigned char)t[i]);
-        if (ch >= 128)
-            continue;
+    char translated[800];
+    t = lang_format(&r->lang, t, translated, sizeof translated);
+    for (size_t i = 0; *t; i++) {
+        Uint32 ch = SDL_StepUTF8(&t, NULL);
+        const unsigned char *glyph =
+            ch < 128 ? r->glyph[toupper((unsigned char)ch)] : lang_glyph(&r->lang, ch);
+        if (!glyph)
+            glyph = r->glyph[(int)'?'];
         for (int row = 0; row < 7; row++) {
-            int bits = r->glyph[ch][row];
+            int bits = glyph[row];
             for (int colx = 0; colx < 5;) {
                 if (!(bits & (16 >> colx))) {
                     colx++;
@@ -472,6 +482,7 @@ bool render_capture(Renderer *r, const char *path) {
     return fclose(f) == 0;
 }
 void render_close(Renderer *r) {
+    lang_close(&r->lang);
     for (int i = 0; i < r->mesh_count; i++) {
         fDeleteBuffers(1, &r->meshes[i].buffer);
         fDeleteVertexArrays(1, &r->meshes[i].array);

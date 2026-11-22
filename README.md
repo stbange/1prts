@@ -16,7 +16,7 @@ cmake --build build --config Release --parallel
 ./build/bin/1stprts
 ```
 
-On Windows launch `build/bin/1stprts.exe`. Keep `content.json`, `assets/`, `scripts/` and enabled `mods/` beside the executable. The game opens at Gate Six. Press **M** to choose an operation, or launch `1stprts --mission tide-window`. The headless runner uses the same rules. Run `orra-sim --list` to see the installed operations.
+On Windows launch `build/bin/1stprts.exe`. Keep `content.json`, `assets/`, `scripts/` and enabled `mods/` beside the executable. The opening desk offers a new watch at Gate Six, a saved watch and a rehearsal. Choose **Start Gate Six**, read the briefing, then choose **Report for duty**. Press **M** in the field to choose an operation, or launch `1stprts --mission tide-window`. The headless runner uses the same rules. Run `orra-sim --list` to see the installed operations.
 
 | Control | Action |
 | --- | --- |
@@ -25,13 +25,16 @@ On Windows launch `build/bin/1stprts.exe`. Keep `content.json`, `assets/`, `scri
 | Tab, arrows, Enter | Raise the orders slate, select an order and confirm. Number keys and clickable rows dispatch directly. Page Down turns the page. |
 | C, V | Open the crew register or address the crew in sight. Select a crew, use left or right to choose a target, then confirm the assignment. |
 | B | Open the sector chart on the slate. Select a friendly crew, mark a destination, then confirm the order. Rival markers show the age of the last report. |
-| F5, F9 | Save or resume the current operation, including the commander’s position on a moving deck. |
+| P, Escape, H | Pause the watch, close a slate, or read the current briefing and field help. Browser focus loss pauses the watch. |
+| F5, F9 | Save or load the selected manual slot, including the commander’s position on a moving deck. |
 | L | Read recent radio messages and their ages. A crew card keeps the coordinates and age of its last field report. |
 | M or F2, F1, Escape, R | Choose an operation, open the field guide, lower a panel, or retry a finished operation. |
 
 On a touch-first browser, drag on the left to walk and on the right to look. Tap **Orders** or **Interact** at the bottom right. Tap **Crews** for a crew card. Tap either side of its target line to change the destination. The selected assignment survives rotation.
 
-In WebXR, the left stick walks and the right stick snap-turns. The left trigger raises the slate, the left grip advances its selection, the right trigger confirms and the right grip uses a hatch. Tracked controllers can point at the left-hand slate. Point at a crew to open its card. Choose a job, mark a crew, ground position, surveyed pad or berth, and confirm on the wrist slate. Left X/Y open operations and crews, right B changes the assignment target, and pressing the right stick retries a finished operation.
+Bindings and touch prompts follow the current input. Apply changes in **Settings** to retain them on the device. Keyboard and XR button assignments, interface size, radio captions, narration, audio mix, graphics, turn angle and simulation pace are adjustable. Native narration uses the platform voice service or an installed Linux speech command.
+
+In WebXR, squeeze both grips to pause. The left stick walks and the right stick snap-turns. The left trigger raises the slate, the left grip advances its selection, the right trigger confirms and the right grip uses a hatch. Tracked controllers can point at the left-hand slate. Point at a crew to open its card. Choose a job, mark a crew, ground position, surveyed pad or berth, and confirm on the wrist slate. Left X/Y open operations and crews, right B changes the assignment target, and pressing the right stick retries a finished operation.
 
 ## Campaign
 
@@ -82,4 +85,4 @@ At Gate Six, use the command slate to commission the Plate Mill, dispatch the Mo
 
 Open **Crew Dispatch** with **C**, select a crew, and choose a field order. Use the target arrows or choose **Point at a world destination**, aim from the commander's eyes and click, tap or use the controller trigger. Review the recipient and target on the slate, then confirm the order. **Add or remove from group** lets multiple selected crews take the same assignment. Crew work and the simulation continue while the slate is open.
 
-Open **Operations** with **M** for Save, Resume, Retry and Continue. **F5** saves and **F9** resumes. Native saves live in the user's SDL preference directory. Browser saves persist in IndexedDB for the site's origin. Continue carries eligible crews and equipment forward after a victory. Selecting an operation by name starts it with its authored budget. [Automated playtest and controls](docs/playtests/basin-release/README.md) · [Adding a sector](docs/modding.md)
+Open **Pause** for two manual save slots and a separate operation-entry checkpoint. Continue at the session desk restores the most recently committed slot. In the field, **Operations → Continue campaign** carries eligible crews and equipment forward after a victory. Rehearsal returns you to the same watch when you finish. Native saves use the SDL preference directory. Browser saves use IndexedDB for the site's origin. [Release information and credits](https://stbange.github.io/1prts/release.html) · [Release checks and device measurements](docs/playtests/session-release/README.md)

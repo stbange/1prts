@@ -139,12 +139,24 @@ static void feedback(const char *label, SDL_Scancode sc, const char *cause) {
                  (present_after && (fabsf(next.x - old.x) + fabsf(next.z - old.z) > .001f));
     printf("feedback,%s,%d,%d,%d\n", label, radio_hash() != radio, game.audio_cues > sounds, world);
 }
-static void sector_profile(void) {
+static void draw_sector(int area) {
+    if (area == 3) {
+        Mat p = mat_projection(480.f / 540, 1.04f);
+        for (int eye = 0; eye < 2; eye++) {
+            float x = (eye - .5f) * .064f;
+            Mat v = mat_view((V3){x, 1.72f, 0}, 0, 0);
+            orra_xr_eye(p.v, v.v, eye * 480, 0, 480, 540, x, 1.72f, 0);
+        }
+    } else
+        app_draw(&game);
+}
+static void sector_profile(bool low_quality) {
     const char *scenes[] = {"gate-six", "tide-window", "high-water", "high-water"};
     const char *labels[] = {"second-tank yard", "moving ferry", "traffic lift",
                             "tracked stereo lift"};
     for (int area = 0; area < 4; area++) {
         require(app_mission(&game, scenes[area]), "profile sector");
+        game.renderer.quality=low_quality ? 1 : 0;
         if (area == 0) {
             tap(SDL_SCANCODE_2);
             tap(SDL_SCANCODE_1);
@@ -171,18 +183,17 @@ static void sector_profile(void) {
         for (int f = 0; f < 105; f++) {
             double start = ms();
             app_tick(&game);
-            if (area == 3) {
-                Mat p = mat_projection(480.f / 540, 1.04f);
-                for (int eye = 0; eye < 2; eye++) {
-                    float x = (eye - .5f) * .064f;
-                    Mat v = mat_view((V3){x, 1.72f, 0}, 0, 0);
-                    orra_xr_eye(p.v, v.v, eye * 480, 0, 480, 540, x, 1.72f, 0);
-                }
-            } else
-                app_draw(&game);
+            draw_sector(area);
             finish_gpu();
             if (f >= 5)
                 printf("%s,%d,%.4f\n", labels[area], f - 5, ms() - start);
+        }
+        for (int sample=0;sample<10;sample++) {
+            double feedback=ms();
+            tap(SDL_SCANCODE_TAB);
+            draw_sector(area);
+            finish_gpu();
+            fprintf(stderr,"input-to-draw,%s,%.4f\n",labels[area],ms()-feedback);
         }
     }
 }
@@ -198,7 +209,10 @@ int main(int argc, char **argv) {
                                     void *))SDL_GL_GetProcAddress("glReadPixels");
     require(finish_gpu && read_pixels, "OpenGL instrumentation");
     if (argc == 4) {
-        sector_profile();
+        app_draw(&game);
+        finish_gpu();
+        fprintf(stderr,"startup,first completed game frame,%.4f\n",ms());
+        sector_profile(!strcmp(argv[3],"sectors-low"));
         app_close(&game);
         return 0;
     }

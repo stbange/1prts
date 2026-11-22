@@ -1,0 +1,883 @@
+quality,route,measurement,sample,milliseconds
+full,second-tank yard,frame,0,21.8684
+full,second-tank yard,frame,1,22.5898
+full,second-tank yard,frame,2,23.0112
+full,second-tank yard,frame,3,27.3966
+full,second-tank yard,frame,4,26.2124
+full,second-tank yard,frame,5,26.2056
+full,second-tank yard,frame,6,26.4538
+full,second-tank yard,frame,7,23.5595
+full,second-tank yard,frame,8,24.8644
+full,second-tank yard,frame,9,22.5876
+full,second-tank yard,frame,10,22.1988
+full,second-tank yard,frame,11,21.1149
+full,second-tank yard,frame,12,21.2285
+full,second-tank yard,frame,13,20.6790
+full,second-tank yard,frame,14,21.3977
+full,second-tank yard,frame,15,21.2473
+full,second-tank yard,frame,16,23.7446
+full,second-tank yard,frame,17,23.3807
+full,second-tank yard,frame,18,22.6509
+full,second-tank yard,frame,19,22.2714
+full,second-tank yard,frame,20,21.7872
+full,second-tank yard,frame,21,21.9803
+full,second-tank yard,frame,22,22.5928
+full,second-tank yard,frame,23,22.0612
+full,second-tank yard,frame,24,22.0631
+full,second-tank yard,frame,25,23.1764
+full,second-tank yard,frame,26,22.2638
+full,second-tank yard,frame,27,20.9462
+full,second-tank yard,frame,28,23.3093
+full,second-tank yard,frame,29,21.3598
+full,second-tank yard,frame,30,21.5831
+full,second-tank yard,frame,31,20.9399
+full,second-tank yard,frame,32,20.8013
+full,second-tank yard,frame,33,22.2537
+full,second-tank yard,frame,34,23.1042
+full,second-tank yard,frame,35,22.8494
+full,second-tank yard,frame,36,20.9056
+full,second-tank yard,frame,37,22.2551
+full,second-tank yard,frame,38,22.5853
+full,second-tank yard,frame,39,22.0729
+full,second-tank yard,frame,40,21.4515
+full,second-tank yard,frame,41,22.6117
+full,second-tank yard,frame,42,24.0040
+full,second-tank yard,frame,43,24.0024
+full,second-tank yard,frame,44,24.0403
+full,second-tank yard,frame,45,25.0591
+full,second-tank yard,frame,46,23.4671
+full,second-tank yard,frame,47,24.2069
+full,second-tank yard,frame,48,25.3426
+full,second-tank yard,frame,49,25.5503
+full,second-tank yard,frame,50,22.8040
+full,second-tank yard,frame,51,25.2270
+full,second-tank yard,frame,52,24.8075
+full,second-tank yard,frame,53,23.0462
+full,second-tank yard,frame,54,24.6754
+full,second-tank yard,frame,55,23.4775
+full,second-tank yard,frame,56,22.8433
+full,second-tank yard,frame,57,22.3484
+full,second-tank yard,frame,58,23.4138
+full,second-tank yard,frame,59,22.2744
+full,second-tank yard,frame,60,64.7612
+full,second-tank yard,frame,61,32.1387
+full,second-tank yard,frame,62,32.6245
+full,second-tank yard,frame,63,30.3853
+full,second-tank yard,frame,64,28.0147
+full,second-tank yard,frame,65,25.9543
+full,second-tank yard,frame,66,27.8453
+full,second-tank yard,frame,67,26.7564
+full,second-tank yard,frame,68,28.0398
+full,second-tank yard,frame,69,27.0130
+full,second-tank yard,frame,70,26.9801
+full,second-tank yard,frame,71,30.2827
+full,second-tank yard,frame,72,32.5177
+full,second-tank yard,frame,73,28.4055
+full,second-tank yard,frame,74,25.7203
+full,second-tank yard,frame,75,26.8022
+full,second-tank yard,frame,76,26.2611
+full,second-tank yard,frame,77,28.0658
+full,second-tank yard,frame,78,26.2929
+full,second-tank yard,frame,79,38.6461
+full,second-tank yard,frame,80,25.4827
+full,second-tank yard,frame,81,24.7319
+full,second-tank yard,frame,82,22.7524
+full,second-tank yard,frame,83,26.4554
+full,second-tank yard,frame,84,23.1833
+full,second-tank yard,frame,85,22.2583
+full,second-tank yard,frame,86,22.3562
+full,second-tank yard,frame,87,21.7938
+full,second-tank yard,frame,88,22.1211
+full,second-tank yard,frame,89,23.0361
+full,second-tank yard,frame,90,21.5806
+full,second-tank yard,frame,91,22.7464
+full,second-tank yard,frame,92,26.9789
+full,second-tank yard,frame,93,27.4727
+full,second-tank yard,frame,94,26.4292
+full,second-tank yard,frame,95,25.7937
+full,second-tank yard,frame,96,30.2727
+full,second-tank yard,frame,97,27.1029
+full,second-tank yard,frame,98,27.2304
+full,second-tank yard,frame,99,27.1436
+full,moving ferry,frame,0,12.6622
+full,moving ferry,frame,1,13.1815
+full,moving ferry,frame,2,12.8275
+full,moving ferry,frame,3,12.2470
+full,moving ferry,frame,4,12.1989
+full,moving ferry,frame,5,13.5581
+full,moving ferry,frame,6,13.4478
+full,moving ferry,frame,7,11.8137
+full,moving ferry,frame,8,11.8925
+full,moving ferry,frame,9,11.8886
+full,moving ferry,frame,10,12.1614
+full,moving ferry,frame,11,11.9355
+full,moving ferry,frame,12,11.9980
+full,moving ferry,frame,13,11.0702
+full,moving ferry,frame,14,10.8640
+full,moving ferry,frame,15,12.0131
+full,moving ferry,frame,16,12.8204
+full,moving ferry,frame,17,10.8536
+full,moving ferry,frame,18,11.8645
+full,moving ferry,frame,19,11.6808
+full,moving ferry,frame,20,12.3371
+full,moving ferry,frame,21,11.7672
+full,moving ferry,frame,22,12.0226
+full,moving ferry,frame,23,11.5251
+full,moving ferry,frame,24,11.2046
+full,moving ferry,frame,25,11.0485
+full,moving ferry,frame,26,10.9553
+full,moving ferry,frame,27,16.0329
+full,moving ferry,frame,28,11.8088
+full,moving ferry,frame,29,11.5478
+full,moving ferry,frame,30,11.1242
+full,moving ferry,frame,31,11.2478
+full,moving ferry,frame,32,11.1137
+full,moving ferry,frame,33,12.2326
+full,moving ferry,frame,34,11.9301
+full,moving ferry,frame,35,12.4429
+full,moving ferry,frame,36,11.7490
+full,moving ferry,frame,37,11.8125
+full,moving ferry,frame,38,10.9990
+full,moving ferry,frame,39,12.4192
+full,moving ferry,frame,40,11.3557
+full,moving ferry,frame,41,11.3280
+full,moving ferry,frame,42,10.9641
+full,moving ferry,frame,43,11.4696
+full,moving ferry,frame,44,11.2947
+full,moving ferry,frame,45,11.9358
+full,moving ferry,frame,46,31.0802
+full,moving ferry,frame,47,43.6488
+full,moving ferry,frame,48,16.0651
+full,moving ferry,frame,49,18.9827
+full,moving ferry,frame,50,13.3329
+full,moving ferry,frame,51,13.2256
+full,moving ferry,frame,52,12.6457
+full,moving ferry,frame,53,12.7358
+full,moving ferry,frame,54,12.4468
+full,moving ferry,frame,55,13.0126
+full,moving ferry,frame,56,13.5271
+full,moving ferry,frame,57,12.1464
+full,moving ferry,frame,58,12.8028
+full,moving ferry,frame,59,11.8815
+full,moving ferry,frame,60,11.9388
+full,moving ferry,frame,61,13.2401
+full,moving ferry,frame,62,13.1143
+full,moving ferry,frame,63,12.3325
+full,moving ferry,frame,64,12.2150
+full,moving ferry,frame,65,11.1925
+full,moving ferry,frame,66,11.0902
+full,moving ferry,frame,67,12.5546
+full,moving ferry,frame,68,12.0012
+full,moving ferry,frame,69,11.8089
+full,moving ferry,frame,70,12.7288
+full,moving ferry,frame,71,12.6700
+full,moving ferry,frame,72,11.1326
+full,moving ferry,frame,73,12.4118
+full,moving ferry,frame,74,11.7792
+full,moving ferry,frame,75,10.7455
+full,moving ferry,frame,76,11.0095
+full,moving ferry,frame,77,11.2218
+full,moving ferry,frame,78,11.1124
+full,moving ferry,frame,79,11.4790
+full,moving ferry,frame,80,12.0280
+full,moving ferry,frame,81,13.7566
+full,moving ferry,frame,82,12.5830
+full,moving ferry,frame,83,11.7283
+full,moving ferry,frame,84,11.3001
+full,moving ferry,frame,85,10.7751
+full,moving ferry,frame,86,11.8523
+full,moving ferry,frame,87,11.5184
+full,moving ferry,frame,88,11.8054
+full,moving ferry,frame,89,11.6626
+full,moving ferry,frame,90,12.2113
+full,moving ferry,frame,91,10.7258
+full,moving ferry,frame,92,13.6605
+full,moving ferry,frame,93,10.9265
+full,moving ferry,frame,94,10.9917
+full,moving ferry,frame,95,12.3794
+full,moving ferry,frame,96,11.0298
+full,moving ferry,frame,97,12.2539
+full,moving ferry,frame,98,12.4484
+full,moving ferry,frame,99,12.0805
+full,traffic lift,frame,0,9.8808
+full,traffic lift,frame,1,9.5842
+full,traffic lift,frame,2,9.9369
+full,traffic lift,frame,3,9.5627
+full,traffic lift,frame,4,10.8836
+full,traffic lift,frame,5,24.8352
+full,traffic lift,frame,6,24.4996
+full,traffic lift,frame,7,9.6522
+full,traffic lift,frame,8,9.1765
+full,traffic lift,frame,9,10.0023
+full,traffic lift,frame,10,9.2420
+full,traffic lift,frame,11,9.1920
+full,traffic lift,frame,12,8.8168
+full,traffic lift,frame,13,9.0235
+full,traffic lift,frame,14,8.9990
+full,traffic lift,frame,15,9.2387
+full,traffic lift,frame,16,9.2718
+full,traffic lift,frame,17,9.3550
+full,traffic lift,frame,18,9.8629
+full,traffic lift,frame,19,9.1006
+full,traffic lift,frame,20,9.0880
+full,traffic lift,frame,21,9.2836
+full,traffic lift,frame,22,8.9292
+full,traffic lift,frame,23,9.6433
+full,traffic lift,frame,24,9.1743
+full,traffic lift,frame,25,10.6419
+full,traffic lift,frame,26,9.6678
+full,traffic lift,frame,27,10.1975
+full,traffic lift,frame,28,9.9660
+full,traffic lift,frame,29,9.8705
+full,traffic lift,frame,30,10.1715
+full,traffic lift,frame,31,10.1373
+full,traffic lift,frame,32,9.7662
+full,traffic lift,frame,33,9.6037
+full,traffic lift,frame,34,9.8359
+full,traffic lift,frame,35,10.1696
+full,traffic lift,frame,36,9.9087
+full,traffic lift,frame,37,9.6296
+full,traffic lift,frame,38,10.3882
+full,traffic lift,frame,39,9.9919
+full,traffic lift,frame,40,9.9758
+full,traffic lift,frame,41,9.8416
+full,traffic lift,frame,42,9.6164
+full,traffic lift,frame,43,9.5068
+full,traffic lift,frame,44,9.4576
+full,traffic lift,frame,45,9.6764
+full,traffic lift,frame,46,9.6547
+full,traffic lift,frame,47,9.4271
+full,traffic lift,frame,48,9.9447
+full,traffic lift,frame,49,10.2794
+full,traffic lift,frame,50,9.1296
+full,traffic lift,frame,51,9.2740
+full,traffic lift,frame,52,9.6020
+full,traffic lift,frame,53,10.3136
+full,traffic lift,frame,54,10.1964
+full,traffic lift,frame,55,9.3482
+full,traffic lift,frame,56,8.9791
+full,traffic lift,frame,57,8.9328
+full,traffic lift,frame,58,9.3364
+full,traffic lift,frame,59,9.4372
+full,traffic lift,frame,60,8.5478
+full,traffic lift,frame,61,8.2477
+full,traffic lift,frame,62,8.5151
+full,traffic lift,frame,63,9.5257
+full,traffic lift,frame,64,10.3972
+full,traffic lift,frame,65,9.0914
+full,traffic lift,frame,66,9.5866
+full,traffic lift,frame,67,9.4357
+full,traffic lift,frame,68,9.1824
+full,traffic lift,frame,69,9.6952
+full,traffic lift,frame,70,8.9736
+full,traffic lift,frame,71,10.1383
+full,traffic lift,frame,72,11.0307
+full,traffic lift,frame,73,10.0402
+full,traffic lift,frame,74,9.4052
+full,traffic lift,frame,75,9.8433
+full,traffic lift,frame,76,8.9777
+full,traffic lift,frame,77,8.5963
+full,traffic lift,frame,78,8.5331
+full,traffic lift,frame,79,8.5897
+full,traffic lift,frame,80,8.2700
+full,traffic lift,frame,81,8.6574
+full,traffic lift,frame,82,8.4263
+full,traffic lift,frame,83,8.4293
+full,traffic lift,frame,84,8.4696
+full,traffic lift,frame,85,9.9338
+full,traffic lift,frame,86,10.1779
+full,traffic lift,frame,87,10.5086
+full,traffic lift,frame,88,9.5306
+full,traffic lift,frame,89,9.5255
+full,traffic lift,frame,90,11.7586
+full,traffic lift,frame,91,10.6411
+full,traffic lift,frame,92,9.2385
+full,traffic lift,frame,93,10.1953
+full,traffic lift,frame,94,9.6885
+full,traffic lift,frame,95,9.4490
+full,traffic lift,frame,96,9.1115
+full,traffic lift,frame,97,8.8159
+full,traffic lift,frame,98,8.9012
+full,traffic lift,frame,99,9.0885
+full,tracked stereo lift,frame,0,33.6534
+full,tracked stereo lift,frame,1,15.2480
+full,tracked stereo lift,frame,2,14.4055
+full,tracked stereo lift,frame,3,15.3517
+full,tracked stereo lift,frame,4,15.0772
+full,tracked stereo lift,frame,5,15.0238
+full,tracked stereo lift,frame,6,15.8875
+full,tracked stereo lift,frame,7,13.8922
+full,tracked stereo lift,frame,8,14.5766
+full,tracked stereo lift,frame,9,15.9794
+full,tracked stereo lift,frame,10,16.2641
+full,tracked stereo lift,frame,11,15.2984
+full,tracked stereo lift,frame,12,15.0879
+full,tracked stereo lift,frame,13,15.2293
+full,tracked stereo lift,frame,14,15.0632
+full,tracked stereo lift,frame,15,16.2087
+full,tracked stereo lift,frame,16,16.6390
+full,tracked stereo lift,frame,17,15.1071
+full,tracked stereo lift,frame,18,15.4940
+full,tracked stereo lift,frame,19,15.7377
+full,tracked stereo lift,frame,20,15.8195
+full,tracked stereo lift,frame,21,15.8793
+full,tracked stereo lift,frame,22,14.9166
+full,tracked stereo lift,frame,23,14.7428
+full,tracked stereo lift,frame,24,14.4337
+full,tracked stereo lift,frame,25,16.4859
+full,tracked stereo lift,frame,26,16.0185
+full,tracked stereo lift,frame,27,15.9614
+full,tracked stereo lift,frame,28,15.3546
+full,tracked stereo lift,frame,29,14.9678
+full,tracked stereo lift,frame,30,14.5425
+full,tracked stereo lift,frame,31,14.4817
+full,tracked stereo lift,frame,32,16.0158
+full,tracked stereo lift,frame,33,14.8865
+full,tracked stereo lift,frame,34,14.2578
+full,tracked stereo lift,frame,35,14.8250
+full,tracked stereo lift,frame,36,14.6231
+full,tracked stereo lift,frame,37,14.5617
+full,tracked stereo lift,frame,38,14.9197
+full,tracked stereo lift,frame,39,17.1708
+full,tracked stereo lift,frame,40,15.9475
+full,tracked stereo lift,frame,41,14.1809
+full,tracked stereo lift,frame,42,14.8550
+full,tracked stereo lift,frame,43,15.2229
+full,tracked stereo lift,frame,44,14.9788
+full,tracked stereo lift,frame,45,15.9789
+full,tracked stereo lift,frame,46,14.4839
+full,tracked stereo lift,frame,47,14.5250
+full,tracked stereo lift,frame,48,14.7754
+full,tracked stereo lift,frame,49,14.8869
+full,tracked stereo lift,frame,50,15.0313
+full,tracked stereo lift,frame,51,15.2136
+full,tracked stereo lift,frame,52,15.6254
+full,tracked stereo lift,frame,53,15.9934
+full,tracked stereo lift,frame,54,15.4359
+full,tracked stereo lift,frame,55,16.7639
+full,tracked stereo lift,frame,56,15.8483
+full,tracked stereo lift,frame,57,16.0027
+full,tracked stereo lift,frame,58,16.0521
+full,tracked stereo lift,frame,59,15.5106
+full,tracked stereo lift,frame,60,15.2200
+full,tracked stereo lift,frame,61,14.1548
+full,tracked stereo lift,frame,62,14.4205
+full,tracked stereo lift,frame,63,15.2793
+full,tracked stereo lift,frame,64,15.1641
+full,tracked stereo lift,frame,65,15.1156
+full,tracked stereo lift,frame,66,14.4097
+full,tracked stereo lift,frame,67,15.7246
+full,tracked stereo lift,frame,68,15.8613
+full,tracked stereo lift,frame,69,16.2170
+full,tracked stereo lift,frame,70,15.5560
+full,tracked stereo lift,frame,71,18.0328
+full,tracked stereo lift,frame,72,15.3968
+full,tracked stereo lift,frame,73,15.6817
+full,tracked stereo lift,frame,74,15.8776
+full,tracked stereo lift,frame,75,15.8271
+full,tracked stereo lift,frame,76,16.2830
+full,tracked stereo lift,frame,77,15.0851
+full,tracked stereo lift,frame,78,15.0598
+full,tracked stereo lift,frame,79,16.1027
+full,tracked stereo lift,frame,80,15.4263
+full,tracked stereo lift,frame,81,15.5962
+full,tracked stereo lift,frame,82,17.4672
+full,tracked stereo lift,frame,83,17.7446
+full,tracked stereo lift,frame,84,19.0526
+full,tracked stereo lift,frame,85,15.6536
+full,tracked stereo lift,frame,86,15.0235
+full,tracked stereo lift,frame,87,15.4467
+full,tracked stereo lift,frame,88,16.9976
+full,tracked stereo lift,frame,89,15.5569
+full,tracked stereo lift,frame,90,14.7344
+full,tracked stereo lift,frame,91,15.3256
+full,tracked stereo lift,frame,92,16.1608
+full,tracked stereo lift,frame,93,15.5268
+full,tracked stereo lift,frame,94,15.3404
+full,tracked stereo lift,frame,95,16.2640
+full,tracked stereo lift,frame,96,14.8075
+full,tracked stereo lift,frame,97,17.2171
+full,tracked stereo lift,frame,98,18.5168
+full,tracked stereo lift,frame,99,18.3145
+full,first completed game frame,startup,0,330.7388
+full,second-tank yard,input-to-draw,0,28.4640
+full,second-tank yard,input-to-draw,1,25.0178
+full,second-tank yard,input-to-draw,2,27.7902
+full,second-tank yard,input-to-draw,3,27.7490
+full,second-tank yard,input-to-draw,4,30.9323
+full,second-tank yard,input-to-draw,5,29.4137
+full,second-tank yard,input-to-draw,6,29.0062
+full,second-tank yard,input-to-draw,7,27.7018
+full,second-tank yard,input-to-draw,8,30.4835
+full,second-tank yard,input-to-draw,9,28.2217
+full,moving ferry,input-to-draw,0,11.7414
+full,moving ferry,input-to-draw,1,12.1216
+full,moving ferry,input-to-draw,2,12.4892
+full,moving ferry,input-to-draw,3,14.0744
+full,moving ferry,input-to-draw,4,16.3551
+full,moving ferry,input-to-draw,5,13.5637
+full,moving ferry,input-to-draw,6,14.4871
+full,moving ferry,input-to-draw,7,11.2975
+full,moving ferry,input-to-draw,8,11.8039
+full,moving ferry,input-to-draw,9,14.0605
+full,traffic lift,input-to-draw,0,10.0581
+full,traffic lift,input-to-draw,1,9.5355
+full,traffic lift,input-to-draw,2,10.8811
+full,traffic lift,input-to-draw,3,9.2030
+full,traffic lift,input-to-draw,4,11.1965
+full,traffic lift,input-to-draw,5,10.7076
+full,traffic lift,input-to-draw,6,11.5710
+full,traffic lift,input-to-draw,7,11.5647
+full,traffic lift,input-to-draw,8,9.9346
+full,traffic lift,input-to-draw,9,9.3495
+full,tracked stereo lift,input-to-draw,0,20.5221
+full,tracked stereo lift,input-to-draw,1,17.4480
+full,tracked stereo lift,input-to-draw,2,20.2435
+full,tracked stereo lift,input-to-draw,3,19.7442
+full,tracked stereo lift,input-to-draw,4,21.0420
+full,tracked stereo lift,input-to-draw,5,17.6623
+full,tracked stereo lift,input-to-draw,6,24.2718
+full,tracked stereo lift,input-to-draw,7,16.5952
+full,tracked stereo lift,input-to-draw,8,17.6036
+full,tracked stereo lift,input-to-draw,9,15.6607
+low,second-tank yard,frame,0,14.5731
+low,second-tank yard,frame,1,14.7068
+low,second-tank yard,frame,2,14.6332
+low,second-tank yard,frame,3,15.1277
+low,second-tank yard,frame,4,15.1914
+low,second-tank yard,frame,5,14.4709
+low,second-tank yard,frame,6,15.5993
+low,second-tank yard,frame,7,16.6759
+low,second-tank yard,frame,8,15.4300
+low,second-tank yard,frame,9,15.1532
+low,second-tank yard,frame,10,15.3720
+low,second-tank yard,frame,11,14.3624
+low,second-tank yard,frame,12,16.0364
+low,second-tank yard,frame,13,15.3018
+low,second-tank yard,frame,14,14.7992
+low,second-tank yard,frame,15,16.7699
+low,second-tank yard,frame,16,16.5136
+low,second-tank yard,frame,17,15.0769
+low,second-tank yard,frame,18,14.2068
+low,second-tank yard,frame,19,14.9299
+low,second-tank yard,frame,20,14.5320
+low,second-tank yard,frame,21,14.3553
+low,second-tank yard,frame,22,19.2616
+low,second-tank yard,frame,23,16.0178
+low,second-tank yard,frame,24,16.1951
+low,second-tank yard,frame,25,14.3806
+low,second-tank yard,frame,26,15.5218
+low,second-tank yard,frame,27,14.7427
+low,second-tank yard,frame,28,15.7711
+low,second-tank yard,frame,29,16.7196
+low,second-tank yard,frame,30,17.7943
+low,second-tank yard,frame,31,15.2931
+low,second-tank yard,frame,32,14.7825
+low,second-tank yard,frame,33,14.2619
+low,second-tank yard,frame,34,15.1299
+low,second-tank yard,frame,35,14.8866
+low,second-tank yard,frame,36,15.1018
+low,second-tank yard,frame,37,16.6898
+low,second-tank yard,frame,38,14.2646
+low,second-tank yard,frame,39,15.3221
+low,second-tank yard,frame,40,16.9851
+low,second-tank yard,frame,41,16.3946
+low,second-tank yard,frame,42,15.4909
+low,second-tank yard,frame,43,17.4441
+low,second-tank yard,frame,44,15.4871
+low,second-tank yard,frame,45,15.5437
+low,second-tank yard,frame,46,14.7318
+low,second-tank yard,frame,47,15.3870
+low,second-tank yard,frame,48,15.1048
+low,second-tank yard,frame,49,14.7798
+low,second-tank yard,frame,50,14.8721
+low,second-tank yard,frame,51,16.1676
+low,second-tank yard,frame,52,16.9476
+low,second-tank yard,frame,53,16.1538
+low,second-tank yard,frame,54,15.5710
+low,second-tank yard,frame,55,15.4698
+low,second-tank yard,frame,56,14.8747
+low,second-tank yard,frame,57,14.9537
+low,second-tank yard,frame,58,15.4820
+low,second-tank yard,frame,59,15.8866
+low,second-tank yard,frame,60,15.5867
+low,second-tank yard,frame,61,15.3802
+low,second-tank yard,frame,62,16.2032
+low,second-tank yard,frame,63,16.2961
+low,second-tank yard,frame,64,15.7376
+low,second-tank yard,frame,65,15.3710
+low,second-tank yard,frame,66,15.4933
+low,second-tank yard,frame,67,14.9130
+low,second-tank yard,frame,68,15.9571
+low,second-tank yard,frame,69,17.7056
+low,second-tank yard,frame,70,15.9418
+low,second-tank yard,frame,71,16.2415
+low,second-tank yard,frame,72,16.2591
+low,second-tank yard,frame,73,15.4547
+low,second-tank yard,frame,74,15.3090
+low,second-tank yard,frame,75,15.4195
+low,second-tank yard,frame,76,15.3225
+low,second-tank yard,frame,77,14.6905
+low,second-tank yard,frame,78,14.8327
+low,second-tank yard,frame,79,14.2246
+low,second-tank yard,frame,80,14.3073
+low,second-tank yard,frame,81,14.2102
+low,second-tank yard,frame,82,14.8467
+low,second-tank yard,frame,83,16.6898
+low,second-tank yard,frame,84,14.7950
+low,second-tank yard,frame,85,15.0397
+low,second-tank yard,frame,86,14.7800
+low,second-tank yard,frame,87,14.1096
+low,second-tank yard,frame,88,14.2137
+low,second-tank yard,frame,89,13.8264
+low,second-tank yard,frame,90,14.0770
+low,second-tank yard,frame,91,14.4124
+low,second-tank yard,frame,92,17.1835
+low,second-tank yard,frame,93,17.1680
+low,second-tank yard,frame,94,16.0678
+low,second-tank yard,frame,95,15.3485
+low,second-tank yard,frame,96,14.8584
+low,second-tank yard,frame,97,15.5245
+low,second-tank yard,frame,98,14.6065
+low,second-tank yard,frame,99,14.2213
+low,moving ferry,frame,0,7.4607
+low,moving ferry,frame,1,7.5750
+low,moving ferry,frame,2,7.5063
+low,moving ferry,frame,3,7.4174
+low,moving ferry,frame,4,7.5567
+low,moving ferry,frame,5,7.4502
+low,moving ferry,frame,6,7.2372
+low,moving ferry,frame,7,12.6856
+low,moving ferry,frame,8,9.7220
+low,moving ferry,frame,9,8.3035
+low,moving ferry,frame,10,7.5204
+low,moving ferry,frame,11,8.1625
+low,moving ferry,frame,12,8.0275
+low,moving ferry,frame,13,8.1645
+low,moving ferry,frame,14,10.8668
+low,moving ferry,frame,15,8.8435
+low,moving ferry,frame,16,8.7560
+low,moving ferry,frame,17,8.7845
+low,moving ferry,frame,18,8.5463
+low,moving ferry,frame,19,8.7300
+low,moving ferry,frame,20,8.6667
+low,moving ferry,frame,21,8.3659
+low,moving ferry,frame,22,8.2918
+low,moving ferry,frame,23,8.3799
+low,moving ferry,frame,24,8.4355
+low,moving ferry,frame,25,7.5147
+low,moving ferry,frame,26,7.9119
+low,moving ferry,frame,27,9.3644
+low,moving ferry,frame,28,21.3014
+low,moving ferry,frame,29,9.6028
+low,moving ferry,frame,30,9.0119
+low,moving ferry,frame,31,8.9799
+low,moving ferry,frame,32,9.0143
+low,moving ferry,frame,33,9.3713
+low,moving ferry,frame,34,9.5024
+low,moving ferry,frame,35,9.4368
+low,moving ferry,frame,36,7.9725
+low,moving ferry,frame,37,8.5327
+low,moving ferry,frame,38,9.0251
+low,moving ferry,frame,39,9.5141
+low,moving ferry,frame,40,8.6274
+low,moving ferry,frame,41,8.2825
+low,moving ferry,frame,42,8.1983
+low,moving ferry,frame,43,8.3914
+low,moving ferry,frame,44,8.9133
+low,moving ferry,frame,45,8.9756
+low,moving ferry,frame,46,8.4964
+low,moving ferry,frame,47,8.4498
+low,moving ferry,frame,48,8.3466
+low,moving ferry,frame,49,8.2970
+low,moving ferry,frame,50,8.3877
+low,moving ferry,frame,51,8.8745
+low,moving ferry,frame,52,9.3868
+low,moving ferry,frame,53,9.0195
+low,moving ferry,frame,54,8.9262
+low,moving ferry,frame,55,8.5947
+low,moving ferry,frame,56,8.7289
+low,moving ferry,frame,57,9.0782
+low,moving ferry,frame,58,8.8574
+low,moving ferry,frame,59,9.7961
+low,moving ferry,frame,60,14.4245
+low,moving ferry,frame,61,9.4125
+low,moving ferry,frame,62,9.0109
+low,moving ferry,frame,63,8.5738
+low,moving ferry,frame,64,8.8482
+low,moving ferry,frame,65,8.6191
+low,moving ferry,frame,66,8.4590
+low,moving ferry,frame,67,7.8245
+low,moving ferry,frame,68,10.4441
+low,moving ferry,frame,69,9.3667
+low,moving ferry,frame,70,9.3461
+low,moving ferry,frame,71,9.2735
+low,moving ferry,frame,72,8.3410
+low,moving ferry,frame,73,8.1739
+low,moving ferry,frame,74,8.1955
+low,moving ferry,frame,75,8.7149
+low,moving ferry,frame,76,8.3470
+low,moving ferry,frame,77,8.2206
+low,moving ferry,frame,78,8.5197
+low,moving ferry,frame,79,8.2963
+low,moving ferry,frame,80,8.5817
+low,moving ferry,frame,81,8.3207
+low,moving ferry,frame,82,8.7081
+low,moving ferry,frame,83,8.8532
+low,moving ferry,frame,84,7.6651
+low,moving ferry,frame,85,8.8578
+low,moving ferry,frame,86,9.1374
+low,moving ferry,frame,87,8.6719
+low,moving ferry,frame,88,8.7593
+low,moving ferry,frame,89,7.7628
+low,moving ferry,frame,90,7.4904
+low,moving ferry,frame,91,7.5887
+low,moving ferry,frame,92,7.6424
+low,moving ferry,frame,93,7.7374
+low,moving ferry,frame,94,7.4306
+low,moving ferry,frame,95,7.0139
+low,moving ferry,frame,96,7.5423
+low,moving ferry,frame,97,7.0845
+low,moving ferry,frame,98,7.5871
+low,moving ferry,frame,99,7.7062
+low,traffic lift,frame,0,6.7685
+low,traffic lift,frame,1,6.7585
+low,traffic lift,frame,2,6.3709
+low,traffic lift,frame,3,6.4455
+low,traffic lift,frame,4,6.6007
+low,traffic lift,frame,5,6.4757
+low,traffic lift,frame,6,6.7849
+low,traffic lift,frame,7,6.4099
+low,traffic lift,frame,8,6.0418
+low,traffic lift,frame,9,6.3720
+low,traffic lift,frame,10,6.0422
+low,traffic lift,frame,11,7.2524
+low,traffic lift,frame,12,6.6149
+low,traffic lift,frame,13,6.2554
+low,traffic lift,frame,14,6.8531
+low,traffic lift,frame,15,6.9108
+low,traffic lift,frame,16,7.2190
+low,traffic lift,frame,17,6.8437
+low,traffic lift,frame,18,6.5869
+low,traffic lift,frame,19,6.8392
+low,traffic lift,frame,20,7.5583
+low,traffic lift,frame,21,8.9567
+low,traffic lift,frame,22,7.1066
+low,traffic lift,frame,23,6.9953
+low,traffic lift,frame,24,7.2408
+low,traffic lift,frame,25,7.5165
+low,traffic lift,frame,26,6.5544
+low,traffic lift,frame,27,6.3958
+low,traffic lift,frame,28,6.7241
+low,traffic lift,frame,29,6.6461
+low,traffic lift,frame,30,6.4922
+low,traffic lift,frame,31,6.7102
+low,traffic lift,frame,32,6.4496
+low,traffic lift,frame,33,6.7648
+low,traffic lift,frame,34,7.0536
+low,traffic lift,frame,35,6.7029
+low,traffic lift,frame,36,6.6209
+low,traffic lift,frame,37,7.0469
+low,traffic lift,frame,38,8.0456
+low,traffic lift,frame,39,8.3735
+low,traffic lift,frame,40,7.3132
+low,traffic lift,frame,41,8.7555
+low,traffic lift,frame,42,7.6790
+low,traffic lift,frame,43,7.2904
+low,traffic lift,frame,44,7.4687
+low,traffic lift,frame,45,6.6406
+low,traffic lift,frame,46,10.1867
+low,traffic lift,frame,47,7.0692
+low,traffic lift,frame,48,7.0714
+low,traffic lift,frame,49,7.1652
+low,traffic lift,frame,50,7.0046
+low,traffic lift,frame,51,7.3961
+low,traffic lift,frame,52,8.7406
+low,traffic lift,frame,53,8.2632
+low,traffic lift,frame,54,7.5606
+low,traffic lift,frame,55,7.2255
+low,traffic lift,frame,56,7.0825
+low,traffic lift,frame,57,7.0123
+low,traffic lift,frame,58,6.7117
+low,traffic lift,frame,59,6.3453
+low,traffic lift,frame,60,7.0741
+low,traffic lift,frame,61,6.6286
+low,traffic lift,frame,62,6.7567
+low,traffic lift,frame,63,6.4975
+low,traffic lift,frame,64,6.5994
+low,traffic lift,frame,65,8.0640
+low,traffic lift,frame,66,7.3635
+low,traffic lift,frame,67,7.7091
+low,traffic lift,frame,68,8.4237
+low,traffic lift,frame,69,7.6436
+low,traffic lift,frame,70,7.5078
+low,traffic lift,frame,71,7.2760
+low,traffic lift,frame,72,7.0155
+low,traffic lift,frame,73,6.9544
+low,traffic lift,frame,74,6.9352
+low,traffic lift,frame,75,6.8418
+low,traffic lift,frame,76,6.7463
+low,traffic lift,frame,77,6.8093
+low,traffic lift,frame,78,7.4362
+low,traffic lift,frame,79,7.9574
+low,traffic lift,frame,80,7.3554
+low,traffic lift,frame,81,6.7872
+low,traffic lift,frame,82,6.5158
+low,traffic lift,frame,83,6.6046
+low,traffic lift,frame,84,6.5727
+low,traffic lift,frame,85,6.5636
+low,traffic lift,frame,86,7.1253
+low,traffic lift,frame,87,7.1944
+low,traffic lift,frame,88,7.2919
+low,traffic lift,frame,89,7.5296
+low,traffic lift,frame,90,8.2287
+low,traffic lift,frame,91,7.6822
+low,traffic lift,frame,92,7.3856
+low,traffic lift,frame,93,7.8968
+low,traffic lift,frame,94,7.7900
+low,traffic lift,frame,95,7.5594
+low,traffic lift,frame,96,7.9548
+low,traffic lift,frame,97,7.9922
+low,traffic lift,frame,98,6.9160
+low,traffic lift,frame,99,6.8659
+low,tracked stereo lift,frame,0,8.2362
+low,tracked stereo lift,frame,1,7.9875
+low,tracked stereo lift,frame,2,8.7343
+low,tracked stereo lift,frame,3,8.6543
+low,tracked stereo lift,frame,4,8.8214
+low,tracked stereo lift,frame,5,8.3139
+low,tracked stereo lift,frame,6,8.3220
+low,tracked stereo lift,frame,7,8.2260
+low,tracked stereo lift,frame,8,8.2770
+low,tracked stereo lift,frame,9,8.5003
+low,tracked stereo lift,frame,10,8.1790
+low,tracked stereo lift,frame,11,8.2217
+low,tracked stereo lift,frame,12,8.2651
+low,tracked stereo lift,frame,13,8.3410
+low,tracked stereo lift,frame,14,7.9060
+low,tracked stereo lift,frame,15,7.8755
+low,tracked stereo lift,frame,16,7.9709
+low,tracked stereo lift,frame,17,8.4516
+low,tracked stereo lift,frame,18,8.7354
+low,tracked stereo lift,frame,19,8.8501
+low,tracked stereo lift,frame,20,8.8607
+low,tracked stereo lift,frame,21,8.4064
+low,tracked stereo lift,frame,22,8.3664
+low,tracked stereo lift,frame,23,8.5324
+low,tracked stereo lift,frame,24,8.4553
+low,tracked stereo lift,frame,25,8.5907
+low,tracked stereo lift,frame,26,9.2512
+low,tracked stereo lift,frame,27,8.9103
+low,tracked stereo lift,frame,28,8.7141
+low,tracked stereo lift,frame,29,8.7985
+low,tracked stereo lift,frame,30,8.7839
+low,tracked stereo lift,frame,31,9.0799
+low,tracked stereo lift,frame,32,8.2583
+low,tracked stereo lift,frame,33,8.3007
+low,tracked stereo lift,frame,34,9.2406
+low,tracked stereo lift,frame,35,9.1619
+low,tracked stereo lift,frame,36,8.7028
+low,tracked stereo lift,frame,37,8.3500
+low,tracked stereo lift,frame,38,8.3103
+low,tracked stereo lift,frame,39,8.4286
+low,tracked stereo lift,frame,40,8.4206
+low,tracked stereo lift,frame,41,8.6910
+low,tracked stereo lift,frame,42,8.6226
+low,tracked stereo lift,frame,43,8.8039
+low,tracked stereo lift,frame,44,9.0246
+low,tracked stereo lift,frame,45,8.4164
+low,tracked stereo lift,frame,46,8.6096
+low,tracked stereo lift,frame,47,32.8757
+low,tracked stereo lift,frame,48,9.3129
+low,tracked stereo lift,frame,49,8.1161
+low,tracked stereo lift,frame,50,8.4694
+low,tracked stereo lift,frame,51,8.4710
+low,tracked stereo lift,frame,52,8.1988
+low,tracked stereo lift,frame,53,9.2438
+low,tracked stereo lift,frame,54,8.2546
+low,tracked stereo lift,frame,55,8.2306
+low,tracked stereo lift,frame,56,8.2595
+low,tracked stereo lift,frame,57,9.5249
+low,tracked stereo lift,frame,58,9.2575
+low,tracked stereo lift,frame,59,8.3687
+low,tracked stereo lift,frame,60,9.1188
+low,tracked stereo lift,frame,61,8.7689
+low,tracked stereo lift,frame,62,8.6521
+low,tracked stereo lift,frame,63,8.1376
+low,tracked stereo lift,frame,64,8.5034
+low,tracked stereo lift,frame,65,8.5047
+low,tracked stereo lift,frame,66,8.0468
+low,tracked stereo lift,frame,67,8.0092
+low,tracked stereo lift,frame,68,8.8988
+low,tracked stereo lift,frame,69,8.7861
+low,tracked stereo lift,frame,70,8.8053
+low,tracked stereo lift,frame,71,10.8134
+low,tracked stereo lift,frame,72,10.2924
+low,tracked stereo lift,frame,73,9.3321
+low,tracked stereo lift,frame,74,9.8231
+low,tracked stereo lift,frame,75,9.6157
+low,tracked stereo lift,frame,76,10.3522
+low,tracked stereo lift,frame,77,10.4701
+low,tracked stereo lift,frame,78,9.7044
+low,tracked stereo lift,frame,79,8.9016
+low,tracked stereo lift,frame,80,9.0322
+low,tracked stereo lift,frame,81,8.8631
+low,tracked stereo lift,frame,82,10.3608
+low,tracked stereo lift,frame,83,9.7466
+low,tracked stereo lift,frame,84,9.1395
+low,tracked stereo lift,frame,85,8.4390
+low,tracked stereo lift,frame,86,8.1230
+low,tracked stereo lift,frame,87,9.5425
+low,tracked stereo lift,frame,88,8.9350
+low,tracked stereo lift,frame,89,9.0908
+low,tracked stereo lift,frame,90,9.2749
+low,tracked stereo lift,frame,91,10.3627
+low,tracked stereo lift,frame,92,9.6865
+low,tracked stereo lift,frame,93,9.6246
+low,tracked stereo lift,frame,94,10.8529
+low,tracked stereo lift,frame,95,9.5862
+low,tracked stereo lift,frame,96,9.1263
+low,tracked stereo lift,frame,97,9.6751
+low,tracked stereo lift,frame,98,10.5841
+low,tracked stereo lift,frame,99,9.7048
+low,first completed game frame,startup,0,105.9499
+low,second-tank yard,input-to-draw,0,16.6392
+low,second-tank yard,input-to-draw,1,15.1922
+low,second-tank yard,input-to-draw,2,14.2952
+low,second-tank yard,input-to-draw,3,13.9534
+low,second-tank yard,input-to-draw,4,14.5389
+low,second-tank yard,input-to-draw,5,16.0662
+low,second-tank yard,input-to-draw,6,16.8765
+low,second-tank yard,input-to-draw,7,14.0684
+low,second-tank yard,input-to-draw,8,14.8337
+low,second-tank yard,input-to-draw,9,15.4970
+low,moving ferry,input-to-draw,0,8.3478
+low,moving ferry,input-to-draw,1,8.0007
+low,moving ferry,input-to-draw,2,7.9691
+low,moving ferry,input-to-draw,3,8.4578
+low,moving ferry,input-to-draw,4,8.5546
+low,moving ferry,input-to-draw,5,8.4293
+low,moving ferry,input-to-draw,6,9.9011
+low,moving ferry,input-to-draw,7,8.1949
+low,moving ferry,input-to-draw,8,8.9707
+low,moving ferry,input-to-draw,9,7.5597
+low,traffic lift,input-to-draw,0,7.4393
+low,traffic lift,input-to-draw,1,7.6230
+low,traffic lift,input-to-draw,2,8.3682
+low,traffic lift,input-to-draw,3,6.7623
+low,traffic lift,input-to-draw,4,6.5591
+low,traffic lift,input-to-draw,5,6.6562
+low,traffic lift,input-to-draw,6,7.5794
+low,traffic lift,input-to-draw,7,6.5413
+low,traffic lift,input-to-draw,8,7.0603
+low,traffic lift,input-to-draw,9,6.6737
+low,tracked stereo lift,input-to-draw,0,13.4446
+low,tracked stereo lift,input-to-draw,1,9.7530
+low,tracked stereo lift,input-to-draw,2,11.8321
+low,tracked stereo lift,input-to-draw,3,9.8044
+low,tracked stereo lift,input-to-draw,4,10.5389
+low,tracked stereo lift,input-to-draw,5,9.4389
+low,tracked stereo lift,input-to-draw,6,11.5661
+low,tracked stereo lift,input-to-draw,7,9.8960
+low,tracked stereo lift,input-to-draw,8,12.5849
+low,tracked stereo lift,input-to-draw,9,10.3972

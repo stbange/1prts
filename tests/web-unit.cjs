@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const status = { hidden: false, textContent: '' };
 const vr = { hidden: true };
 const gl = { FRAMEBUFFER: 1, async makeXRCompatible() {}, bindFramebuffer() {} };
-const canvas = { focus() {}, getContext() { return gl; } };
+const canvas = { addEventListener(k,f){this[k]=f;}, focus() {}, getContext() { return gl; } };
 global.document = { baseURI: 'https://example.test/builds/game/', getElementById(id) { return {status,vr,canvas}[id]; } };
 const { Module: runtime, configureXR, slatePoint } = require('../web/boot.js');
 const flush = () => new Promise(resolve => setImmediate(resolve));
@@ -23,6 +23,12 @@ test('load individual files under a prefix and report failed assets', async () =
   assert.match(status.textContent,/content.json returned 404/);
   runtime.onRuntimeInitialized();assert.ok(status.hidden);
   runtime.printErr('Startup: missing test asset'); assert.equal(status.hidden,false);
+  let record,paused=false;
+  global.localStorage={setItem(k,v){record=v;}};
+  runtime.currentMission="gate-six";runtime._orra_interrupt=()=>{paused=true;};
+  canvas.webglcontextlost({preventDefault(){}});
+  assert.ok(paused);assert.match(record,/Web \/ gate-six.*Graphics context lost/);
+  delete global.localStorage;runtime.stopped=false;
 });
 
 test("stream sector meshes once and retry a failed crossing",async()=>{
@@ -46,6 +52,8 @@ test("stream sector meshes once and retry a failed crossing",async()=>{
   fail=false;runtime.requestSector("high-water",3);await flush();assert.deepEqual(replies.pop(),[3,1]);
   runtime.requestSector("mod-sector",4);await flush();assert.deepEqual(replies.pop(),[4,1]);
   assert.equal(seen.filter(p=>p.endsWith("tank.mesh")).length,1);
+  runtime.invalidateSector("high-water");runtime.requestSector("high-water",5);await flush();
+  assert.deepEqual(replies.pop(),[5,1]);
 });
 
 function setup(fallback=false) {
@@ -62,6 +70,7 @@ function setup(fallback=false) {
     async end(){if(handlers.end)handlers.end();}
   };
   const adapter = {
+    _orra_interrupt:()=>calls.push(["pause"]),_orra_menu_flags:()=>32,
     _orra_xr_wrist:p=>calls.push(["wrist",p]), _orra_xr_pick:(...p)=>calls.push(["pick",...p]), _orra_xr_mark:()=>0,
     canvas,HEAPF32:new Float32Array(80),_malloc:()=>16,_free:p=>released.push(p),
     _orra_xr_mode:v=>calls.push(['mode',v]),_orra_xr_tick:(...v)=>calls.push(['tick',...v]),
@@ -91,7 +100,7 @@ test('stereo views, locomotion, input edges and exit preserve one simulation',as
     const right={handedness:'right',gamepad:{axes:[.9,0],buttons:[{},{},{},{},{pressed:true}]}};
     t.session.inputSources=[{},left,right];
     for(const inputSource of [left,right]){
-      t.handlers.selectstart({inputSource});t.handlers.squeezestart({inputSource});
+      t.handlers.selectstart({inputSource});t.handlers.squeezestart({inputSource});t.handlers.squeezeend({inputSource});
     }
     const matrix=new Float32Array(16);
     const view={projectionMatrix:matrix,transform:{inverse:{matrix},position:{x:0,y:1.7,z:0}}};
@@ -107,6 +116,8 @@ test('stereo views, locomotion, input edges and exit preserve one simulation',as
     left.gripSpace="left";right.targetRaySpace="right";
     t.frames.shift()(140,{...valid,getPose:which=>({transform:{matrix:which==="left"?hand:ray}})});
     t.handlers.selectstart({inputSource:right});assert.ok(t.calls.some(c=>c[0]==="pick"));
+    right.gamepad.hapticActuators=[{pulse:async()=>{}}];t.handlers.selectstart({inputSource:right});
+    t.handlers.inputsourceschange({removed:[right]});assert.ok(t.calls.some(c=>c[0]==="pause"));
     await t.session.end();assert.deepEqual(t.calls.at(-1),['mode',0]);assert.deepEqual(t.released,[16]);
   }
 });
@@ -131,7 +142,7 @@ test("browser save transaction restores both generations and rolls back on quota
     const jobs=[];
     const tx={objectStore(){return {
       get(key){const req={};jobs.push(()=>{req.result=disk.get(key);req.onsuccess();});return req;},
-      put(value,key){jobs.push(()=>disk.set(key,value));}
+      put(value,key){jobs.push(()=>disk.set(key,value));},delete(key){jobs.push(()=>disk.delete(key));}
     };}};
     setImmediate(()=>{if (quota && mode==="readwrite") tx.onabort();else {jobs.forEach(fn=>fn());tx.oncomplete();}});
     return tx;
@@ -149,5 +160,6 @@ test("browser save transaction restores both generations and rolls back on quota
   quota=true;files.set("/orra-saves/command.sav",new Uint8Array([3]));
   host.persistSlots();await flush();await flush();await flush();
   assert.equal(callbacks.pop(),0);assert.equal(files.get("/orra-saves/command.sav")[0],2);
+  quota=false;disk.set("reserve.sav",new Uint8Array([7]));host.persistSlots(1);await flush();assert.ok(!disk.has("reserve.sav"));
   blocked=true;await prepareSaves(host,factory);host.persistSlots();assert.equal(callbacks.pop(),0);
 });

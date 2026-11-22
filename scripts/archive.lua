@@ -133,6 +133,9 @@ return function(ctx, rules, records, decode, mission, initial)
             return
         end
         ledger.history[mission.id] = { tick = s.tick, faction = ctx.owner }
+        if mission.id == "tide-window" and s.blue.alloy == 8 then
+            ledger.history[mission.id].accomplishment = "Standard crossing / eight alloy retained"
+        end
         for _, key in ipairs({ "mole", "kestrel", "wake" }) do
             local inst = s.instances[key]
             if inst and inst.owner == ctx.owner and inst.status ~= "disabled" then
@@ -153,6 +156,16 @@ return function(ctx, rules, records, decode, mission, initial)
                 ledger.upgrades[ctx.owner .. "/" .. gear] = gear
             end
         end
+    end
+    function M.journal(s)
+        M.finish(s)
+        local rows = {}
+        for id, entry in pairs(s.campaign.history) do
+            rows[#rows+1] = ("%s / %02d:%02d%s"):format(id, entry.tick//1800, (entry.tick//30)%60,
+                entry.accomplishment and (" / "..entry.accomplishment) or "")
+        end
+        table.sort(rows)
+        return #rows==0 and "No completed operations yet." or table.concat(rows,". ")
     end
     function M.ledger(s)
         M.finish(s)

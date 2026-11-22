@@ -30,11 +30,13 @@ void sound_tick(App *a) {
             }
         }
     }
-    bool radio = a->audio && SDL_GetAudioStreamQueued(a->audio) > 0;
+    bool radio =
+        a->voice && SDL_GetAudioStreamQueued(a->voice) > 0 && session_gain(a, PREF_RADIO) > 0;
     for (int i = 0; i < 3; i++) {
         if (!a->mix[i])
             continue;
         float gain = i == 0 ? .19f : i == (interior ? 2 : 1) ? .32f : .015f;
+        gain *= session_gain(a, i == 0 ? PREF_MUSIC : PREF_FX);
         SDL_SetAudioStreamGain(a->mix[i], radio ? gain * .32f : gain);
         if (SDL_GetAudioStreamQueued(a->mix[i]) < (int)a->bed_size[i] / 16)
             SDL_PutAudioStreamData(a->mix[i], a->bed[i], (int)a->bed_size[i]);
@@ -46,4 +48,20 @@ void sound_close(App *a) {
             SDL_DestroyAudioStream(a->mix[i]);
         SDL_free(a->bed[i]);
     }
+}
+
+void sound_levels(App *a) {
+    if (a->audio)
+        SDL_SetAudioStreamGain(a->audio, session_gain(a, PREF_FX));
+    if (a->voice)
+        SDL_SetAudioStreamGain(a->voice, session_gain(a, PREF_RADIO));
+    sound_tick(a);
+}
+void sound_caption(App *a, const char *speaker, const char *key) {
+    SDL_strlcpy(a->speaker, speaker, sizeof a->speaker);
+    SDL_strlcpy(a->caption, lang_text(&a->renderer.lang, key), sizeof a->caption);
+    a->caption_at = a->sim.tick;
+    char *row = a->calls[a->call_count++ % 12];
+    snprintf(row, 260, "%02d:%02d / %s / %s", a->sim.tick / 1800, (a->sim.tick / 30) % 60, speaker,
+             a->caption);
 }

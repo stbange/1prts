@@ -47,6 +47,10 @@ static int chart(App *a, int width, float pick_x, float pick_y, bool draw) {
                            : !strcmp(row->family, "marker") ? 0xc8be98ff
                                                             : 0x83d0cdff;
             render_rect(r, px - 3, py - 3, age >= 0 ? 7 : 5, age >= 0 ? 2 : 5, ink);
+            if (age >= 0)
+                render_rect(r, px - 1, py - 5, 2, 4, ink);
+            else if (!strcmp(row->family, "marker"))
+                render_rect(r, px - 5, py - 1, 10, 2, ink);
             if (i == a->destination) {
                 render_rect(r, px - 5, py + 5, 10, 1, 0xf2d183ff);
                 char caption[100];

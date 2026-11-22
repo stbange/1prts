@@ -62,3 +62,9 @@ The base interior register places a named machine in each crewed asset. Position
 A sector may declare a list of `targets`. Each entry gives the marker ID, the crew instance, its validated order, the marker's world position in metres, and the label shown on the slate. The public quay, gravel slip, exchange points and Crown collar use the same interface. A target can also bind an existing surveyed pad by omitting the position and label. [Base dispatch markers](../scripts/dispatch_points.lua)
 
 The browser reads the base operation inventories from `assets/sectors.txt`. After changing the models in a base operation, rebuild the list with `lua tools/sector_assets.lua build/bin > assets/sectors.txt` from the repository root, then rebuild the distribution. New pack sectors can load their declared models and use the installed base model library. [Inventory generator](../tools/sector_assets.lua)
+
+## Language files
+
+Add a UTF-8 text file to the pack's `files` array, then declare a locale in `pack.json`. For example, `"locales": [{"name":"Quayside","strings":"quayside.txt"}]` makes it selectable in Settings. The optional `"tag":"en"` sets the language of the browser controls and narration. An optional `"font":"letters.txt"` supplies bitmap glyphs. Enable the pack in the loose `content.json` manifest and restart the game. [Example manifest](../mods/wire-quay/pack.json)
+
+Each line has a stable key, a vertical bar and its translation. Omitted keys use their English source. Keep numbered substitutions such as `{1}` when translating a radio message. They can move within the translated sentence. A glyph line contains a hexadecimal Unicode code point, a space and seven two-digit hexadecimal rows of five bitmap pixels. Include attribution for replacement lettering with the pack. [Source keys](../assets/lang/en.txt) · [Cyrillic glyphs](../assets/lang/cyrillic.txt)

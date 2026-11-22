@@ -1,0 +1,2 @@
+English|assets/lang/en.txt|-|en
+Русский|assets/lang/ru.txt|assets/lang/cyrillic.txt|ru

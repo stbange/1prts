@@ -107,6 +107,6 @@ if __name__ == "__main__":
             args.report.write_text(json.dumps({"native":per_file(native),"all_c":per_file(union),
                 "shipped_lua":per_file(lua)},indent=2)+"\n")
     browser = subprocess.run(["node","--test","--experimental-test-coverage","--test-coverage-include=web/*.js",
-         "--test-coverage-lines=95","tests/web-unit.cjs"],cwd=ROOT)
+         "--test-coverage-lines=95","tests/web-unit.cjs","tests/desk-unit.cjs"],cwd=ROOT)
     if not (native_ok and lua_ok and browser.returncode == 0):
         raise SystemExit(1)

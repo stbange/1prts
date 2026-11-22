@@ -534,3 +534,13 @@ void sim_close(Sim *g) {
     g->orders = NULL; g->place = NULL; g->roster = NULL;
     g->L = NULL;
 }
+
+const char *sim_locales(const Sim *g) {
+    if (!g->L)
+        return "";
+    lua_rawgeti(g->L, LUA_REGISTRYINDEX, g->rules);
+    lua_getfield(g->L, -1, "locales");
+    const char *files = lua_tostring(g->L, -1);
+    lua_pop(g->L, 2);
+    return files ? files : "";
+}

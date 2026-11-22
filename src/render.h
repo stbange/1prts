@@ -1,6 +1,7 @@
 #ifndef ORRA_RENDER_H
 #define ORRA_RENDER_H
 #include "game.h"
+#include "language.h"
 #include <SDL3/SDL.h>
 typedef struct {
     float x, y;
@@ -18,6 +19,9 @@ typedef struct {
     bool visible;
 } RenderPlace;
 typedef struct {
+    Language lang;
+    float brightness;
+    int quality, exposure, sky_exposure;
     RenderPlace *places;
     int place_capacity, side_pose, work_pose;
     unsigned surface,scene, sky, panel, empty, ui_buffer, ui_array;

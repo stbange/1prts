@@ -79,6 +79,7 @@ void sim_log(const Sim *, int, char *, size_t);
 int sim_crew_status(const Sim *, const char *, int *);
 float world_angle(const Sim *, int);
 Shape world_asset_shape(const Sim *, int);
+const char *sim_locales(const Sim *);
 void sim_close(Sim *);
 bool sim_reset(Sim *);
 uint32_t sim_digest(Sim *);

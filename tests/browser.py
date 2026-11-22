@@ -14,7 +14,7 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
         pass
 
 STATUS = "()=>Module.UTF8ToString(Module._orra_status()).split('|')"
-READY = "()=>typeof Module._orra_status==='function' && Module.UTF8ToString(Module._orra_status()).startsWith('active|')"
+READY = "()=>document.getElementById('status').hidden && typeof Module!=='undefined' && typeof Module._orra_status==='function' && Module.UTF8ToString(Module._orra_status()).startsWith('active|')"
 XR_DEVICE = """
 Object.defineProperty(navigator, 'xr', {value: {
   isSessionSupported:async()=>true,
@@ -69,17 +69,31 @@ def exercise(browser, url, layout, pack=False):
         history.append(["advance",ticks,status()])
     def xr_event(kind, hand):
         history.append(["controller",kind,hand])
-        page.evaluate("""([kind,hand])=>{const e=new Event(kind);e.inputSource={handedness:hand};testSession.dispatchEvent(e)}""",[kind,hand])
+        page.evaluate("""([kind,hand])=>{const e=new Event(kind);e.inputSource={handedness:hand};testSession.dispatchEvent(e);
+            if(kind==='squeezestart'){const up=new Event('squeezeend');up.inputSource=e.inputSource;testSession.dispatchEvent(up);}}""",[kind,hand])
     def touch(x,y):
         history.append(["tap",x,y]);page.touchscreen.tap(x,y)
+    def button(name):
+        target=page.get_by_role("button",name=name,exact=True)
+        if layout=="touch": target.tap()
+        else: target.click()
+        advance(0)
+    def start():
+        button("Start Gate Six")
+        button("Report for duty")
+    def accept_switch():
+        if status()[1]=="desk":
+            if layout=="xr":
+                xr_event("squeezestart","left");xr_event("selectstart","right");advance(0)
+            else: button("Confirm")
     def toggle():
-        if layout=="touch": touch(752,492)
+        if layout=="touch": button("Close" if status()[1]=="orders" else "Orders")
         elif layout=="xr": xr_event("selectstart","left")
         else: page.keyboard.press("Tab")
         advance(0)
     def order(index):
         history.append(["order",index])
-        if layout=="touch": touch(715,134+24*(index-1))
+        if layout=="touch": page.locator("#rows button").nth(index-1).tap()
         elif layout=="xr":
             for _ in range((index-1-int(status()[6])) % int(status()[18])): xr_event("squeezestart","left")
             xr_event("selectstart","right")
@@ -90,6 +104,9 @@ def exercise(browser, url, layout, pack=False):
         page.wait_for_function(READY)
         assert not any(url.endswith("/station.mesh") for url in requests),requests
         print("boot",layout,pack,page.evaluate("()=>({ms:Math.round(performance.now()),heap:Module.HEAPF32.byteLength,assets:performance.getEntriesByType('resource').length})"),flush=True)
+        assert status()[1]=="desk" and int(status()[3])==0
+        advance(120);assert int(status()[3])==0
+        start()
         assert len(page.locator("canvas").screenshot())>12000
         assert int(status()[15])==(2700 if pack else 1800)
         if layout=="touch":
@@ -116,14 +133,14 @@ def exercise(browser, url, layout, pack=False):
             wait_for_fingers(False)
             advance(1)
             assert status()[13:15]==["0","0"],status()
-            touch(204,43);advance(0);touch(715,134);advance(0)
+            button("Crews");page.locator("#rows button").first.tap();advance(0)
             draft=status();assert draft[1]=="assignment",draft
             page.set_viewport_size({"width":540,"height":900})
             page.wait_for_function("()=>document.querySelector('canvas').height>document.querySelector('canvas').width")
             assert status()[5]=="1" and status()[16:18]==draft[16:18] and status()[1]=="assignment"
             page.set_viewport_size({"width":900,"height":540})
             page.wait_for_function("()=>document.querySelector('canvas').width>document.querySelector('canvas').height")
-            touch(204,43);advance(0);touch(204,43);advance(0)
+            button("Close");button("Close")
             assert status()[1]=="field"
         if layout=="xr":
             page.locator("#vr").click()
@@ -146,7 +163,7 @@ def exercise(browser, url, layout, pack=False):
                 page.keyboard.press("F5");advance(0)
                 page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('saved in this browser')")
                 page.reload();page.wait_for_function(READY)
-                page.keyboard.press("F9");advance(0)
+                button("Continue saved operation")
                 restored=status()
                 assert (restored[3],restored[7],restored[8])==(saved[3],saved[7],saved[8]),restored
         if layout=="xr":
@@ -165,14 +182,14 @@ def exercise(browser, url, layout, pack=False):
             advance(3500)
         assert status()[0]=="victory",status()
         if pack:
-            page.keyboard.press("m");advance(0);page.keyboard.press("8");advance(0)
+            page.keyboard.press("m");advance(0);page.keyboard.press("8");advance(0);accept_switch()
             page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).split('|')[7]==='wire-quay'")
             page.keyboard.press("e");advance(0)
             assert int(status()[8])>=0 and status()[20]=="quay-courier",status()
             page.keyboard.press("F5");advance(0)
             page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('saved in this browser')")
             page.reload();page.wait_for_function(READY)
-            page.keyboard.press("F9");advance(0)
+            button("Continue saved operation")
             assert status()[7]=="wire-quay" and int(status()[8])>=0 and any(p.endswith("courier.mesh") for p in requests)
         if layout=="xr":
             assert int(status()[8])>=0
@@ -181,7 +198,7 @@ def exercise(browser, url, layout, pack=False):
                      ("night-mail","kite",0,1,-10),("high-water","lark",0,1,0),
                      ("compact-bank","hinge",-28,2,5)]
             for index,(sector,crew,x,y,z) in enumerate(targets):
-                page.keyboard.press("m");advance(0);page.keyboard.press(str(index+1));advance(0)
+                page.keyboard.press("m");advance(0);page.keyboard.press(str(index+1));advance(0);accept_switch()
                 page.wait_for_function("id=>Module.UTF8ToString(Module._orra_status()).split('|')[7]===id",arg=sector)
                 state=status();assert state[7]==sector,state
                 cx,cz,yaw=float(state[10]),float(state[11]),float(state[12])
@@ -198,10 +215,13 @@ def exercise(browser, url, layout, pack=False):
                 assert status()[1]=="assignment" and status()[20]==crew,(sector,status())
                 page.keyboard.press("Escape");page.keyboard.press("Escape");advance(0)
             page.evaluate("()=>testSession.end()")
-            page.keyboard.press("Escape");advance(0)
+            if status()[1]!="field": page.keyboard.press("Escape");advance(0)
             assert status()[1]=="field"
         if layout=="touch":
             touch(450,270);advance(0)
+            assert status()[0:2]==["victory","desk"]
+            button("Cancel");assert status()[0]=="victory"
+            touch(450,270);advance(0);button("Confirm")
             assert status()[0]=="active"
         assert not errors, errors
         return frame
@@ -215,6 +235,68 @@ def exercise(browser, url, layout, pack=False):
     finally:
         context.close()
 
+def session_acceptance(browser,url):
+    from playwright.sync_api import expect
+    ctx=browser.new_context(viewport={"width":360,"height":640},has_touch=True,is_mobile=True)
+    page=ctx.new_page()
+    errors=[]
+    page.on("pageerror",lambda e: errors.append(str(e)))
+    get=lambda name:page.get_by_role("button",name=name,exact=True)
+    def tap(name): get(name).tap()
+    def ticks(n): page.evaluate("ticks=>Module._orra_clock(ticks)",n)
+    def state(): return page.evaluate(STATUS)
+    def heading(name): expect(page.locator("#desk-title")).to_have_text(name)
+    try:
+        page.goto(url+"?replayClock=1");page.wait_for_function(READY)
+        heading("Orra Basin");ticks(60);assert state()[3]=="0"
+        for target in page.locator("#rows button").all():
+            b=target.bounding_box();assert b and b["height"]>=44 and b["width"]>=44,b
+        tap("Start Gate Six");heading("Watch briefing");tap("Report for duty")
+        tap("Orders");tap("Commission Plate Mill");tap("Close");ticks(45)
+        original=state()
+        tap("Operations");tap("Tide Window");heading("Confirm action");ticks(400)
+        assert state()[3]==original[3];tap("Cancel")
+        assert state()[7]=="gate-six" and state()[2]=="4"
+        tap("Close");tap("Pause");heading("Watch paused")
+        tap("Save operation");tap("Watch B / empty")
+        page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).includes('Operation saved in this browser')")
+        tap("Pause");tap("Rehearse Gate Six");heading("Field help");tap("Report for duty")
+        assert state()[2]=="8";ticks(90);tap("Pause");tap("End practice and return")
+        restored=state();assert restored[2:4]==original[2:4] and restored[7:13]==original[7:13]
+        tap("Pause");tap("Settings");tap("Interface size: 100%");tap("Interface size: 125%")
+        tap("Music volume: 100%");tap("Apply changes");tap("Resume watch")
+        tap("Pause");tap("Settings");expect(get("Interface size: 150%")).to_be_visible()
+        tap("Preview defaults");tap("Cancel");tap("Resume watch")
+        page.reload();page.wait_for_function(READY);tap("Continue saved operation")
+        assert state()[2:4]==original[2:4];tap("Pause");tap("Settings")
+        expect(get("Music volume: 0%")).to_be_visible();tap("Cancel");tap("Resume watch")
+        failed={"active":True}
+        def block(route):
+            if failed["active"]:route.fulfill(status=503,body="offline")
+            else:route.continue_()
+        page.route("**/station.mesh",block)
+        ticks(10);tap("Operations");tap("High Water");tap("Confirm");heading("Operation unavailable")
+        expect(page.locator("#detail")).to_contain_text("station.mesh")
+        assert state()[7]=="gate-six";failed["active"]=False;tap("Retry loading")
+        page.wait_for_function("()=>Module.UTF8ToString(Module._orra_status()).split('|')[7]==='high-water'")
+        page.evaluate("()=>window.dispatchEvent(new Event('blur'))")
+        heading("Watch paused");freeze=state()[3];ticks(60);assert state()[3]==freeze
+        tap("Credits and release");tap("SDL license");heading("Release document")
+        expect(page.locator("#detail")).not_to_be_empty()
+        tap("Back");tap("Back");tap("Settings");tap("Control bindings")
+        tap("Walk forward: W");page.keyboard.press("q")
+        expect(get("Walk forward: Q")).to_be_visible()
+        tap("Back");tap("Language: English");tap("Apply changes")
+        expect(page.locator("html")).to_have_attribute("lang","ru")
+        tap("Настройки");expect(get("Язык: Русский")).to_be_visible()
+        tap("Отмена");tap("Вернуться в игру");expect(get("Приказы")).to_be_visible()
+        tap("Приказы");expect(get("Commission Plate Mill")).to_have_count(0)
+        assert state()[7]=="high-water"
+        assert not errors,errors
+        print("Verified protected transitions, independent slot, practice return, saved preferences, touch sizes, recovery and background pause.",flush=True)
+    finally:
+        ctx.close()
+
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("web",type=Path);parser.add_argument("--chromium")
@@ -226,6 +308,7 @@ if __name__=="__main__":
         browser=pw.chromium.launch(executable_path=args.chromium,headless=True,
             args=["--use-gl=angle","--use-angle=swiftshader","--enable-unsafe-swiftshader","--disable-dev-shm-usage"])
         try:
+            session_acceptance(browser,url)
             base=exercise(browser,url,"desktop")
             changed=exercise(browser,url,"desktop",pack=True)
             assert base!=changed,"Expected the pack livery to change the captured frame"

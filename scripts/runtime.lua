@@ -27,6 +27,7 @@ local catalog, scenes = script("catalog"), script("scenes")
 local fleet = scenes.fleet(read)
 local missions, overrides, listeners, extra_jobs = {}, {}, {}, {}
 local operations, sectors, packages, links = {}, {}, {}, {}
+local locales = {}
 for _, m in ipairs(catalog.missions) do
     missions[m.id] = m
     operations[#operations + 1] = m
@@ -57,6 +58,15 @@ for _, directory in ipairs(manifest.packs or {}) do
         for _, file in ipairs(pack.files or {}) do
             local f = assert(io.open(path(root, directory .. "/" .. file), "rb"))
             f:close()
+        end
+        for _, locale in ipairs(pack.locales or {}) do
+            assert(type(locale.name)=="string" and not locale.name:find("[|%c]"), "invalid language name")
+            local strings = path(directory, locale.strings)
+            local font = locale.font and path(directory, locale.font) or "-"
+            assert(read(strings) and (font=="-" or read(font)), "missing language asset")
+            local tag = locale.tag or "und"
+            assert(type(tag) == "string" and tag:match("^[%w%-]+$"), "invalid language tag")
+            locales[#locales+1] = table.concat({locale.name, strings, font, tag}, "|")
         end
         local api = { version = 1 }
         function api.override(key, value)
@@ -248,6 +258,8 @@ end
 local records = script("records")
 local initial_places = #ctx.site
 local archive = script("archive")(ctx, rules, records, decode, mission, initial_places)
+rules.locales = table.concat(locales,"\n")
+rules.journal = archive.journal
 rules.save, rules.restore, rules.ledger, rules.enter, rules.next =
     archive.save, archive.restore, archive.ledger, archive.enter, archive.next
 rules.entry = archive.entry

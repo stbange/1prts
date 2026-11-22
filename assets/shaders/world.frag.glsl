@@ -6,6 +6,7 @@ uniform int shadowPass;
 uniform sampler2D surfaceTile;
 uniform int nightLight;
 out vec4 frag;
+uniform int exposure;
 void main(){
     vec3 n=normalize(norm);
     float sun=max(dot(n,normalize(vec3(-.54,.74,.40))),0.);
@@ -24,5 +25,5 @@ void main(){
         horizon=nightLight==2 ? vec3(.065,.09,.16) : vec3(.12,.18,.26);
         if(nightLight==2)fog*=.48;
     }
-    frag=vec4(mix(shaded,horizon,fog),1.);
+    frag=vec4(mix(shaded,horizon,fog)*(1.+.18*float(exposure)),1.);
 }

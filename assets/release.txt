@@ -1,0 +1,5 @@
+Orra Basin is a first-person strategy game depicting fictional military conflict. All playable viewpoints stay with the field commander. Six named missions and the Compact operation use the same local simulation.
+Keyboard and mouse, automatic touch, and tracked WebXR controllers are supported. Open Pause for settings, help, manual saves, checkpoints and credits.
+Browser saves are stored in this site's IndexedDB. Preferences and local diagnostics are stored on this device. Clearing site data removes them. Native saves use the user's SDL preference directory.
+The game has no accounts, purchases, game analytics or automatic crash uploads. GitHub Pages processes ordinary requests to deliver web files under GitHub's privacy statement. You choose whether to share copied diagnostic information.
+Code and shaders use MIT. Original art and audio use CC BY 4.0. Select Original art and voices for attribution and modifications. The distribution includes SDL and Lua notices.

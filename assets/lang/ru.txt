@@ -1,0 +1,29 @@
+desk.title|Орра Бейсин
+desk.new|Начать операцию
+desk.continue|Продолжить
+desk.pause|Пауза
+desk.resume|Вернуться в игру
+desk.settings|Настройки
+desk.load|Загрузить операцию
+desk.credits|Авторы и лицензии
+desk.quit|Выход
+desk.help|Справка
+desk.practice|Учебная смена
+desk.back|Назад
+desk.cancel|Отмена
+desk.confirm|Подтвердить
+desk.apply|Применить
+desk.reset|Сбросить настройки
+desk.save|Сохранить операцию
+desk.brief|Сводка
+desk.record|Журнал операций
+desk.language|Язык
+radio.ready|Экипаж принял задание: {1}.
+radio.hold|До потери контроля: {1} с
+audio.weir|Вахта Ассамблеи. Приказ принят.
+ui.orders|Приказы
+ui.crews|Экипажи
+ui.chart|Карта
+ui.pause|Пауза
+ui.operations|Операции
+desk.newtask|Приступить к выполнению задания

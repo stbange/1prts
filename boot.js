@@ -1,12 +1,32 @@
 /* Loose assets are fetched relative to this deployment, including subpaths. */
+const saveFiles=[["command.sav","previous.sav"],["reserve.sav","reserve-prev.sav"],["checkpoint.sav","checkpoint-prev.sav"]];
+function showLoadFailure(error) {
+  const status=document.getElementById("status");
+  status.textContent=String(error);
+  status.hidden=false;
+  const loading=document.getElementById("loading"), retry=document.getElementById("retry");
+  if(loading)loading.hidden=false;
+  if(retry){retry.hidden=false;retry.onclick=()=>location.reload();}
+}
 var Module = {
+  onAbort: function(reason) {
+    Module.stopped=true;
+    const build=document.getElementById("build")?.textContent || "startup";
+    const message="Build "+build+" / Web / "+(Module.currentMission || "startup")+" / "+String(reason).slice(0,220);
+    const desk=document.getElementById("desk");
+    if(desk)desk.hidden=true;
+    try { localStorage.setItem("orra-failure.txt",message); } catch (_) {}
+    showLoadFailure(message);
+  },
+  storePreference: function(name) {
+    try {localStorage.setItem("orra-"+name,Module.FS.readFile("/orra-saves/"+name,{encoding:"utf8"}));} catch (_) {}
+  },
   canvas: document.getElementById("canvas"),
   persistSlots: function () { Module._orra_saved(0); },
   printErr: function (text) {
     console.error(text);
     if (String(text).startsWith("Startup:")) {
-      const status = document.getElementById("status");
-      status.textContent = String(text); status.hidden = false;
+      showLoadFailure(String(text)+" / A WebGL 2 browser or a native build is required.");
     }
   },
   preRun: [function () {
@@ -15,11 +35,20 @@ var Module = {
     async function read(path, mode) {
       if (typeof path !== "string" || !/^[\w./-]+$/.test(path) || path.startsWith("/") ||
           path.includes("..") || path.includes("//")) throw Error("Invalid content path " + path);
-      const response = await fetch(new URL(path, document.baseURI));
+      let response;
+      try {response=await fetch(new URL(path, document.baseURI));}
+      catch(error){throw Error(path+" / "+error.message);}
       if (!response.ok) throw Error(path + " returned " + response.status);
       return response[mode]();
     }
     (async function () {
+      if (typeof localStorage!=="undefined") {
+        Module.FS.mkdirTree("/orra-saves");
+        try {for(const name of ["preferences.txt","failure.txt","recent.txt"]){
+          const value=localStorage.getItem("orra-"+name);
+          if(value!==null) Module.FS.writeFile("/orra-saves/"+name,value);
+        }} catch (_) {}
+      }
       if (typeof indexedDB !== "undefined") await prepareSaves(Module,indexedDB);
       const manifest = await read("content.json", "json");
       Module.FS.writeFile("content.json", JSON.stringify(manifest));
@@ -31,11 +60,13 @@ var Module = {
         for (const child of [pack.entry, ...pack.files]) paths.add(directory + "/" + child);
       }
       const inflight = new Map(), ready = new Set();
+      let completed=0, bootTotal=0;
       async function fetchFile(path) {
         const bytes = await read(path, "arrayBuffer");
         const slash = path.lastIndexOf("/");
         if (slash >= 0) Module.FS.mkdirTree(path.slice(0, slash));
         Module.FS.writeFile(path, new Uint8Array(bytes));
+        if(bootTotal) document.getElementById("status").textContent="Preparing command post / "+(++completed)+" of "+bootTotal+" files";
       }
       function load(path) {
         if (!inflight.has(path)) inflight.set(path,fetchFile(path).catch(error=>{
@@ -60,13 +91,18 @@ var Module = {
         await Promise.all((sectors.get(id)||meshes).map(load));
         ready.add(id);
       }
+      Module.invalidateSector=id=>{
+        if(ready.delete(id))for(const path of sectors.get(id)||meshes)inflight.delete(path);
+      };
       Module.requestSector=(id,ticket)=>{
         if (ready.has(id)) return 1;
-        sector(id).then(()=>Module._orra_sector_ready(ticket,1),()=>Module._orra_sector_ready(ticket,0));
+        sector(id).then(()=>Module._orra_sector_ready(ticket,1),error=>{
+          Module.lastAssetError=String(error); Module._orra_sector_ready(ticket,0);
+        });
         return 0;
       };
-      const initial=new Set(["gate-six"]);
-      if (sectors.size && Module.FS.analyzePath) for (const slot of ["command.sav","previous.sav"]) {
+      const initial=new Set();
+      if (sectors.size && Module.FS.analyzePath) for (const slot of saveFiles.flat()) {
         const path="/orra-saves/"+slot;
         if (Module.FS.analyzePath(path).exists) {
           const header=new TextDecoder().decode(Module.FS.readFile(path).subarray(0,96));
@@ -74,20 +110,35 @@ var Module = {
           if (match) initial.add(match[1]);
         }
       }
+      bootTotal=new Set([...paths].filter(p=>!p.startsWith("assets/models/")).concat(["gate-six",...initial].flatMap(id=>sectors.get(id)||meshes))).size;
       await Promise.all([...paths].filter(path=>!path.startsWith("assets/models/")).map(load)
-        .concat([...initial].map(sector)));
+        .concat(sector("gate-six")));
+      await Promise.allSettled([...initial].filter(id=>id!=="gate-six").map(sector));
+      bootTotal=0;
       Module.removeRunDependency(key);
-    })().catch(function (error) { document.getElementById("status").textContent = String(error); });
+    })().catch(showLoadFailure);
   }],
   onRuntimeInitialized: function () {
     document.getElementById("status").hidden = true;
+    const loading=document.getElementById("loading");
+    if(loading) loading.hidden=true;
+    if(typeof installDesk==="function") setTimeout(()=>{
+      document.getElementById("build").textContent=Module.FS.readFile("build-id.txt",{encoding:"utf8"}).trim();
+      installDesk(Module,document,window);
+      if(typeof installProfile==="function")installProfile(Module,document,window);
+    },0);
+    Module.canvas.addEventListener?.("webglcontextlost",e=>{
+      e.preventDefault();
+      Module._orra_interrupt();
+      Module.onAbort("Graphics context lost. Reload and continue from a saved watch.");
+    },{once:true});
     Module.canvas.focus();
     configureXR(Module, navigator.xr, document.getElementById("vr"));
   }
 };
 
 async function prepareSaves(runtime, database) {
-  const folder="/orra-saves", keys=["command.sav","previous.sav"];
+  const folder="/orra-saves", keys=saveFiles.flat();
   const fs=runtime.FS;
   fs.mkdirTree(folder);
   runtime.persistSlots=()=>runtime._orra_saved(0);
@@ -102,9 +153,9 @@ async function prepareSaves(runtime, database) {
   }
   try {
     const db=await open();
-    const load=()=>new Promise((resolve,reject)=>{
+    const load=(selected=keys)=>new Promise((resolve,reject)=>{
       const tx=db.transaction("slots","readonly");
-      for (const key of keys) {
+      for (const key of selected) {
         const req=tx.objectStore("slots").get(key);
         req.onsuccess=()=>{
           if (req.result) fs.writeFile(folder+"/"+key,req.result);
@@ -114,15 +165,17 @@ async function prepareSaves(runtime, database) {
       tx.oncomplete=resolve;tx.onerror=tx.onabort=reject;
     });
     await load();
-    runtime.persistSlots=()=>{
+    runtime.persistSlots=(slot=0)=>{
+      const selected=saveFiles[slot] || saveFiles[0];
       try {
         const tx=db.transaction("slots","readwrite");
-        for (const key of keys) {
+        for (const key of selected) {
           const path=folder+"/"+key;
           if (fs.analyzePath(path).exists) tx.objectStore("slots").put(fs.readFile(path),key);
+          else tx.objectStore("slots").delete(key);
         }
         tx.oncomplete=()=>runtime._orra_saved(1);
-        tx.onabort=()=>load().finally(()=>runtime._orra_saved(0));
+        tx.onabort=()=>load(selected).finally(()=>runtime._orra_saved(0));
       } catch (_) { runtime._orra_saved(0); }
     };
   } catch (_) { /* Flat play is available when browser storage is disabled. */ }
@@ -132,7 +185,7 @@ async function configureXR(runtime, xr, button) {
   button.hidden = false;
   button.onclick = async function () {
     let session, space, temp = 0, active = false;
-    const held = new Map();
+    const held = new Map(), reconnected=new Set();
     let last = 0, snap = false, eyeHeight = 0, pointer = null, aim = null;
     function end() {
       if (active) runtime._orra_xr_mode(0);
@@ -151,18 +204,40 @@ async function configureXR(runtime, xr, button) {
       if (eyeHeight) space = space.getOffsetReferenceSpace(new XRRigidTransform({y: -eyeHeight}));
       temp = runtime._malloc(192);
       session.addEventListener("end", end, { once: true });
+      const grips=new Set();
+      function interrupt() {
+        held.clear();grips.clear();
+        for(const input of session.inputSources) reconnected.add(input);
+        aim=pointer=null;last=0;snap=false;
+        runtime._orra_interrupt();
+      }
+      session.addEventListener("visibilitychange",()=>{
+        if(session.visibilityState!=="visible")interrupt();
+      });
+      session.addEventListener("inputsourceschange",e=>{
+        for(const input of e.added || [])reconnected.add(input);
+        if(e.removed?.length)interrupt();
+      });
       session.addEventListener("selectstart", e => {
+        runtime.profileInput?.();
+        const actuator=e.inputSource.gamepad?.hapticActuators?.[0];
+        if(actuator && (runtime._orra_menu_flags()&32)) actuator.pulse(.18,35).catch(()=>{});
         if (e.inputSource.handedness === "left") runtime._orra_xr_action(0);
+        else if (runtime._orra_xr_binding?.(2)!==2 && runtime._orra_xr_binding) runtime._orra_xr_action(2);
         else if (!(pointer && runtime._orra_xr_pick(pointer[0],pointer[1])) &&
                  !(aim && runtime._orra_xr_mark(aim[12],aim[13],aim[14],-aim[8],-aim[9],-aim[10])))
           runtime._orra_xr_action(2);
       });
-      session.addEventListener("squeezestart", e => runtime._orra_xr_action(e.inputSource.handedness === "left" ? 1 : 3));
+      session.addEventListener("squeezestart", e => {
+        grips.add(e.inputSource.handedness);
+        runtime._orra_xr_action(grips.size===2?11:e.inputSource.handedness==="left"?1:3);
+      });
+      session.addEventListener("squeezeend",e=>grips.delete(e.inputSource.handedness));
       runtime._orra_xr_mode(1); active = true;
       function frame(time, xrFrame) {
         session.requestAnimationFrame(frame);
         const pose = xrFrame.getViewerPose(space);
-        if (!pose) { aim = pointer = null; runtime._orra_xr_wrist(0); return; }
+        if (!pose) { if(last)interrupt(); aim = pointer = null; runtime._orra_xr_wrist(0); return; }
         let move = 0, strafe = 0, turn = 0, wrist = null, ray = null;
         pointer = null;
         for (const input of session.inputSources) {
@@ -174,8 +249,9 @@ async function configureXR(runtime, xr, button) {
           if (!pad) continue;
           const axes = pad.axes.slice(-2);
           const left = input.handedness === "left";
-          const bindings = left ? [4, 5, 9] : [1, 8, 7];
-          const mask = (pad.buttons[4]?.pressed ? 1 : 0) | (pad.buttons[5]?.pressed ? 2 : 0) | (pad.buttons[3]?.pressed ? 4 : 0);
+          const bindings = left ? [4, 5, 9, 6] : [1, 8, 7, 10];
+          const mask = (pad.buttons[4]?.pressed ? 1 : 0) | (pad.buttons[5]?.pressed ? 2 : 0) | (pad.buttons[3]?.pressed ? 4 : 0) | (pad.buttons[6]?.pressed ? 8 : 0);
+          if(reconnected.delete(input))held.set(input,mask);
           for (let i = 0; i < bindings.length; i++)
             if ((mask & (1 << i)) && !((held.get(input) || 0) & (1 << i))) runtime._orra_xr_action(bindings[i]);
           held.set(input, mask);
@@ -203,6 +279,7 @@ async function configureXR(runtime, xr, button) {
           runtime.HEAPF32.set(view.transform.inverse.matrix, temp / 4 + 16);
           runtime._orra_xr_eye(temp, temp + 64, v.x, v.y, v.width, v.height, position.x, position.y, position.z);
         }
+        runtime.profileFrame?.(true);
       }
       session.requestAnimationFrame(frame);
     } catch (error) {
@@ -227,5 +304,5 @@ function slatePoint(slate, ray) {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { Module, configureXR, slatePoint, prepareSaves };
+  module.exports = { Module, configureXR, slatePoint, prepareSaves, showLoadFailure };
 }

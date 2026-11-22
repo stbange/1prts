@@ -1,0 +1,549 @@
+desk.title|Orra Basin
+desk.new|Start Gate Six
+desk.continue|Continue saved operation
+desk.pause|Watch paused
+desk.resume|Resume watch
+desk.settings|Settings
+desk.load|Load operation
+desk.credits|Credits and release
+desk.quit|Exit
+desk.help|Field help
+desk.practice|Rehearse Gate Six
+desk.back|Back
+desk.cancel|Cancel
+desk.confirm|Confirm
+desk.apply|Apply changes
+desk.reset|Preview defaults
+desk.save|Save operation
+desk.brief|Watch briefing
+desk.record|Campaign record
+desk.language|Language
+desk.restart|Restart this operation
+desk.home|Return to session desk
+desk.controls|Control bindings
+desk.endpractice|End practice and return
+desk.copy|Copy build and diagnostic
+desk.notes|Release information
+desk.read|Read briefing
+desk.newtask|Report for duty
+desk.next|Next page
+desk.prev|Previous page
+credits.summary|Orra Basin contributors created the original fiction, models, sprites, recordings and score. Code, including Lua and shaders, uses MIT. Original art and audio use CC BY 4.0.
+brief.gate-six|Watch Officer Iva, Weir Assembly. The terraces need a road for winter food. Across Gate Six, the Compact needs deep water for its supply barges. Commission the Plate Mill, send the Mole for plate, then choose infantry or armor. Hold the switch room for 60 seconds.
+brief.tide-window|Pilot Sen, Kestrel. Two power cores must reach the island relay before high tide. Order crawler loading or invest six alloy in a hoist or ramp. The public berth is reserved from 05:00 to 08:00.
+brief.westbound|Signal Keeper Vale, Terrace Railway. Winter freight is stranded upstream. Survey the obstruction before sending the shunter. The points heater and reserve grid give two ways through the outage.
+brief.white-mile|Surveyor Ena, Salt Survey. The camp is flooded. Establish a bearing and drain the camp before returning its identified sample. Wide Shoes open the soft-ground shortcut.
+brief.night-mail|Apron Chief Lio, Lantern Pilots. Three mailbags must leave before dawn. Share the apron with the patrol or commission the Night Board for another slot.
+brief.high-water|Controller Rin, Meridian Dock Trust. Surface crews depend on Crown Station. Launch the tender, dock, and reach traffic control. The second collar permits two overlapping jobs.
+brief.compact-bank|Skipper Mar, Sounding Compact. Our floating towns need a passable channel. Sound the shallows, ferry the Channel Section, then tow the staffed Slip Shed between its moorings.
+ending.high-water|Crown traffic control is back on watch. The orbital tender has a cleared approach, the surface crews have a working link, and winter freight can move between the terraces and the floating towns.
+help.keys|Raise the orders slate to assign a job. Crew Dispatch selects a crew and a destination. Open the sector chart for last-known reports. Use the nearest hatch to board a vehicle. Your live order slate lets crews keep working.
+lesson.start|Find Commission Plate Mill on the orders slate. It costs four alloy. Look for the fitter's radio acknowledgment.
+lesson.build|Your order was accepted. The fitting crew is building the mill. Its handover is announced on the radio.
+lesson.haul|The mill is ready. Dispatch the Mole, then choose a Watch House for infantry or a Motor Hall for armor. Keep hauling to fund the second facility.
+lesson.tank|Meet the produced Lintel at its rear hatch. Board, raise the slate and issue an order while the driver moves.
+lesson.aboard|You are aboard. Send the tank to the yard or assign another crew from here. End practice on the pause desk to return to your saved moment.
+radio.hold|CONTROL LOST IN {1}S
+radio.pilot|PILOT / RIVAL QUAY 05:00 - 08:00
+radio.ready|{1} queued. Crew assigned.
+audio.weir|Assembly watch. Order received.
+audio.sounding|Compact harbor. We have your order.
+audio.terrace|Exchange dispatch. Crew on the line.
+audio.salt|Field survey. We read you.
+audio.lantern|Flight watch. Logged and ready.
+audio.meridian|Collar control. Order received.
+audio.muster|[Rival muster signal]
+audio.complete|[Factory handover]
+audio.blocked|[Order refused]
+radio.sector|{1} / LAST REPORT {2}S
+ui.resume-saved-operation|Resume saved operation
+ui.retry-this-operation|Retry this operation
+ui.continue-campaign|Continue campaign
+ui.report-on-selected-target|Report on selected target
+ui.release-field-assignment|Release field assignment
+ui.radio-log|RADIO LOG
+ui.crew-dispatch|CREW DISPATCH
+ui.command-slate|COMMAND SLATE
+ui.page-down-tap-for-next|PAGE DOWN / TAP FOR NEXT
+ui.field-register|FIELD REGISTER
+ui.close|Close
+ui.arrows-select-enter-dispatch|ARROWS SELECT   ENTER DISPATCH
+ui.on-shift|ON SHIFT
+ui.basin-field-guide|BASIN FIELD GUIDE
+ui.rival-in-switch-room|RIVAL IN SWITCH ROOM
+ui.compact-on-approach|COMPACT ON APPROACH
+ui.commission-plate-mill|Commission Plate Mill
+ui.dispatch-the-hauler|Dispatch the hauler
+ui.build-the-watch-house|Build the Watch House
+ui.muster-a-gate-section|Muster a Gate Section
+ui.build-motor-hall-for-support|Build Motor Hall for support
+ui.produce-a-lintel-for-support|Produce a Lintel for support
+ui.send-armor-to-the-gate-yard|Send armor to the gate yard
+ui.send-infantry-to-gate-six|Send infantry to Gate Six
+ui.infantry-moving-to-gate-six|Infantry moving to Gate Six
+ui.hold-the-switch-room|Hold the switch room
+ui.ops|Ops
+ui.crews|Crews
+ui.log|Log
+ui.chart|Chart
+ui.orders-interact|ORDERS    INTERACT
+ui.orders|Orders
+ui.guide-look-move|GUIDE      LOOK / MOVE
+ui.pause|Pause
+ui.gate-six-secured|GATE SIX SECURED
+ui.operation-complete|OPERATION COMPLETE
+ui.control-lost|CONTROL LOST
+ui.sector-chart|SECTOR CHART
+ui.mark-a-destination|MARK A DESTINATION
+ui.select-a-crew|SELECT A CREW
+ui.original-art-and-voices|Original art and voices
+ui.mit-code-license|MIT code license
+ui.cc-by-4-0-art-license|CC BY 4.0 art license
+ui.sdl-license|SDL license
+ui.lua-license|Lua license
+ui.confirm-action|Confirm action
+ui.release-document|Release document
+ui.operation-unavailable|Operation unavailable
+ui.watch-a|Watch A
+ui.watch-b|Watch B
+ui.checkpoint|Checkpoint
+ui.document-unavailable-in-this-distribution|Document unavailable in this distribution.
+ui.command-the-orra-basin-yards-from-the-field|Command the Orra Basin yards from the field.
+ui.retry-loading|Retry loading
+ui.delete|Delete
+ui.slot-cleared|Slot cleared.
+ui.could-not-clear-slot|Could not clear slot.
+ui.wait-for-the-current-storage-operation|Wait for the current storage operation.
+ui.switch-to|Switch to
+ui.load|Load
+ui.overwrite|Overwrite
+ui.restart|Restart
+ui.leave|Leave
+ui.end-practice-to-use-campaign-saves|End practice to use campaign saves.
+ui.press-a-new-key-escape-cancels|Press a new key. Escape cancels.
+ui.build-information-copied|Build information copied.
+ui.window-mode|Window mode
+ui.resolution|Resolution
+ui.frame-cap|Frame cap
+ui.graphics-quality|Graphics quality
+ui.brightness|Brightness
+ui.master-volume|Master volume
+ui.music-volume|Music volume
+ui.effects-volume|Effects volume
+ui.radio-volume|Radio volume
+ui.mute|Mute
+ui.interface-size|Interface size
+ui.caption-size|Caption size
+ui.caption-background|Caption background
+ui.simulation-pace|Simulation pace
+ui.reduced-motion-and-flashes|Reduced motion and flashes
+ui.vr-turning|VR turning
+ui.look-sensitivity|Look sensitivity
+ui.invert-look-y|Invert look Y
+ui.movement-keys|Movement keys
+ui.controller-haptics|Controller haptics
+ui.menu-narration|Menu narration
+ui.english|English
+ui.walk-forward|Walk forward
+ui.walk-backward|Walk backward
+ui.walk-left|Walk left
+ui.walk-right|Walk right
+ui.run|Run
+ui.left-previous-target|Left / previous target
+ui.right-next-target|Right / next target
+ui.up-look-up|Up / look up
+ui.down-look-down|Down / look down
+ui.back-pause|Back / pause
+ui.use-hatch-or-desk|Use hatch or desk
+ui.address-crew|Address crew
+ui.operations|Operations
+ui.field-guide|Field guide
+ui.briefing-and-help|Briefing and help
+ui.retry|Retry
+ui.save|Save
+ui.order-1|Order 1
+ui.order-2|Order 2
+ui.order-3|Order 3
+ui.order-4|Order 4
+ui.order-5|Order 5
+ui.order-6|Order 6
+ui.order-7|Order 7
+ui.order-8|Order 8
+ui.order-9|Order 9
+ui.order-10|Order 10
+ui.browser-managed|Browser managed
+ui.unable-to-open-operation|Unable to open operation
+ui.could-not-load-sector-files-check-the-connection|Could not load sector files. Check the connection and select the operation again.
+ui.loading-operation-charts-and-models|Loading operation charts and models.
+ui.point-at-a-world-destination|Point at a world destination
+ui.add-or-remove-from-group|Add or remove from group
+ui.move-to-target|Move to target
+ui.scout-and-report|Scout and report
+ui.escort-moving-crew|Escort moving crew
+ui.engage-reported-contact|Engage reported contact
+ui.hold-position|Hold position
+ui.withdraw-to-target|Withdraw to target
+ui.support-or-recover-target|Support or recover target
+ui.choose-target-on-sector-chart|Choose target on sector chart
+ui.produce-another-armored-crew|Produce another armored crew
+ui.muster-another-section|Muster another section
+ui.assign-this-bay-reserve-power|Assign this bay reserve power
+ui.switch-this-bay-grid-feed|Switch this bay grid feed
+ui.relieve-or-recall-this-bay-watch|Relieve or recall this bay watch
+ui.end-practice-before-changing-operation|End practice before changing operation.
+ui.end-practice-to-use-campaign-controls|End practice to use campaign controls.
+ui.target-has-left-the-sector-mark-a-new-destinatio|Target has left the sector. Mark a new destination.
+ui.point-at-a-crew-work-site-or-ground-click-or-tap|Point at a crew, work site or ground. Click or tap to mark.
+ui.crew-unavailable-for-that-assignment|Crew unavailable for that assignment.
+ui.aboard-the-vehicle-crew-has-control|Aboard. The vehicle crew has control.
+ui.back-on-foot|Back on foot.
+ui.approach-the-rear-hatch-to-board|Approach the rear hatch to board.
+ui.save-folder-unavailable-check-storage-permission|Save folder unavailable. Check storage permissions.
+ui.could-not-write-save-check-free-storage|Could not write save. Check free storage.
+ui.writing-checkpoint|Writing checkpoint.
+ui.writing-browser-save|Writing browser save.
+ui.save-is-still-being-written|Save is still being written.
+ui.the-mission-could-not-be-recorded|The mission could not be recorded.
+ui.manual-save-queued-after-checkpoint|Manual save queued after checkpoint.
+ui.storage-write-failed-check-free-space-or-browser|Storage write failed. Check free space or browser permissions.
+ui.checkpoint-committed|Checkpoint committed.
+ui.operation-saved|Operation saved.
+ui.invalid-saved-crew-or-commander-pose|Invalid saved crew or commander pose.
+ui.invalid-practice-return-point|Invalid practice return point.
+ui.no-readable-save-save-an-active-operation-first|No readable save. Save an active operation first.
+ui.wait-for-browser-storage-to-finish|Wait for browser storage to finish.
+ui.cannot-open-the-save-folder|Cannot open the save folder.
+ui.recovered-previous-save|Recovered previous save.
+ui.operation-resumed|Operation resumed.
+ui.campaign-watch-reported-for-duty|Campaign watch reported for duty.
+ui.no-linked-operation-available|No linked operation available.
+ui.operation-saved-in-this-browser|Operation saved in this browser.
+ui.assignment|Assignment
+ui.previous-entry|Previous entry
+ui.next-entry|Next entry
+ui.previous-category|Previous category
+ui.next-category|Next category
+ui.previous-target|Previous target
+ui.next-target|Next target
+field.line-section|Line section
+field.armored-crew|Armored crew
+field.cycle-salvage-hauler|Cycle salvage hauler
+field.build-watch-house|Build Watch House
+field.build-motor-hall|Build Motor Hall
+field.muster-line-infantry|Muster line infantry
+field.produce-armor|Produce armor
+field.send-section-to-gate|Send section to gate
+field.send-armor-to-yard|Send armor to yard
+field.switch-factory-power|Switch factory power
+field.withdraw-field-crews|Withdraw field crews
+field.survey-ready-commission-a-plate-mill|Survey ready. Commission a Plate Mill.
+field.already-commissioned|Already commissioned:
+field.required-first|Required first:
+field.crew-occupied-wait-for-the-current-job|Crew occupied. Wait for the current job.
+field.more-alloy-needed-dispatch-the-hauler|More alloy needed. Dispatch the hauler.
+field.handover-canceled|Handover canceled.
+field.no-outstanding-order|No outstanding order.
+field.crew-stood-down-used-stock-recorded|Crew stood down. Used stock recorded.
+field.crew-released-stock-returned|Crew released. Stock returned.
+field.bay-watch-back-on-shift|Bay watch back on shift.
+field.bay-watch-stood-down-work-held|Bay watch stood down. Work held.
+field.reserve-unavailable|Reserve unavailable.
+field.gallery-charged-for-one-vehicle-shift|Gallery charged for one vehicle shift.
+field.reserve-feed|Reserve feed:
+field.mole-dispatched-to-the-steel-yard|Mole dispatched to the steel yard.
+field.mole-holding-its-present-load|Mole holding its present load.
+field.factory-grid-restored|Factory grid restored.
+field.factory-grid-isolated-production-paused|Factory grid isolated. Production paused.
+field.crew-unavailable-produce-the-unit-first|Crew unavailable. Produce the unit first.
+field.crew-already-has-that-field-order|Crew already has that field order.
+field.gate-section-moving-to-the-switch-room|Gate Section moving to the switch room.
+field.lintel-moving-to-the-gate-yard|Lintel moving to the gate yard.
+field.field-crews-are-already-home|Field crews are already home.
+field.field-crews-returning-to-the-yard|Field crews returning to the yard.
+field.dispatch-already-holds-this-order|Dispatch already holds this order.
+field.dispatch-holding|Dispatch holding
+field.hold-gate-six-keep-the-switch-room-clear|Hold Gate Six / keep the switch room clear
+field.section-moving-cover-the-gate-yard|Section moving / cover the gate yard
+field.await-the-next-mole-delivery|Await the next Mole delivery
+field.handover-expired-check-crew-and-power|Handover expired. Check crew and power.
+field.lintel-driver-ready-rear-hatch-at-the-motor-hall-exit|Lintel driver ready. Rear hatch at the Motor Hall exit.
+field.wake-driver-ready-at-motor-exit|Wake driver ready at motor exit.
+field.mole-to-dispatch-four-alloy-delivered|Mole to dispatch. Four alloy delivered.
+field.lookouts-report-compact-relief-forming-at-the-north-roa|Lookouts report Compact relief forming at the north road.
+field.rival-carrier-withdrawing-from-the-yard|Rival carrier withdrawing from the yard.
+field.switch-room-hold-interrupted-lookouts-report-a-conteste|Switch room hold interrupted. Lookouts report a contested yard.
+field.gate-six-secured-the-road-is-open|Gate Six secured. The road is open.
+field.compact-watch-controls-gate-six|Compact watch controls Gate Six.
+field.commission-quay-hoist-6|Commission quay hoist / 6
+field.fit-extended-ramp-6|Fit extended ramp / 6
+field.load-cores-by-crawler|Load cores by crawler
+field.sail-to-public-quay|Sail to public quay
+field.sail-to-gravel-slip|Sail to gravel slip
+field.assign-relay-technicians|Assign relay technicians
+field.cancel-fitting-reservation|Cancel fitting reservation
+field.hold-ferry-at-home|Hold ferry at home
+field.request-pilot-report|Request pilot report
+field.depot-watch-two-cores-ashore-choose-hoist-ramp-or-crawl|Depot watch. Two cores ashore. Choose hoist, ramp or crawler loading.
+field.load-two-cores-and-choose-a-landing|Load two cores and choose a landing
+field.fitters-unavailable-or-alloy-committed|Fitters unavailable or alloy committed.
+field.depot-fitters-reserved-six-alloy-committed|Depot fitters reserved. Six alloy committed.
+field.no-unstarted-fitting-reservation|No unstarted fitting reservation.
+field.fitters-released-alloy-returned|Fitters released. Alloy returned.
+field.crawler-crew-loading-both-cores|Crawler crew loading both cores.
+field.gravel-slip-requires-the-extended-ramp|Gravel slip requires the extended ramp.
+field.pilot-acknowledges|Pilot acknowledges
+field.pilot-holding-at-home|Pilot holding at home.
+field.relay-technicians-assigned-to-both-cores|Relay technicians assigned to both cores.
+field.pilot|Pilot:
+field.high-tide-the-island-relay-is-offline|High tide. The island relay is offline.
+field.fitting-reservation-held-waiting-for-the-fitter|Fitting reservation held. Waiting for the fitter.
+field.ride-the-crossing-or-direct-it-from-shore|Ride the crossing or direct it from shore
+field.both-cores-secured-crawler-rolling-onto-the-deck|Both cores secured. Crawler rolling onto the deck.
+field.kestrel-underway-vehicle-lashings-checked|Kestrel underway. Vehicle lashings checked.
+field.berth-clear-pilot-lowering-the-ramp|Berth clear. Pilot lowering the ramp.
+field.pilot-quay-reserved-to-08-00-only-the-extended-ramp-fit|Pilot: quay reserved to 08:00. Only the extended ramp fits the slip.
+field.assign-relay-technicians-to-install-both-cores|Assign relay technicians to install both cores
+field.both-cores-ashore-relay-crew-standing-by|Both cores ashore. Relay crew standing by.
+field.island-relay-online-both-cores-installed|Island relay online. Both cores installed.
+field.tow-the-slip-shed-and-reopen-the-north-mooring|Tow the Slip Shed and reopen the north mooring.
+field.sound-the-shallow-lane|Sound the shallow lane
+field.embark-channel-section|Embark Channel Section
+field.cross-the-marked-shallows|Cross the marked shallows
+field.land-the-channel-section|Land the Channel Section
+field.begin-repair-at-slip-shed|Begin repair at Slip Shed
+field.tow-shed-to-north-mooring|Tow shed to north mooring
+field.dispatch-a-patrol-sortie|Dispatch a patrol sortie
+field.restore-harbor-watch|Restore harbor watch
+field.reopen-west-exchange-and-bring-in-the-winter-freight|Reopen West Exchange and bring in the winter freight.
+field.inspect-the-frostbound-line|Inspect the frostbound line
+field.fit-points-heater-4|Fit Points Heater / 4
+field.charge-gallery-reserve|Charge gallery reserve
+field.replace-damaged-track|Replace damaged track
+field.set-the-exchange-points|Set the exchange points
+field.hold-the-exchange-siding|Hold the exchange siding
+field.dispatch-winter-freight|Dispatch winter freight
+field.switch-workshop-grid|Switch workshop grid
+field.recover-the-last-sample-from-the-flooded-field-camp|Recover the last sample from the flooded field camp.
+field.mark-control-points|Mark control points
+field.drain-the-camp-entrance|Drain the camp entrance
+field.fit-wide-shoes-4|Fit Wide Shoes / 4
+field.relay-the-survey-bearing|Relay the survey bearing
+field.collect-the-assay-load|Collect the assay load
+field.analyze-the-sample-afloat|Analyze the sample afloat
+field.return-load-to-assay-office|Return load to assay office
+field.share-the-flight-shed-and-deliver-three-bags-before-daw|Share the Flight Shed and deliver three bags before dawn.
+field.install-night-board-4|Install Night Board / 4
+field.set-approach-beacon|Set approach beacon
+field.launch-observation-patrol|Launch observation patrol
+field.clear-the-landing-office|Clear the landing office
+field.fly-bag-1-by-courier|Fly bag 1 by courier
+field.fly-bag-2-by-tiltrotor|Fly bag 2 by tiltrotor
+field.bring-observation-crew-home|Bring observation crew home
+field.land-the-last-mailbag|Land the last mailbag
+field.deliver-a-pressure-module-and-restore-crown-station-tra|Deliver a pressure module and restore Crown Station traffic control.
+field.load-the-pressure-module|Load the pressure module
+field.commission-second-collar-4|Commission Second Collar / 4
+field.service-the-occupied-collar|Service the occupied collar
+field.launch-orbital-tender|Launch orbital tender
+field.run-surface-power-service|Run surface power service
+field.dock-at-crown-station|Dock at Crown Station
+field.transfer-pressure-module|Transfer pressure module
+field.deliver-the-station-watch|Deliver the station watch
+field.seal-the-transfer-joint|Seal the transfer joint
+field.reopen-station-traffic|Reopen station traffic
+field.cancel-latest-crew-order|Cancel latest crew order
+field.request-shift-report|Request shift report
+field.close-or-open|Close or open
+field.load-bag-two-at-shore-depot|Load bag two at Shore Depot
+field.dispatch-canceled|Dispatch canceled
+field.shore-depot-loading-the-second-bag|Shore Depot loading the second bag.
+field.workshop-grid-restored|Workshop grid restored.
+field.workshop-on-reserve|Workshop on reserve.
+field.that-crew-already-has-the-order|That crew already has the order.
+field.insufficient-available-alloy|Insufficient available alloy.
+field.crew-is-on-a-field-shift|Crew is on a field shift.
+field.crew-already-on-assignment|Crew already on assignment.
+field.shift-window-closed|Shift window closed.
+field.west-feeder-out-the-gallery-can-cover-one-workshop|West feeder out. The gallery can cover one workshop.
+field.west-feeder-restored|West feeder restored.
+field.crew-unavailable|Crew unavailable.
+field.select-a-mobile-crew|Select a mobile crew.
+field.crew-or-destination-unavailable|Crew or destination unavailable.
+field.crew-is-on-a-scheduled-shift|Crew is on a scheduled shift.
+field.no-opposing-contact-in-sight|No opposing contact in sight.
+field.this-crew-cannot-support-the-assignment|This crew cannot support the assignment.
+field.choose-another-friendly-crew-to-escort|Choose another friendly crew to escort.
+field.order-already-acknowledged|Order already acknowledged.
+field.no-report-of-this-crew-send-an-observer|No report of this crew. Send an observer.
+field.gate-six-compact|Gate Six / Compact
+field.sounding-compact-harbor-command|Sounding Compact harbor command.
+field.cancel-latest-bay-order|Cancel latest bay order
+field.change-production-shift|Change production shift
+field.charge-gallery-2-alloy|Charge gallery / 2 alloy
+field.assign-reserve-priority|Assign reserve priority
+field.salvage-the-shared-plate-lot|Salvage the shared plate lot
+field.build-motor-hall-west-pad|Build Motor Hall / west pad
+field.build-watch-house-east-pad|Build Watch House / east pad
+field.add-six-grid-capacity-bank-pad|Add six grid capacity / bank pad
+field.build-plate-mill-bank-pad|Build Plate Mill / bank pad
+field.group-standing-by|GROUP / standing by
+field.assigned-watch|Assigned watch /
+field.unknown-survey-pad|Unknown survey pad.
+field.survey-pad-occupied|Survey pad occupied.
+field.commission|Commission
+field.bay-is-already-working|Bay is already working.
+field.more-alloy-needed|More alloy needed.
+field.no-room-for-another-crew-in-this-sector|No room for another crew in this sector.
+field.released|Released
+field.last-load-claimed-returning-to-the-home-lot|Last load claimed. Returning to the home lot.
+field.hauler-busy-or-lot-empty|Hauler busy or lot empty.
+field.hauler-dispatched-to|Hauler dispatched to
+field.weir-assembly|Weir Assembly
+field.terrace-towns-with-powered-yards-and-heavy-causeway-arm|Terrace towns with powered yards and heavy causeway armor.
+field.sounding-compact|Sounding Compact
+field.floating-towns-served-by-amphibious-carriers-and-mobile|Floating towns served by amphibious carriers and mobile repair yards.
+field.terrace-railway|Terrace Railway
+field.rail-settlements-move-crews-and-equipment-between-fixed|Rail settlements move crews and equipment between fixed sidings.
+field.salt-survey|Salt Survey
+field.field-surveyors-reopen-isolated-wells-and-chart-shiftin|Field surveyors reopen isolated wells and chart shifting shallows.
+field.lantern-pilots|Lantern Pilots
+field.air-cooperatives-trade-flight-time-for-fast-delivery-an|Air cooperatives trade flight time for fast delivery and observation.
+field.meridian-dock-trust|Meridian Dock Trust
+field.orbital-dock-workers-operate-tugs-pressure-berths-and-t|Orbital dock workers operate tugs, pressure berths and transfer depots.
+field.fitting-crew|Fitting Crew
+field.construct-facilities-on-surveyed-pads|Construct facilities on surveyed pads.
+field.tracked-hauler-carrying-plate-from-a-finite-yard|Tracked hauler carrying plate from a finite yard.
+field.roll-on-ferry-with-a-walkable-vehicle-deck|Roll-on ferry with a walkable vehicle deck.
+field.carries-reserve-operators-between-workplaces|Carries reserve operators between workplaces.
+field.clears-a-flooded-building-entrance|Clears a flooded building entrance.
+field.cargo-tiltrotor-serving-the-basin-flight-sheds|Cargo tiltrotor serving the basin flight sheds.
+field.an-orbital-tender-with-a-pressure-lobby-and-crew-deck|An orbital tender with a pressure lobby and crew deck.
+field.tag-crew|Tag Crew
+field.marks-salvage-lots-and-records-their-remaining-loads|Marks salvage lots and records their remaining loads.
+field.low-bed-carrier-for-a-prefabricated-building-section|Low-bed carrier for a prefabricated building section.
+field.gate-section|Gate Section
+field.line-infantry-able-to-occupy-a-switch-room|Line infantry able to occupy a switch room.
+field.crewed-causeway-tank-that-can-contest-the-gate-yard|Crewed causeway tank that can contest the gate yard.
+field.survey-car-that-refreshes-reports-while-at-a-benchmark|Survey car that refreshes reports while at a benchmark.
+field.engineering-carrier-that-opens-a-marked-crossing|Engineering carrier that opens a marked crossing.
+field.mobile-support-battery-assigned-to-a-reported-yard|Mobile support battery assigned to a reported yard.
+field.channel-section|Channel Section
+field.infantry-transported-through-shallow-channels|Infantry transported through shallow channels.
+field.amphibious-armored-carrier-with-a-troop-bay|Amphibious armored carrier with a troop bay.
+field.scout-launch-that-reports-on-navigable-channels|Scout launch that reports on navigable channels.
+field.tow-tractor-for-disabled-hulls-and-floating-facilities|Tow tractor for disabled hulls and floating facilities.
+field.patrol-aircraft-with-a-manned-observation-cabin|Patrol aircraft with a manned observation cabin.
+field.points-crew|Points Crew
+field.sets-switches-and-occupies-rail-offices|Sets switches and occupies rail offices.
+field.moves-workshop-wagons-between-sidings|Moves workshop wagons between sidings.
+field.armored-railcar-that-holds-an-active-siding|Armored railcar that holds an active siding.
+field.lays-replacement-panels-on-broken-track|Lays replacement panels on broken track.
+field.inspection-car-relaying-line-reports|Inspection car relaying line reports.
+field.chain-crew|Chain Crew
+field.surveys-control-points-on-exposed-salt-flats|Surveys control points on exposed salt flats.
+field.shallow-draft-field-laboratory|Shallow-draft field laboratory.
+field.hauls-mineral-samples-to-an-assay-office|Hauls mineral samples to an assay office.
+field.tall-observation-carrier-for-long-survey-shifts|Tall observation carrier for long survey shifts.
+field.wide-track-patrol-vehicle-for-soft-ground|Wide-track patrol vehicle for soft ground.
+field.ground-watch|Ground Watch
+field.secures-a-landing-office-on-foot|Secures a landing office on foot.
+field.small-crewed-courier-aircraft|Small crewed courier aircraft.
+field.mobile-approach-beacon-with-an-operator-cabin|Mobile approach beacon with an operator cabin.
+field.airfield-recovery-truck-for-a-disabled-aircraft|Airfield recovery truck for a disabled aircraft.
+field.long-endurance-airborne-observation-crew|Long-endurance airborne observation crew.
+field.collar-watch|Collar Watch
+field.takes-over-an-inhabited-docking-office|Takes over an inhabited docking office.
+field.pressure-tug-for-station-modules|Pressure tug for station modules.
+field.transfers-cargo-through-a-docking-collar|Transfers cargo through a docking collar.
+field.crewed-repair-launch-for-station-exteriors|Crewed repair launch for station exteriors.
+field.habitat-shuttle-carrying-a-complete-shift|Habitat shuttle carrying a complete shift.
+field.survey-hall|Survey Hall
+field.command-post-and-survey-register|Command post and survey register.
+field.dynamo-house|Dynamo House
+field.supplies-six-grid-capacity|Supplies six grid capacity.
+field.plate-mill|Plate Mill
+field.processes-a-full-load-into-four-alloy|Processes a full load into four alloy.
+field.watch-house|Watch House
+field.musters-infantry|Musters infantry.
+field.motor-hall|Motor Hall
+field.produces-crewed-armor|Produces crewed armor.
+field.yard-post|Yard Post
+field.houses-the-local-defense-watch|Houses the local defense watch.
+field.flight-shed|Flight Shed
+field.turns-around-patrols-and-cargo-flights|Turns around patrols and cargo flights.
+field.shore-depot|Shore Depot
+field.stores-freight-close-to-a-berth|Stores freight close to a berth.
+field.island-relay|Island Relay
+field.reports-channel-and-tide-status|Reports channel and tide status.
+field.pump-room|Pump Room
+field.keeps-low-yard-entrances-dry|Keeps low yard entrances dry.
+field.plate-store|Plate Store
+field.stockpiles-delivered-plate|Stockpiles delivered plate.
+field.shift-infirmary|Shift Infirmary
+field.returns-rested-operators-to-the-roster|Returns rested operators to the roster.
+field.signal-loft|Signal Loft
+field.relays-reports-from-nearby-crews|Relays reports from nearby crews.
+field.floats-completed-shallow-draft-hulls|Floats completed shallow-draft hulls.
+field.crew-quarters|Crew Quarters
+field.houses-workers-between-shifts|Houses workers between shifts.
+field.freight-siding|Freight Siding
+field.transfers-freight-to-rail|Transfers freight to rail.
+field.transit-office|Transit Office
+field.assigns-shared-transfer-slots|Assigns shared transfer slots.
+field.beacon-house|Beacon House
+field.guides-a-flight-to-a-landing|Guides a flight to a landing.
+field.pressure-lock|Pressure Lock
+field.connects-surface-and-sealed-berth|Connects surface and sealed berth.
+field.tug-mooring|Tug Mooring
+field.attaches-crewed-workboats|Attaches crewed workboats.
+field.transfer-spaceport|Transfer Spaceport
+field.services-orbital-tender-flights|Services orbital tender flights.
+field.accumulator-gallery|Accumulator Gallery
+field.keeps-one-priority-bay-operating-through-a-shortage|Keeps one priority bay operating through a shortage.
+field.slip-shed|Slip Shed
+field.refits-rail-vehicles-on-parallel-roads|Refits rail vehicles on parallel roads.
+field.assay-office|Assay Office
+field.identifies-the-yield-of-surveyed-lots|Identifies the yield of surveyed lots.
+field.approach-tower|Approach Tower
+field.schedules-simultaneous-arrivals|Schedules simultaneous arrivals.
+field.pressure-cradle|Pressure Cradle
+field.services-occupied-orbital-modules|Services occupied orbital modules.
+field.gate-six-station|Gate Six Station
+field.floodgate-switch-room-overlooking-the-contested-yard|Floodgate switch room overlooking the contested yard.
+field.west-exchange|West Exchange
+field.rail-junction-controlling-winter-freight|Rail junction controlling winter freight.
+field.crown-station|Crown Station
+field.orbital-habitat-with-docking-control-on-its-main-truss|Orbital habitat with docking control on its main truss.
+field.gate-six|Gate Six
+field.build-a-field-base-and-hold-the-floodgate-for-60-second|Build a field base and hold the floodgate for 60 seconds.
+field.tide-window|Tide Window
+field.land-two-power-cores-before-the-public-quay-closes|Land two power cores before the public quay closes.
+field.clear-a-freight-path-through-the-occupied-west-exchange|Clear a freight path through the occupied West Exchange.
+field.white-mile|White Mile
+field.reopen-a-flooded-survey-camp-and-return-its-last-assay-|Reopen a flooded survey camp and return its last assay load.
+field.night-mail|Night Mail
+field.allocate-air-crews-to-deliver-the-last-three-shift-bags|Allocate air crews to deliver the last three shift bags.
+field.high-water|High Water
+field.deliver-a-pressure-module-and-restore-the-watch-on-crow|Deliver a pressure module and restore the watch on Crown Station.
+field.quay-hoist|Quay Hoist
+field.loads-two-cores-in-one-lift|Loads two cores in one lift.
+field.extended-bow-ramp|Extended Bow Ramp
+field.permits-landing-at-the-gravel-slip|Permits landing at the gravel slip.
+field.points-heater|Points Heater
+field.keeps-a-junction-open-during-the-cold-shift|Keeps a junction open during the cold shift.
+field.wide-shoes|Wide Shoes
+field.allows-a-loaded-hauler-onto-marked-salt-flats|Allows a loaded hauler onto marked salt flats.
+field.night-board|Night Board
+field.adds-a-night-arrival-slot-to-the-flight-shed|Adds a night arrival slot to the Flight Shed.
+field.second-collar|Second Collar
+field.permits-a-transfer-while-a-service-tug-is-moored|Permits a transfer while a service tug is moored.
+field.compact-watch|Compact watch
+field.compact-wake|Compact Wake
+field.power-core|Power core
+field.crown-watch|Crown watch
+field.ground|Ground
+field.interact|Interact
+field.help|Help
+field.radio|Radio
+field.lift|Call / ride lift
+field.desk|Dispatch desk

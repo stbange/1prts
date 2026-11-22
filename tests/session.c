@@ -104,10 +104,32 @@ static void training(App *a) {
     CHECK(sim_step(&a->sim, 125));
     app_key(a, SDL_SCANCODE_H);
     CHECK(strstr(orra_menu_detail(), "mill is ready"));
-    a->sim.blue.armor = true;
-    CHECK(strstr(orra_menu_detail(), "hatch"));
-    a->camera.aboard = 0;
-    CHECK(strstr(orra_menu_detail(), "aboard"));
+    session_pick(a, 0);
+    int builds[] = {0, 3, 5};
+    for (int i = 0; i < 3; i++) {
+        app_action(a, builds[i]);
+        CHECK(sim_step(&a->sim, 300));
+    }
+    CHECK(a->sim.blue.armor);
+    const char *vehicles[] = {"mole", "lintel"};
+    for (int i = 0; i < 2; i++) {
+        int index = 0;
+        while (index < a->sim.places && strcmp(a->sim.place[index].key, vehicles[i]))
+            index++;
+        V3 position;
+        CHECK(index < a->sim.places && world_object(&a->sim, index, &position));
+        Shape shape = world_asset_shape(&a->sim, index);
+        a->camera.pos = to_world((V3){0, 0, shape.d * .53f}, position, world_angle(&a->sim, index));
+        app_key(a, SDL_SCANCODE_E);
+        CHECK(a->camera.aboard == index);
+        app_key(a, SDL_SCANCODE_H);
+        CHECK(strstr(orra_menu_detail(), i ? "You are aboard" : "rear hatch"));
+        session_pick(a, 0);
+        if (i == 0) {
+            app_key(a, SDL_SCANCODE_E);
+            CHECK(a->camera.aboard < 0);
+        }
+    }
     session_menu(a, DESK_PAUSE);
     session_pick(a, 1);
     CHECK(strstr(orra_menu_detail(), "End practice"));

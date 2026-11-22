@@ -121,7 +121,17 @@ local function voyage(gear, landing, start, wait_for_crew, redirect)
 end
 assert(voyage("hoist", "quay", 0, false).tick == 435 * 30)
 assert(voyage("ramp", "slip", 0, false).tick == 575 * 30)
-assert(voyage("load", "quay", 0, false).blue.alloy == 8)
+do
+    local crossing = voyage("load", "quay", 0, false)
+    assert(crossing.blue.alloy == 8)
+    local watch = scenario("tide-window")
+    local summary = watch.journal(crossing)
+    assert(summary:match("tide%-window / %d%d:%d%d / Standard crossing / eight alloy retained"))
+    assert(watch.journal(crossing) == summary)
+    local crown, station = scenario("high-water")
+    assert(crown.enter(station, watch.ledger(crossing)))
+    assert(crown.journal(crown.restore(crown.save(station))) == summary)
+end
 assert(voyage("ramp", "quay", 0, true, true).landing == "slip")
 assert(voyage("hoist", "quay", 60 * 30, false).tick == 660 * 30)
 r, s, b = scenario("tide-window")

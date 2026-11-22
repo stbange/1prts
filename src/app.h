@@ -54,6 +54,7 @@ void session_check_slots(App *);
 int session_count(const App *);
 const char *session_row(App *, int, char *, size_t);
 const char *session_title(const App *);
+void session_guidance(const App *, char *, size_t);
 void session_description(App *, char *, size_t);
 void session_draw(App *, int, int);
 void session_tap(App *, float, float, int, int);

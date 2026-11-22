@@ -216,7 +216,8 @@ static void briefing(const App *a, char *out, size_t n) {
 }
 static const char *lesson(const App *a) {
     const Side *s = &a->sim.blue;
-    if (a->camera.aboard >= 0 && s->armor)
+    int aboard = a->camera.aboard;
+    if (s->armor && aboard >= 0 && !strcmp(a->sim.place[aboard].type, "lintel"))
         return "lesson.aboard";
     if (s->armor)
         return "lesson.tank";
@@ -226,7 +227,7 @@ static const char *lesson(const App *a) {
         return "lesson.build";
     return "lesson.start";
 }
-static void help(const App *a, char *out, size_t n) {
+void session_guidance(const App *a, char *out, size_t n) {
     const Sim *g = &a->sim;
     const char *next = NULL;
     for (int i = 0; i < g->order_count; i++)
@@ -271,16 +272,14 @@ static void description(App *a, char *out, size_t n) {
         return;
     }
     if (d->page == DESK_HELP) {
-        help(a, out, n);
+        session_guidance(a, out, n);
         return;
     }
     if (d->page == DESK_RECORD) {
         char *record = sim_text(&a->sim, "journal");
-        snprintf(out, n, "%s%s",
-                 !strcmp(a->sim.mission, "high-water") && !strcmp(a->sim.result, "victory")
-                     ? tr(a, "ending.high-water")
-                     : "",
-                 record ? record : "");
+        bool ending = !strcmp(a->sim.mission, "high-water") && !strcmp(a->sim.result, "victory");
+        snprintf(out, n, "%s%s%s", ending ? tr(a, "ending.high-water") : "",
+                 ending && record ? " " : "", record ? record : "");
         free(record);
         return;
     }

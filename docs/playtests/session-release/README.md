@@ -2,9 +2,11 @@
 
 The mobile browser test commissions a Plate Mill for four alloy, cancels a mission change and waits while the watch is paused. It saves to Watch B, enters rehearsal, advances practice by 90 ticks and returns to the previous mission tick, camera and budget. It then reloads the site and continues from persistent storage. An injected HTTP 503 for the Crown Station model exercises recovery without losing Gate Six. The same test changes a keyboard binding, switches to Cyrillic controls, checks English fallback, and reads a bundled license from the desk. [Browser acceptance routes](../../../tests/browser.py)
 
+The practice regression test commissions a real Lintel and boards both the Mole and the Lintel. Boarding guidance recognizes the Lintel specifically. The Lua campaign test carries an eight-alloy crossing into Crown Station, restores the save and reads the same single accomplishment from the journal.
+
 The C unit suite covers a manual save arriving during a checkpoint, independent slot recovery, damaged saves, cancellation, held input on focus loss, HUD and wrist actions, persisted preferences, text substitutions, missing glyphs, call history and radio attenuation. The rendered routes exercise all seven operations, and the browser suite takes Gate Six to victory on desktop, touch and emulated XR. An Emscripten test clock drives the simulation through normal inputs. Emulation exercises controller events and stereo drawing. [C session tests](../../../tests/session.c) · [Browser adapter tests](../../../tests/web-unit.cjs) · [Desk and profiler tests](../../../tests/desk-unit.cjs)
 
-The local Linux build passed all 21 CTest entries. Unit-only line coverage was 95.30% for first-party C including unmeasured target adapters, 95.97% for shipped Lua and 97.22% for handwritten browser JavaScript. The 18 OpenSpec items passed strict validation. [Coverage command](../../../tools/coverage.py) · [Builds and automated checks](https://github.com/stbange/1prts/actions/workflows/game.yml)
+The local Linux build passed all 21 CTest entries. On revision `74694fa`, unit-only line coverage was 95.30% for first-party C including unmeasured target adapters, 95.97% for shipped Lua and 97.22% for handwritten browser JavaScript. The 18 OpenSpec items passed strict validation. [Coverage command](../../../tools/coverage.py) · [Builds and automated checks](https://github.com/stbange/1prts/actions/workflows/game.yml)
 
 ## Reference routes
 

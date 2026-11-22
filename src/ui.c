@@ -367,10 +367,7 @@ void ui_draw(App *a, int w, int h) {
     }
     if (a->desk.guided && a->panel == FIELD) {
         char cue[512];
-        DeskPage prev = a->desk.page;
-        a->desk.page = DESK_HELP;
-        session_description(a, cue, sizeof cue);
-        a->desk.page = prev;
+        session_guidance(a, cue, sizeof cue);
         R(15, 137, SDL_min(w - 30, 410), 55, INK);
         wrapped(r, 24, 145, SDL_min(w - 48, 385), 1.1f, cue, PAPER);
     }
